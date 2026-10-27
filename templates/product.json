@@ -93,11 +93,29 @@
         "padding_top": 36,
         "padding_bottom": 28
       }
+    },
+    "hira_custom": {
+      "type": "hira-custom",
+      "settings": {
+        "layout": "compact",
+        "eyebrow": "Want it custom?",
+        "heading": "Your Idea.\nHer Hands.\nYour Mask.",
+        "accent_last_line": true,
+        "text": "<p>Love this piece but want it in your colours or size? Book a design session and we'll make one for you.</p>",
+        "button_label": "Book a Design Session",
+        "secondary_label": "",
+        "secondary_link": "",
+        "stamp_text": "",
+        "color_scheme": "scheme-3",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
     }
   },
   "order": [
     "main",
     "disclosures",
-    "related-products"
+    "related-products",
+    "hira_custom"
   ]
 }

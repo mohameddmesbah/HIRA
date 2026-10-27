@@ -1,0 +1,292 @@
+{%- liquid
+  assign overlay = section.settings.overlay_opacity | divided_by: 100.0
+  assign height = section.settings.height
+  case height
+    when 'full'
+      assign hero_h = '100svh'
+    when 'large'
+      assign hero_h = '86svh'
+    else
+      assign hero_h = '68svh'
+  endcase
+-%}
+
+<section
+  id="HiraHero-{{ section.id }}"
+  class="hira-hero hira-hero--align-{{ section.settings.alignment }} color-{{ section.settings.color_scheme }} gradient"
+  style="--hira-hero-h: {{ hero_h }}; --hira-overlay: {{ overlay }};"
+  aria-label="{{ section.settings.heading | strip_newlines | escape }}"
+>
+  <div class="hira-hero__bg" aria-hidden="true">
+    <div class="hira-hero__bg-inner" data-hira-parallax="{{ section.settings.parallax | divided_by: 100.0 }}">
+      {%- if section.settings.video != blank -%}
+        <div data-hira-autoplay>
+          {{
+            section.settings.video
+            | video_tag:
+              autoplay: true,
+              loop: true,
+              muted: true,
+              controls: false,
+              playsinline: true,
+              preload: 'metadata',
+              image_size: '1920x'
+          }}
+        </div>
+      {%- elsif section.settings.image != blank -%}
+        <picture>
+          {%- if section.settings.image_mobile != blank -%}
+            <source
+              media="(max-width: 749px)"
+              srcset="{{ section.settings.image_mobile | image_url: width: 750 }} 750w, {{ section.settings.image_mobile | image_url: width: 1100 }} 1100w, {{ section.settings.image_mobile | image_url: width: 1500 }} 1500w"
+              sizes="100vw"
+            >
+          {%- endif -%}
+          {{
+            section.settings.image
+            | image_url: width: 3840
+            | image_tag:
+              widths: '750, 1100, 1500, 1920, 2560, 3840',
+              sizes: '100vw',
+              loading: 'eager',
+              fetchpriority: 'high',
+              alt: ''
+          }}
+        </picture>
+      {%- else -%}
+        <div class="hira-hero__empty"></div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="hira-hero__overlay" aria-hidden="true"></div>
+
+  {%- if section.settings.show_thread -%}
+    <svg
+      class="hira-thread hira-hero__thread"
+      viewBox="0 0 1440 900"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+      data-hira-reveal="thread"
+    >
+      <path pathLength="1" d="M-40 640 C 240 520, 420 820, 720 640 S 1180 300, 1480 420"/>
+      <path pathLength="1" d="M-40 700 C 300 600, 460 880, 760 700 S 1200 380, 1480 500" opacity=".45"/>
+      <path pathLength="1" d="M1180 -20 C 1080 200, 1320 320, 1200 520 S 1040 820, 1260 940" opacity=".3"/>
+    </svg>
+  {%- endif -%}
+
+  <div class="hira-hero__content">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="hira-eyebrow" data-hira-reveal="fade">{{ section.settings.eyebrow | escape }}</p>
+    {%- endif -%}
+
+    {% render 'hira-heading-reveal',
+      text: section.settings.heading,
+      tag: 'h1',
+      class: 'hira-heading--display',
+      accent_last: section.settings.accent_last_line,
+      delay: 1
+    %}
+
+    {%- if section.settings.subheading != blank -%}
+      <div class="hira-hero__sub" data-hira-reveal="fade" style="--d: 4;">
+        {{ section.settings.subheading }}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank -%}
+      <div class="hira-actions" data-hira-reveal="fade" style="--d: 5;">
+        {% render 'hira-button',
+          label: section.settings.button_label_1,
+          link: section.settings.button_link_1,
+          booking: section.settings.button_1_booking,
+          style: 'primary'
+        %}
+        {% render 'hira-button',
+          label: section.settings.button_label_2,
+          link: section.settings.button_link_2,
+          booking: section.settings.button_2_booking,
+          style: 'secondary'
+        %}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.show_scroll_cue -%}
+    <a class="hira-hero__scroll" href="#HiraHeroEnd-{{ section.id }}">
+      {{- section.settings.scroll_label | escape -}}
+    </a>
+  {%- endif -%}
+</section>
+<span id="HiraHeroEnd-{{ section.id }}" tabindex="-1"></span>
+
+{% schema %}
+{
+  "name": "HIRA hero",
+  "tag": "div",
+  "class": "section hira-hero-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile background image",
+      "info": "Optional. Portrait images work best."
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background video",
+      "info": "Optional. Overrides the image. Muted and looped; paused for visitors who prefer reduced motion."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 55
+    },
+    {
+      "type": "range",
+      "id": "parallax",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "%",
+      "label": "Parallax strength",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "show_thread",
+      "label": "Show animated thread lines",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Handmade textile & macramé masks"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Each line animates in on its own.",
+      "default": "An Art As Old As Time.\nReimagined for Today."
+    },
+    {
+      "type": "checkbox",
+      "id": "accent_last_line",
+      "label": "Highlight last line",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>Masks knotted, woven and stitched by hand. Wearable sculpture for the ones who dress as an act of expression.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "label": "First button label",
+      "default": "Explore the Collection"
+    },
+    {
+      "type": "url",
+      "id": "button_link_1",
+      "label": "First button link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_1_booking",
+      "label": "First button opens booking",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "label": "Second button label",
+      "default": "Book a Design Session"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Second button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_2_booking",
+      "label": "Second button opens booking",
+      "info": "Uses the Cal.com link in Theme settings > HIRA.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "full", "label": "Full screen" },
+        { "value": "large", "label": "Large" },
+        { "value": "medium", "label": "Medium" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_cue",
+      "label": "Show scroll cue",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "scroll_label",
+      "label": "Scroll cue label",
+      "default": "Scroll"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "HIRA hero"
+    }
+  ]
+}
+{% endschema %}

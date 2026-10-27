@@ -1,0 +1,173 @@
+{%- assign cal_link = section.settings.cal_link | default: settings.hira_cal_link | strip -%}
+
+<section
+  id="book"
+  class="hira-section hira-booking color-{{ section.settings.color_scheme }} gradient"
+  style="--hira-pt: {{ section.settings.padding_top }}px; --hira-pb: {{ section.settings.padding_bottom }}px; --hira-embed-h: {{ section.settings.embed_height }}px;"
+>
+  <div class="hira-wrap">
+    <div class="hira-booking__grid">
+      <div class="hira-booking__intro">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="hira-eyebrow" data-hira-reveal="fade">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {% render 'hira-heading-reveal',
+          text: section.settings.heading,
+          accent_last: section.settings.accent_last_line
+        %}
+        {%- if section.settings.text != blank -%}
+          <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2; margin-top: 2.4rem;">{{ section.settings.text }}</div>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <ul class="hira-booking__notes" role="list">
+            {%- for block in section.blocks -%}
+              <li {{ block.shopify_attributes }} data-hira-reveal="fade" style="--d: {{ forloop.index | plus: 2 }};">
+                {{- block.settings.text | escape -}}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      <div class="hira-booking__frame" data-hira-reveal="fade" style="--d: 2;">
+        {%- if cal_link != blank -%}
+          <div
+            class="hira-booking__embed"
+            data-hira-cal-inline
+            data-cal-link="{{ cal_link | escape }}"
+            aria-label="Booking calendar"
+          ></div>
+          <div class="hira-booking__fallback">
+            <div class="hira-booking__loader" aria-hidden="true"></div>
+            <p>{{ section.settings.loading_text | escape }}</p>
+            <a class="hira-btn hira-btn--secondary" href="{{ cal_link | escape }}" target="_blank" rel="noopener">
+              <span class="hira-btn__label">{{ section.settings.fallback_label | escape }}</span>
+            </a>
+          </div>
+        {%- else -%}
+          <div class="hira-booking__fallback">
+            <p>Add your Cal.com link in Theme settings &gt; HIRA to show the booking calendar.</p>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HIRA booking calendar",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "cal_link",
+      "label": "Cal.com link override",
+      "info": "Leave empty to use the link in Theme settings > HIRA."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Design session"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Let's make\nsomething yours."
+    },
+    {
+      "type": "checkbox",
+      "id": "accent_last_line",
+      "label": "Highlight last line",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Pick a time that suits you. In the session we talk through your idea, references and measurements, then plan your mask together.</p>"
+    },
+    {
+      "type": "text",
+      "id": "loading_text",
+      "label": "Loading message",
+      "default": "Loading available times…"
+    },
+    {
+      "type": "text",
+      "id": "fallback_label",
+      "label": "Fallback button label",
+      "default": "Open the booking page"
+    },
+    {
+      "type": "range",
+      "id": "embed_height",
+      "min": 500,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "label": "Calendar height",
+      "default": 720
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 120
+    }
+  ],
+  "blocks": [
+    {
+      "type": "note",
+      "name": "Note",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Sessions are held online"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HIRA booking calendar",
+      "blocks": [
+        { "type": "note", "settings": { "text": "Sessions are held online by video call" } },
+        { "type": "note", "settings": { "text": "Bring references, sketches or moodboards" } },
+        { "type": "note", "settings": { "text": "You'll get a confirmation and reminder by email" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

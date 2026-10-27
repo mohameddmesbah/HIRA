@@ -1,0 +1,133 @@
+{%- assign words = section.settings.marquee_words | split: ',' -%}
+
+<section
+  class="hira-section hira-closing color-{{ section.settings.color_scheme }} gradient"
+  style="--hira-pt: {{ section.settings.padding_top }}px; --hira-pb: {{ section.settings.padding_bottom }}px; --hira-marquee-speed: {{ section.settings.speed }}s;"
+>
+  {%- if words.size > 0 -%}
+    <div class="hira-marquee" aria-hidden="true">
+      {%- for n in (1..2) -%}
+        <div class="hira-marquee__track">
+          {%- for word in words -%}
+            {%- for r in (1..2) -%}
+              <span class="hira-marquee__word">{{ word | strip | escape }}</span>
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <div class="hira-wrap">
+    <div class="hira-closing__body">
+      {%- if section.settings.statement != blank -%}
+        <p class="hira-closing__statement" data-hira-reveal="fade">{{ section.settings.statement | escape }}</p>
+      {%- endif -%}
+      <div data-hira-reveal="fade" style="--d: 2;">
+        {%- if section.settings.text != blank -%}
+          <div class="hira-text rte">{{ section.settings.text }}</div>
+        {%- endif -%}
+        <div class="hira-actions">
+          {% render 'hira-button',
+            label: section.settings.button_label,
+            link: section.settings.button_link,
+            booking: section.settings.button_booking,
+            style: 'primary'
+          %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HIRA brand statement",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "marquee_words",
+      "label": "Marquee words",
+      "info": "Separate words with commas.",
+      "default": "HIRA, Handmade, HIRA, Reimagined"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 15,
+      "max": 80,
+      "step": 5,
+      "unit": "s",
+      "label": "Marquee loop duration",
+      "default": 40
+    },
+    {
+      "type": "textarea",
+      "id": "statement",
+      "label": "Statement",
+      "default": "We make masks for people who treat the face as a canvas. Slow craft, bold form, made to be noticed."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Every piece is signed, numbered and made by hand.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop all masks"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_booking",
+      "label": "Button opens booking",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-4"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 120
+    }
+  ],
+  "presets": [
+    {
+      "name": "HIRA brand statement"
+    }
+  ]
+}
+{% endschema %}

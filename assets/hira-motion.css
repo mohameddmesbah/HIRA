@@ -1,0 +1,206 @@
+/* ==========================================================================
+   HIRA motion. Every rule here is scoped to html.hira-motion, which is only
+   set when Animation intensity is not "Off" and the visitor does not prefer
+   reduced motion. Without it, all content is shown in its final state.
+   Only transform, opacity and clip-path are animated.
+   ========================================================================== */
+
+.hira-motion {
+  --hira-dur: 1.1s;
+  --hira-shift: 4rem;
+  --hira-stagger: 0.09s;
+}
+
+.hira-motion--subtle {
+  --hira-dur: 0.8s;
+  --hira-shift: 1.6rem;
+  --hira-stagger: 0.05s;
+}
+
+/* --- Fade up ------------------------------------------------------------ */
+
+.hira-motion [data-hira-reveal='fade'] {
+  opacity: 0;
+  transform: translate3d(0, var(--hira-shift), 0);
+  transition:
+    opacity var(--hira-dur) var(--hira-ease),
+    transform var(--hira-dur) var(--hira-ease);
+  transition-delay: calc(var(--d, 0) * var(--hira-stagger) * 1.5);
+}
+
+.hira-motion [data-hira-reveal='fade'].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Heading lines ------------------------------------------------------ */
+
+.hira-motion [data-hira-reveal='lines'] .hira-line__inner {
+  transform: translate3d(0, 110%, 0) rotate(2deg);
+  transform-origin: left top;
+  transition: transform calc(var(--hira-dur) * 1.15) var(--hira-ease);
+  transition-delay: calc(var(--i, 0) * var(--hira-stagger) * 1.4);
+}
+
+.hira-motion [data-hira-reveal='lines'].is-revealed .hira-line__inner {
+  transform: none;
+}
+
+.hira-motion--subtle [data-hira-reveal='lines'] .hira-line__inner {
+  transform: translate3d(0, 60%, 0);
+  opacity: 0;
+  transition-property: transform, opacity;
+}
+
+.hira-motion--subtle [data-hira-reveal='lines'].is-revealed .hira-line__inner {
+  opacity: 1;
+}
+
+/* --- Image unmask ------------------------------------------------------- */
+
+.hira-motion [data-hira-reveal='mask'] {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path calc(var(--hira-dur) * 1.3) var(--hira-ease-in-out);
+  transition-delay: calc(var(--d, 0) * var(--hira-stagger) * 1.5);
+}
+
+.hira-motion [data-hira-reveal='mask'] img {
+  transform: scale(1.18);
+  transition: transform calc(var(--hira-dur) * 1.8) var(--hira-ease);
+}
+
+.hira-motion [data-hira-reveal='mask'].is-revealed {
+  clip-path: inset(0 0 0 0);
+}
+
+.hira-motion [data-hira-reveal='mask'].is-revealed img {
+  transform: none;
+}
+
+.hira-motion--subtle [data-hira-reveal='mask'] {
+  clip-path: none;
+  opacity: 0;
+  transition: opacity var(--hira-dur) var(--hira-ease);
+}
+
+.hira-motion--subtle [data-hira-reveal='mask'].is-revealed {
+  opacity: 1;
+}
+
+.hira-motion--subtle [data-hira-reveal='mask'] img {
+  transform: none;
+}
+
+/* --- Thread draw -------------------------------------------------------- */
+
+.hira-motion [data-hira-reveal='thread'] path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 3.2s var(--hira-ease-in-out);
+}
+
+.hira-motion [data-hira-reveal='thread'].is-revealed path {
+  stroke-dashoffset: 0;
+}
+
+.hira-motion [data-hira-reveal='thread'] path:nth-child(2) {
+  transition-delay: 0.35s;
+}
+
+.hira-motion [data-hira-reveal='thread'] path:nth-child(3) {
+  transition-delay: 0.7s;
+}
+
+/* --- Hero entrance ------------------------------------------------------ */
+
+.hira-motion .hira-hero__bg-inner {
+  will-change: transform;
+}
+
+.hira-motion--full .hira-hero__bg img,
+.hira-motion--full .hira-hero__bg video {
+  animation: hira-hero-zoom 2.6s var(--hira-ease) both;
+}
+
+@keyframes hira-hero-zoom {
+  from { transform: scale(1.12); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.hira-motion .hira-hero__scroll::after {
+  animation: hira-scroll-cue 2.4s var(--hira-ease-in-out) infinite;
+  transform-origin: top center;
+}
+
+@keyframes hira-scroll-cue {
+  0% { transform: scaleY(0); transform-origin: top center; }
+  45% { transform: scaleY(1); transform-origin: top center; }
+  55% { transform: scaleY(1); transform-origin: bottom center; }
+  100% { transform: scaleY(0); transform-origin: bottom center; }
+}
+
+/* --- Marquee ------------------------------------------------------------ */
+
+.hira-motion .hira-marquee__track {
+  animation: hira-marquee var(--hira-marquee-speed, 38s) linear infinite;
+}
+
+.hira-motion .hira-marquee:hover .hira-marquee__track {
+  animation-play-state: paused;
+}
+
+@keyframes hira-marquee {
+  to { transform: translate3d(-100%, 0, 0); }
+}
+
+.hira-motion--subtle .hira-marquee__track {
+  animation-duration: calc(var(--hira-marquee-speed, 38s) * 1.6);
+}
+
+/* --- Stamp rotation ----------------------------------------------------- */
+
+.hira-motion--full .hira-custom__stamp svg {
+  animation: hira-spin 22s linear infinite;
+}
+
+/* --- Magnetic buttons --------------------------------------------------- */
+
+.hira-motion--full [data-hira-magnetic] {
+  transition:
+    transform 0.5s var(--hira-ease),
+    color 0.45s var(--hira-ease),
+    border-color 0.45s var(--hira-ease);
+}
+
+/* --- Cross-document page transitions (see hira-head.liquid) ---------- */
+
+::view-transition-old(root) {
+  animation: 0.35s var(--hira-ease) both hira-vt-out;
+}
+
+::view-transition-new(root) {
+  animation: 0.5s var(--hira-ease) both hira-vt-in;
+}
+
+@keyframes hira-vt-out {
+  to { opacity: 0; }
+}
+
+@keyframes hira-vt-in {
+  from { opacity: 0; }
+}
+
+/* Safety net: never keep content hidden in the theme editor. */
+.shopify-design-mode .hira-motion [data-hira-reveal],
+.shopify-design-mode.hira-motion [data-hira-reveal] {
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hira-motion *,
+  .hira-motion *::before,
+  .hira-motion *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

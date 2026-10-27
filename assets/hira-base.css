@@ -1,0 +1,1114 @@
+/* ==========================================================================
+   HIRA brand layer on top of Dawn
+   Colors come from Dawn color schemes (Theme settings > Colors);
+   the accent comes from Theme settings > HIRA.
+   ========================================================================== */
+
+:root {
+  --hira-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --hira-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --hira-gutter: clamp(1.6rem, 4vw, 5rem);
+  --hira-display: clamp(4.4rem, 9vw, 12rem);
+  --hira-h2: clamp(3.4rem, 5.6vw, 7.2rem);
+}
+
+/* --- Global polish ------------------------------------------------------ */
+
+::selection {
+  background: var(--hira-accent);
+  color: #fff;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:focus-visible {
+  outline: 2px solid var(--hira-accent-light);
+  outline-offset: 3px;
+}
+
+.hira-grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hira-section {
+  position: relative;
+  overflow: hidden;
+  padding-top: var(--hira-pt, 8rem);
+  padding-bottom: var(--hira-pb, 8rem);
+}
+
+@media screen and (max-width: 749px) {
+  .hira-section {
+    padding-top: calc(var(--hira-pt, 8rem) * 0.65);
+    padding-bottom: calc(var(--hira-pb, 8rem) * 0.65);
+  }
+}
+
+.hira-wrap {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 0 var(--hira-gutter);
+}
+
+/* --- Typography --------------------------------------------------------- */
+
+.hira-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin: 0 0 2.4rem;
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--hira-accent-light);
+}
+
+.hira-eyebrow::before {
+  content: '';
+  width: 3.2rem;
+  height: 1px;
+  background: currentColor;
+}
+
+.color-scheme-5 .hira-eyebrow,
+.hira-on-light .hira-eyebrow {
+  color: var(--hira-accent);
+}
+
+.hira-heading {
+  margin: 0;
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--hira-h2);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: rgb(var(--color-foreground));
+  word-break: normal;
+}
+
+.hira-heading--display {
+  font-size: var(--hira-display);
+  line-height: 0.96;
+}
+
+.hira-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.hira-line__inner {
+  display: inline-block;
+}
+
+.hira-line--accent {
+  font-style: italic;
+  color: var(--hira-accent-light);
+}
+
+.color-scheme-5 .hira-line--accent {
+  color: var(--hira-accent);
+}
+
+.hira-text {
+  max-width: 56rem;
+  font-size: 1.7rem;
+  line-height: 1.75;
+  color: rgba(var(--color-foreground), 0.78);
+}
+
+.hira-text p {
+  margin: 0 0 1.2em;
+}
+
+.hira-text p:last-child {
+  margin-bottom: 0;
+}
+
+.hira-link {
+  color: inherit;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  transition: background-size 0.5s var(--hira-ease), color 0.3s;
+}
+
+.hira-link:hover {
+  color: var(--hira-accent-light);
+  background-size: 0 1px;
+  background-position: 100% 100%;
+}
+
+/* --- Buttons ------------------------------------------------------------ */
+
+.hira-btn {
+  --hira-btn-bg: rgb(var(--color-button));
+  --hira-btn-fg: rgb(var(--color-button-text));
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  min-height: 5.6rem;
+  padding: 0 3rem;
+  border: 1px solid var(--hira-btn-bg);
+  background: var(--hira-btn-bg);
+  color: var(--hira-btn-fg);
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 0.45s var(--hira-ease), border-color 0.45s var(--hira-ease);
+}
+
+.hira-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgb(var(--color-foreground));
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.55s var(--hira-ease);
+}
+
+.hira-btn:hover::before,
+.hira-btn:focus-visible::before {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.hira-btn:hover,
+.hira-btn:focus-visible {
+  color: rgb(var(--color-background));
+  border-color: rgb(var(--color-foreground));
+}
+
+.hira-btn__label,
+.hira-btn__icon {
+  position: relative;
+  pointer-events: none;
+}
+
+.hira-btn__icon {
+  display: inline-flex;
+  transition: transform 0.45s var(--hira-ease);
+}
+
+.hira-btn:hover .hira-btn__icon {
+  transform: translateX(0.4rem);
+}
+
+.hira-btn--secondary {
+  --hira-btn-bg: transparent;
+  color: rgb(var(--color-secondary-button-text));
+  border-color: rgba(var(--color-foreground), 0.55);
+}
+
+.hira-btn--ghost {
+  min-height: auto;
+  padding: 0.6rem 0;
+  border: 0;
+  background: none;
+  color: rgb(var(--color-foreground));
+}
+
+.hira-btn--ghost::before {
+  top: auto;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.hira-btn--ghost:hover,
+.hira-btn--ghost:focus-visible {
+  color: var(--hira-accent-light);
+  border: 0;
+}
+
+.hira-btn--ghost:hover::before {
+  animation: hira-underline 0.7s var(--hira-ease);
+}
+
+@keyframes hira-underline {
+  0% { transform: scaleX(1); transform-origin: right center; }
+  50% { transform: scaleX(0); transform-origin: right center; }
+  51% { transform: scaleX(0); transform-origin: left center; }
+  100% { transform: scaleX(1); transform-origin: left center; }
+}
+
+.hira-btn.is-loading {
+  cursor: progress;
+}
+
+.hira-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.6rem 2.4rem;
+  margin-top: 4rem;
+}
+
+/* --- Media helpers ------------------------------------------------------ */
+
+.hira-media {
+  position: relative;
+  overflow: hidden;
+  background: rgba(var(--color-foreground), 0.06);
+}
+
+.hira-media img,
+.hira-media video,
+.hira-media .placeholder-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hira-media .placeholder-svg {
+  fill: rgba(var(--color-foreground), 0.35);
+  background: rgba(var(--color-foreground), 0.04);
+}
+
+/* --- Thread line (signature motif) -------------------------------------- */
+
+.hira-thread {
+  position: absolute;
+  pointer-events: none;
+  color: var(--hira-accent);
+  overflow: visible;
+}
+
+.hira-thread path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hira-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: var(--hira-hero-h, 100svh);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hira-hero--align-center {
+  align-items: center;
+  text-align: center;
+}
+
+.hira-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.hira-hero__bg img,
+.hira-hero__bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hira-hero__bg-inner {
+  position: absolute;
+  inset: -6% 0;
+}
+
+.hira-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(var(--color-background), calc(var(--hira-overlay) * 0.6)) 0%, rgba(var(--color-background), var(--hira-overlay)) 85%),
+    radial-gradient(120% 80% at 80% 10%, var(--hira-accent-soft), transparent 60%);
+}
+
+.hira-hero__empty {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 70% at 75% 30%, rgba(var(--hira-accent-rgb), 0.35), transparent 70%),
+    radial-gradient(50% 60% at 15% 85%, rgba(var(--hira-accent-rgb), 0.18), transparent 70%),
+    rgb(var(--color-background));
+}
+
+.hira-hero__content {
+  position: relative;
+  width: 100%;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 16rem var(--hira-gutter) clamp(6rem, 10vh, 11rem);
+}
+
+.hira-hero__sub {
+  max-width: 52rem;
+  margin: 3.2rem 0 0;
+  font-size: clamp(1.6rem, 1.4vw, 1.9rem);
+  line-height: 1.7;
+  color: rgba(var(--color-foreground), 0.8);
+}
+
+.hira-hero--align-center .hira-hero__sub {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hira-hero--align-center .hira-actions {
+  justify-content: center;
+}
+
+.hira-hero__thread {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.8;
+}
+
+.hira-hero__scroll {
+  position: absolute;
+  right: var(--hira-gutter);
+  bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  color: rgba(var(--color-foreground), 0.7);
+  text-decoration: none;
+}
+
+.hira-hero__scroll::after {
+  content: '';
+  width: 1px;
+  height: 6rem;
+  background: linear-gradient(currentColor, transparent);
+}
+
+@media screen and (max-width: 749px) {
+  .hira-hero__scroll {
+    display: none;
+  }
+
+  .hira-hero__content {
+    padding-top: 12rem;
+  }
+}
+
+/* ==========================================================================
+   Story
+   ========================================================================== */
+
+.hira-story__intro {
+  display: grid;
+  gap: 3.2rem;
+  margin-bottom: clamp(6rem, 10vw, 12rem);
+}
+
+@media screen and (min-width: 990px) {
+  .hira-story__intro {
+    grid-template-columns: 5fr 4fr;
+    align-items: end;
+    gap: 8rem;
+  }
+}
+
+.hira-chapter {
+  display: grid;
+  gap: 3.2rem;
+  align-items: center;
+}
+
+.hira-chapter + .hira-chapter {
+  margin-top: clamp(8rem, 12vw, 16rem);
+}
+
+@media screen and (min-width: 750px) {
+  .hira-chapter {
+    grid-template-columns: 6fr 5fr;
+    gap: clamp(4rem, 7vw, 12rem);
+  }
+
+  .hira-chapter--reverse .hira-chapter__media {
+    order: 2;
+  }
+}
+
+.hira-chapter__media {
+  aspect-ratio: var(--hira-ratio, 4 / 5);
+}
+
+.hira-chapter__num {
+  display: block;
+  margin-bottom: 1.6rem;
+  font-family: var(--font-heading-family);
+  font-size: clamp(6rem, 9vw, 11rem);
+  line-height: 0.9;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(var(--color-foreground), 0.45);
+}
+
+.hira-chapter__title {
+  margin: 0 0 2rem;
+  font-family: var(--font-heading-family);
+  font-size: clamp(2.8rem, 3.4vw, 4.4rem);
+  line-height: 1.1;
+}
+
+.hira-quote {
+  margin: clamp(8rem, 12vw, 16rem) auto 0;
+  max-width: 100rem;
+  text-align: center;
+}
+
+.hira-quote blockquote {
+  margin: 0;
+  font-family: var(--font-heading-family);
+  font-size: clamp(2.8rem, 4vw, 5.2rem);
+  font-style: italic;
+  line-height: 1.2;
+}
+
+.hira-quote figcaption {
+  margin-top: 2.4rem;
+  font-size: 1.2rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--hira-accent-light);
+}
+
+/* ==========================================================================
+   Collection rail
+   ========================================================================== */
+
+.hira-collection__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 3.2rem;
+  margin-bottom: 5rem;
+}
+
+.hira-collection__head .hira-text {
+  margin-top: 2rem;
+}
+
+.hira-collection__nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.hira-collection__nav button {
+  display: grid;
+  place-items: center;
+  width: 5.2rem;
+  height: 5.2rem;
+  border: 1px solid rgba(var(--color-foreground), 0.35);
+  border-radius: 50%;
+  background: none;
+  color: rgb(var(--color-foreground));
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.hira-collection__nav button:hover:not([disabled]) {
+  background: var(--hira-accent);
+  border-color: var(--hira-accent);
+  color: #fff;
+}
+
+.hira-collection__nav button[disabled] {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.hira-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - var(--hira-rail-gap) * (var(--hira-cols) - 1)) / var(--hira-cols));
+  gap: var(--hira-rail-gap);
+  --hira-rail-gap: clamp(1.2rem, 2vw, 2.4rem);
+  margin: 0;
+  padding: 0 0 2rem;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hira-accent) transparent;
+  cursor: grab;
+}
+
+.hira-rail.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.hira-rail.is-dragging a {
+  pointer-events: none;
+}
+
+.hira-rail > li {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+.hira-rail--grid {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(var(--hira-cols), minmax(0, 1fr));
+  overflow: visible;
+  cursor: auto;
+}
+
+@media screen and (max-width: 749px) {
+  .hira-rail {
+    --hira-cols: 1.25 !important;
+  }
+
+  .hira-rail--grid {
+    --hira-cols: 2 !important;
+  }
+}
+
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .hira-rail {
+    --hira-cols: 2.3 !important;
+  }
+
+  .hira-rail--grid {
+    --hira-cols: 2 !important;
+  }
+}
+
+.hira-collection .card-wrapper {
+  height: 100%;
+}
+
+.hira-collection__footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 5rem;
+}
+
+/* ==========================================================================
+   Custom made
+   ========================================================================== */
+
+.hira-custom__grid {
+  display: grid;
+  gap: clamp(4.8rem, 6vw, 8rem);
+  align-items: center;
+}
+
+@media screen and (min-width: 990px) {
+  .hira-custom__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hira-custom--media-left .hira-custom__collage {
+    order: -1;
+  }
+}
+
+.hira-custom__copy .hira-text {
+  margin-top: 3.2rem;
+  font-size: 1.8rem;
+}
+
+.hira-custom__collage {
+  position: relative;
+  aspect-ratio: 5 / 6;
+}
+
+.hira-custom__img--a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 72%;
+  height: 78%;
+}
+
+.hira-custom__img--b {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 52%;
+  box-shadow: 0 0 0 1rem rgb(var(--color-background));
+}
+
+.hira-custom__collage .hira-thread {
+  inset: -5%;
+  width: 110%;
+  height: 110%;
+  z-index: 1;
+}
+
+.hira-custom__stamp {
+  position: absolute;
+  top: 6%;
+  left: 4%;
+  z-index: 2;
+  width: clamp(9rem, 11vw, 13rem);
+  height: clamp(9rem, 11vw, 13rem);
+  color: rgb(var(--color-foreground));
+}
+
+.hira-custom__stamp text {
+  font-family: var(--font-body-family);
+  font-size: 8.4px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  fill: currentColor;
+}
+
+.hira-steps {
+  display: grid;
+  gap: 0;
+  margin: 4.8rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: hira-step;
+  border-top: 1px solid rgba(var(--color-foreground), 0.18);
+}
+
+.hira-step {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 1.6rem;
+  padding: 2.4rem 0;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.18);
+}
+
+.hira-step__num {
+  font-family: var(--font-heading-family);
+  font-size: 2rem;
+  font-style: italic;
+  color: var(--hira-accent-light);
+}
+
+.color-scheme-5 .hira-step__num {
+  color: var(--hira-accent);
+}
+
+.hira-step__title {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hira-step__text {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.6;
+  color: rgba(var(--color-foreground), 0.72);
+}
+
+/* Compact variant (used on product pages) */
+
+.hira-custom--compact .hira-custom__grid {
+  grid-template-columns: 1fr;
+  max-width: 88rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hira-custom--compact .hira-text {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hira-custom--compact .hira-actions {
+  justify-content: center;
+}
+
+/* ==========================================================================
+   Booking embed
+   ========================================================================== */
+
+.hira-booking__grid {
+  display: grid;
+  gap: 4.8rem;
+}
+
+@media screen and (min-width: 990px) {
+  .hira-booking__grid {
+    grid-template-columns: 4fr 7fr;
+    gap: 6.4rem;
+    align-items: start;
+  }
+
+  .hira-booking__intro {
+    position: sticky;
+    top: 12rem;
+  }
+}
+
+.hira-booking__notes {
+  margin: 3.2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hira-booking__notes li {
+  position: relative;
+  padding: 1.4rem 0 1.4rem 3.2rem;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.14);
+  font-size: 1.5rem;
+  line-height: 1.6;
+}
+
+.hira-booking__notes li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 2.3rem;
+  width: 1.6rem;
+  height: 1px;
+  background: var(--hira-accent-light);
+}
+
+.hira-booking__frame {
+  position: relative;
+  min-height: var(--hira-embed-h, 70rem);
+  padding: clamp(0.8rem, 1.5vw, 1.6rem);
+  border: 1px solid rgba(var(--color-foreground), 0.16);
+  background: rgba(var(--color-foreground), 0.025);
+}
+
+.hira-booking__frame::before,
+.hira-booking__frame::after {
+  content: '';
+  position: absolute;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--hira-accent);
+  pointer-events: none;
+}
+
+.hira-booking__frame::before {
+  top: -1px;
+  left: -1px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.hira-booking__frame::after {
+  right: -1px;
+  bottom: -1px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.hira-booking__embed {
+  width: 100%;
+  min-height: calc(var(--hira-embed-h, 70rem) - 3.2rem);
+  overflow: auto;
+}
+
+.hira-booking__fallback {
+  display: grid;
+  place-items: center;
+  gap: 2.4rem;
+  min-height: inherit;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.hira-booking__embed + .hira-booking__fallback {
+  position: absolute;
+  inset: 0;
+}
+
+.hira-booking__embed.is-ready + .hira-booking__fallback {
+  display: none;
+}
+
+.hira-booking__loader {
+  width: 4.8rem;
+  height: 4.8rem;
+  border: 1px solid rgba(var(--color-foreground), 0.2);
+  border-top-color: var(--hira-accent);
+  border-radius: 50%;
+  animation: hira-spin 1.1s linear infinite;
+}
+
+@keyframes hira-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   FAQ
+   ========================================================================== */
+
+.hira-faq__grid {
+  display: grid;
+  gap: 4.8rem;
+}
+
+@media screen and (min-width: 990px) {
+  .hira-faq__grid {
+    grid-template-columns: 4fr 7fr;
+    gap: 8rem;
+  }
+
+  .hira-faq__intro {
+    position: sticky;
+    top: 12rem;
+    align-self: start;
+  }
+}
+
+.hira-faq__list {
+  border-top: 1px solid rgba(var(--color-foreground), 0.2);
+}
+
+.hira-faq__item {
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.2);
+}
+
+.hira-faq__item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.4rem;
+  padding: 2.8rem 0;
+  font-family: var(--font-heading-family);
+  font-size: clamp(1.9rem, 2vw, 2.4rem);
+  line-height: 1.3;
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.3s;
+}
+
+.hira-faq__item summary::-webkit-details-marker {
+  display: none;
+}
+
+.hira-faq__item summary:hover {
+  color: var(--hira-accent-light);
+}
+
+.hira-faq__icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+}
+
+.hira-faq__icon::before,
+.hira-faq__icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.45s var(--hira-ease);
+}
+
+.hira-faq__icon::after {
+  transform: rotate(90deg);
+}
+
+.hira-faq__item[open] .hira-faq__icon::after {
+  transform: rotate(0deg);
+}
+
+.hira-faq__answer {
+  padding: 0 4.4rem 3.2rem 0;
+}
+
+.hira-faq__answer .hira-text {
+  max-width: none;
+}
+
+/* ==========================================================================
+   Contact
+   ========================================================================== */
+
+.hira-contact__grid {
+  display: grid;
+  gap: 4.8rem;
+}
+
+@media screen and (min-width: 990px) {
+  .hira-contact__grid {
+    grid-template-columns: 5fr 4fr 3fr;
+    gap: 6.4rem;
+  }
+}
+
+.hira-contact-list {
+  display: grid;
+  gap: 2.4rem;
+  margin: 0;
+}
+
+.hira-contact-list__item {
+  display: grid;
+  gap: 0.6rem;
+  font-size: 1.6rem;
+  line-height: 1.6;
+}
+
+.hira-contact-list__label,
+.hira-col-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.55);
+}
+
+.hira-contact-list address {
+  font-style: normal;
+}
+
+.hira-col-title {
+  display: block;
+  margin: 0 0 2.4rem;
+}
+
+.hira-contact .list-social {
+  justify-content: flex-start;
+  margin-left: -1.1rem;
+}
+
+.hira-socials-text {
+  display: grid;
+  gap: 1.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.6rem;
+}
+
+.hira-policies {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.5rem;
+}
+
+/* ==========================================================================
+   Closing statement / marquee
+   ========================================================================== */
+
+.hira-marquee {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.hira-marquee__track {
+  display: flex;
+  flex: 0 0 auto;
+  min-width: 100%;
+  gap: 0.35em;
+  padding-right: 0.35em;
+  font-family: var(--font-heading-family);
+  font-size: clamp(8rem, 18vw, 26rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.hira-marquee__word {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(var(--color-foreground), 0.4);
+}
+
+.hira-marquee__word:nth-child(even) {
+  color: rgb(var(--color-foreground));
+  -webkit-text-stroke: 0;
+  font-style: italic;
+}
+
+.hira-closing__body {
+  display: grid;
+  gap: 3.2rem;
+  margin-top: clamp(4rem, 6vw, 8rem);
+}
+
+@media screen and (min-width: 990px) {
+  .hira-closing__body {
+    grid-template-columns: 7fr 4fr;
+    align-items: end;
+    gap: 8rem;
+  }
+}
+
+.hira-closing__statement {
+  margin: 0;
+  font-family: var(--font-heading-family);
+  font-size: clamp(2.6rem, 3.4vw, 4.4rem);
+  line-height: 1.25;
+}
+
+/* ==========================================================================
+   Footer contact block + Dawn integration touches
+   ========================================================================== */
+
+.footer-block .hira-contact-list {
+  gap: 1.6rem;
+}
+
+.footer-block .hira-contact-list__item {
+  font-size: 1.4rem;
+}
+
+.card__heading a {
+  transition: color 0.3s;
+}
+
+.card-wrapper:hover .card__heading a {
+  color: var(--hira-accent-light);
+}
+
+.color-scheme-5 .card-wrapper:hover .card__heading a {
+  color: var(--hira-accent);
+}
+
+/* Cal.com popup sits above the grain and the header */
+cal-modal-box {
+  z-index: 2147483001 !important;
+}

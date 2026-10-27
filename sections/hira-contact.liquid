@@ -1,0 +1,185 @@
+{{ 'component-list-social.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign has_social = false
+  if settings.social_instagram_link != blank or settings.social_tiktok_link != blank or settings.social_facebook_link != blank or settings.social_pinterest_link != blank or settings.social_youtube_link != blank or settings.social_twitter_link != blank or settings.social_snapchat_link != blank or settings.social_tumblr_link != blank or settings.social_vimeo_link != blank
+    assign has_social = true
+  endif
+-%}
+
+<section
+  id="contact"
+  class="hira-section hira-contact color-{{ section.settings.color_scheme }} gradient"
+  style="--hira-pt: {{ section.settings.padding_top }}px; --hira-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="hira-wrap">
+    <div class="hira-contact__grid">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="hira-eyebrow" data-hira-reveal="fade">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {% render 'hira-heading-reveal',
+          text: section.settings.heading,
+          accent_last: section.settings.accent_last_line
+        %}
+        {%- if section.settings.text != blank -%}
+          <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2; margin-top: 2.4rem;">{{ section.settings.text }}</div>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank -%}
+          <div class="hira-actions" data-hira-reveal="fade" style="--d: 3;">
+            {% render 'hira-button',
+              label: section.settings.button_label,
+              link: section.settings.button_link,
+              booking: section.settings.button_booking,
+              style: 'primary'
+            %}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div data-hira-reveal="fade" style="--d: 2;">
+        <span class="hira-col-title">{{ section.settings.contact_title | escape }}</span>
+        {% render 'hira-contact-list' %}
+      </div>
+
+      <div data-hira-reveal="fade" style="--d: 3;">
+        {%- if section.settings.show_social and has_social -%}
+          <span class="hira-col-title">{{ section.settings.social_title | escape }}</span>
+          {% render 'social-icons' %}
+        {%- endif -%}
+
+        {%- if section.settings.show_policies and shop.policies.size > 0 -%}
+          <span class="hira-col-title" style="margin-top: 4rem;">{{ section.settings.policies_title | escape }}</span>
+          <ul class="hira-policies" role="list">
+            {%- for policy in shop.policies -%}
+              {%- if policy != blank -%}
+                <li><a class="hira-link" href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HIRA contact",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Email, WhatsApp, phone and address are set in Theme settings > HIRA. Social links are set in Theme settings > Social media."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Contact"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Say hello\nto the studio."
+    },
+    {
+      "type": "checkbox",
+      "id": "accent_last_line",
+      "label": "Highlight last line",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Questions about an order, a collaboration or a custom piece? Write to us, we reply within two working days.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Book a Design Session"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_booking",
+      "label": "Button opens booking",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "contact_title",
+      "label": "Contact column title",
+      "default": "Reach us"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social media links",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "social_title",
+      "label": "Social column title",
+      "default": "Follow"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policies",
+      "label": "Show store policies",
+      "info": "Policies are managed in Settings > Policies.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "policies_title",
+      "label": "Policies title",
+      "default": "Policies"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 112
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 112
+    }
+  ],
+  "presets": [
+    {
+      "name": "HIRA contact"
+    }
+  ]
+}
+{% endschema %}

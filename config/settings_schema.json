@@ -1360,6 +1360,139 @@
     ]
   },
   {
+    "name": "HIRA",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Booking (Cal.com)"
+      },
+      {
+        "type": "text",
+        "id": "hira_cal_link",
+        "label": "Cal.com booking link",
+        "default": "https://cal.com/hira-mhn-xqmfg5/design-session",
+        "info": "Full link to your Cal.com event, e.g. https://cal.com/your-name/design-session. Questions, reminders and notifications are managed in Cal.com."
+      },
+      {
+        "type": "select",
+        "id": "hira_booking_mode",
+        "label": "Booking buttons open",
+        "options": [
+          {
+            "value": "popup",
+            "label": "Cal.com popup"
+          },
+          {
+            "value": "page",
+            "label": "Booking page"
+          }
+        ],
+        "default": "popup"
+      },
+      {
+        "type": "url",
+        "id": "hira_booking_page",
+        "label": "Booking page",
+        "info": "Used when buttons open the booking page. Create a page in Online Store > Pages and assign the \"page.book-a-session\" template."
+      },
+      {
+        "type": "select",
+        "id": "hira_cal_theme",
+        "label": "Cal.com calendar theme",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "type": "color",
+        "id": "hira_accent",
+        "label": "Accent color",
+        "default": "#8E5BD0",
+        "info": "Used for highlights, thread lines and the Cal.com brand color."
+      },
+      {
+        "type": "header",
+        "content": "Motion"
+      },
+      {
+        "type": "select",
+        "id": "hira_motion",
+        "label": "Animation intensity",
+        "options": [
+          {
+            "value": "full",
+            "label": "Full"
+          },
+          {
+            "value": "subtle",
+            "label": "Subtle"
+          },
+          {
+            "value": "off",
+            "label": "Off"
+          }
+        ],
+        "default": "full",
+        "info": "Visitors who prefer reduced motion always get a still version."
+      },
+      {
+        "type": "checkbox",
+        "id": "hira_grain",
+        "label": "Show textile grain texture",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "hira_page_transitions",
+        "label": "Fade between pages",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Contact information"
+      },
+      {
+        "type": "text",
+        "id": "hira_contact_email",
+        "label": "Email",
+        "default": "hello@example.com"
+      },
+      {
+        "type": "text",
+        "id": "hira_contact_phone",
+        "label": "Phone",
+        "default": "+00 000 000 000"
+      },
+      {
+        "type": "text",
+        "id": "hira_contact_whatsapp",
+        "label": "WhatsApp number",
+        "default": "+00 000 000 000",
+        "info": "Include the country code. Opens a WhatsApp chat."
+      },
+      {
+        "type": "textarea",
+        "id": "hira_contact_address",
+        "label": "Studio address",
+        "default": "Studio address\nCity, Country"
+      },
+      {
+        "type": "text",
+        "id": "hira_contact_hours",
+        "label": "Hours",
+        "default": "By appointment"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.search_input.name",
     "settings": [
       {

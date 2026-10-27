@@ -7,70 +7,70 @@
       "color_schemes": {
         "scheme-1": {
           "settings": {
-            "background": "#FFFFFF",
+            "background": "#1C1C1F",
             "background_gradient": "",
-            "text": "#121212",
-            "button": "#121212",
+            "text": "#ECE8F2",
+            "button": "#8E5BD0",
             "button_label": "#FFFFFF",
-            "secondary_button_label": "#121212",
-            "shadow": "#121212"
+            "secondary_button_label": "#ECE8F2",
+            "shadow": "#0B0B0D"
           }
         },
         "scheme-2": {
           "settings": {
-            "background": "#F3F3F3",
+            "background": "#26262B",
             "background_gradient": "",
-            "text": "#121212",
-            "button": "#121212",
-            "button_label": "#F3F3F3",
-            "secondary_button_label": "#121212",
-            "shadow": "#121212"
+            "text": "#ECE8F2",
+            "button": "#ECE8F2",
+            "button_label": "#1C1C1F",
+            "secondary_button_label": "#ECE8F2",
+            "shadow": "#0B0B0D"
           }
         },
         "scheme-3": {
           "settings": {
-            "background": "#242833",
+            "background": "#3E2266",
             "background_gradient": "",
-            "text": "#FFFFFF",
-            "button": "#FFFFFF",
-            "button_label": "#000000",
-            "secondary_button_label": "#FFFFFF",
-            "shadow": "#121212"
+            "text": "#F4EFFA",
+            "button": "#F4EFFA",
+            "button_label": "#3E2266",
+            "secondary_button_label": "#F4EFFA",
+            "shadow": "#0B0B0D"
           }
         },
         "scheme-4": {
           "settings": {
-            "background": "#121212",
+            "background": "#121214",
             "background_gradient": "",
-            "text": "#FFFFFF",
-            "button": "#FFFFFF",
-            "button_label": "#121212",
-            "secondary_button_label": "#FFFFFF",
-            "shadow": "#121212"
+            "text": "#ECE8F2",
+            "button": "#8E5BD0",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#C9B2EA",
+            "shadow": "#0B0B0D"
           }
         },
         "scheme-5": {
           "settings": {
-            "background": "#334FB4",
+            "background": "#EDE9E4",
             "background_gradient": "",
-            "text": "#FFFFFF",
-            "button": "#FFFFFF",
-            "button_label": "#334FB4",
-            "secondary_button_label": "#FFFFFF",
-            "shadow": "#121212"
+            "text": "#1C1C1F",
+            "button": "#5B3291",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#1C1C1F",
+            "shadow": "#0B0B0D"
           }
         }
       },
-      "type_header_font": "assistant_n4",
-      "heading_scale": 100,
-      "type_body_font": "assistant_n4",
+      "type_header_font": "playfair_display_n4",
+      "heading_scale": 110,
+      "type_body_font": "work_sans_n4",
       "body_scale": 100,
-      "page_width": 1200,
+      "page_width": 1400,
       "spacing_sections": 0,
       "spacing_grid_horizontal": 8,
       "spacing_grid_vertical": 8,
       "animations_reveal_on_scroll": true,
-      "animations_hover_elements": "none",
+      "animations_hover_elements": "vertical-lift",
       "buttons_border_thickness": 1,
       "buttons_border_opacity": 100,
       "buttons_radius": 0,
@@ -80,7 +80,7 @@
       "buttons_shadow_blur": 5,
       "variant_pills_border_thickness": 1,
       "variant_pills_border_opacity": 55,
-      "variant_pills_radius": 40,
+      "variant_pills_radius": 0,
       "variant_pills_shadow_opacity": 0,
       "variant_pills_shadow_horizontal_offset": 0,
       "variant_pills_shadow_vertical_offset": 4,
@@ -153,17 +153,17 @@
       "drawer_shadow_vertical_offset": 4,
       "drawer_shadow_blur": 5,
       "badge_position": "bottom left",
-      "badge_corner_radius": 40,
-      "sale_badge_color_scheme": "scheme-4",
-      "sold_out_badge_color_scheme": "scheme-3",
-      "brand_headline": "",
+      "badge_corner_radius": 0,
+      "sale_badge_color_scheme": "scheme-3",
+      "sold_out_badge_color_scheme": "scheme-4",
+      "brand_headline": "Handmade masks. Woven by hand, worn as art.",
       "brand_description": "<p></p>",
       "brand_image_width": 100,
       "social_twitter_link": "",
       "social_facebook_link": "",
-      "social_pinterest_link": "",
-      "social_instagram_link": "",
-      "social_tiktok_link": "",
+      "social_pinterest_link": "https://pinterest.com/",
+      "social_instagram_link": "https://instagram.com/",
+      "social_tiktok_link": "https://tiktok.com/",
       "social_tumblr_link": "",
       "social_snapchat_link": "",
       "social_youtube_link": "",
@@ -172,7 +172,7 @@
       "predictive_search_show_vendor": false,
       "predictive_search_show_price": false,
       "currency_code_enabled": true,
-      "cart_type": "notification",
+      "cart_type": "drawer",
       "show_vendor": false,
       "show_cart_note": false,
       "cart_drawer_collection": "",

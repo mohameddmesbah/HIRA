@@ -1,0 +1,55 @@
+{% comment %}
+  HIRA button. Renders a real link; booking buttons are enhanced by hira-booking.js
+  to open the Cal.com popup, and fall back to the booking link without JS.
+
+  Accepts:
+  - label: {String} button text (required)
+  - link: {String} destination URL (ignored when booking is true); no link renders nothing
+  - style: {String} 'primary' | 'secondary' | 'ghost' (default: 'primary')
+  - booking: {Boolean} opens the Cal.com booking flow
+  - class: {String} extra classes (optional)
+
+  Usage:
+  {% render 'hira-button', label: 'Book a Design Session', booking: true %}
+{% endcomment %}
+
+{%- liquid
+  assign btn_style = style | default: 'primary'
+  assign href = link
+  assign is_popup = false
+
+  if booking
+    assign cal_link = settings.hira_cal_link | strip
+    if settings.hira_booking_mode == 'page' and settings.hira_booking_page != blank
+      assign href = settings.hira_booking_page
+    else
+      assign href = cal_link
+      if cal_link != blank
+        assign is_popup = true
+      endif
+    endif
+  endif
+-%}
+
+{%- if label != blank -%}
+  {%- if href != blank -%}
+    <a
+      href="{{ href }}"
+      class="hira-btn hira-btn--{{ btn_style }}{% if class %} {{ class }}{% endif %}"
+      data-hira-magnetic
+      {% if is_popup %}
+        data-hira-book
+        target="_blank"
+        rel="noopener"
+        aria-haspopup="dialog"
+      {% endif %}
+    >
+      <span class="hira-btn__label">{{ label | escape }}</span>
+      <span class="hira-btn__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 12h15M13 6l6 6-6 6"/>
+        </svg>
+      </span>
+    </a>
+  {%- endif -%}
+{%- endif -%}

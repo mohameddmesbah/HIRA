@@ -1,0 +1,36 @@
+{% comment %}
+  Renders a multi-line heading whose lines slide up into view.
+  Each line of the text setting becomes one animated line; the text stays
+  plain inside the heading, so screen readers read it as a single sentence.
+
+  Accepts:
+  - text: {String} heading text, one line per row (required)
+  - tag: {String} heading tag (default: 'h2')
+  - class: {String} extra classes (optional)
+  - accent_last: {Boolean} highlight the last line in the accent style
+  - delay: {Number} base delay index for the stagger (default: 0)
+
+  Usage:
+  {% render 'hira-heading-reveal', text: section.settings.heading, tag: 'h1' %}
+{% endcomment %}
+
+{%- liquid
+  assign heading_tag = tag | default: 'h2'
+  assign base_delay = delay | default: 0
+  assign lines = text | newline_to_br | split: '<br />'
+-%}
+
+{%- if text != blank -%}
+  <{{ heading_tag }} class="hira-heading{% if class %} {{ class }}{% endif %}" data-hira-reveal="lines">
+    {%- for line in lines -%}
+      {%- assign line_text = line | strip -%}
+      {%- if line_text != blank -%}
+        {%- assign i = forloop.index0 | plus: base_delay -%}
+        <span class="hira-line{% if accent_last and forloop.last and forloop.length > 1 %} hira-line--accent{% endif %}">
+          <span class="hira-line__inner" style="--i: {{ i }};">{{ line_text | escape }}</span>
+        </span>
+        {%- unless forloop.last %} {% endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </{{ heading_tag }}>
+{%- endif -%}

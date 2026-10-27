@@ -1,0 +1,191 @@
+<section
+  id="faq"
+  class="hira-section hira-faq color-{{ section.settings.color_scheme }} gradient"
+  style="--hira-pt: {{ section.settings.padding_top }}px; --hira-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="hira-wrap">
+    <div class="hira-faq__grid">
+      <div class="hira-faq__intro">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="hira-eyebrow" data-hira-reveal="fade">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {% render 'hira-heading-reveal',
+          text: section.settings.heading,
+          accent_last: section.settings.accent_last_line
+        %}
+        {%- if section.settings.text != blank -%}
+          <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2; margin-top: 2.4rem;">{{ section.settings.text }}</div>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank -%}
+          <div class="hira-actions" data-hira-reveal="fade" style="--d: 3;">
+            {% render 'hira-button',
+              label: section.settings.button_label,
+              link: section.settings.button_link,
+              booking: section.settings.button_booking,
+              style: 'secondary'
+            %}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="hira-faq__list">
+        {%- for block in section.blocks -%}
+          <details class="hira-faq__item" {{ block.shopify_attributes }} data-hira-reveal="fade" style="--d: {{ forloop.index0 | at_most: 4 }};"{% if forloop.first and section.settings.open_first %} open{% endif %}>
+            <summary id="Faq-{{ block.id }}">
+              <span>{{ block.settings.question | escape }}</span>
+              <span class="hira-faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="hira-faq__answer" role="region" aria-labelledby="Faq-{{ block.id }}">
+              <div class="hira-text rte">{{ block.settings.answer }}</div>
+            </div>
+          </details>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if section.settings.schema_markup and section.blocks.size > 0 -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {%- for block in section.blocks -%}
+            {
+              "@type": "Question",
+              "name": {{ block.settings.question | json }},
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ block.settings.answer | strip_html | json }}
+              }
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      }
+    </script>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "HIRA FAQ",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "FAQ"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Questions,\nanswered."
+    },
+    {
+      "type": "checkbox",
+      "id": "accent_last_line",
+      "label": "Highlight last line",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Can't find what you're looking for? Get in touch, we're happy to help.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Contact us"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_booking",
+      "label": "Button opens booking",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open first question",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "schema_markup",
+      "label": "Add FAQ structured data for search engines",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 120
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Your question here"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Your answer here.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HIRA FAQ",
+      "blocks": [
+        { "type": "question" },
+        { "type": "question" },
+        { "type": "question" }
+      ]
+    }
+  ]
+}
+{% endschema %}

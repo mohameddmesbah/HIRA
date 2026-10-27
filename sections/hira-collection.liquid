@@ -1,0 +1,254 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.quick_add == 'standard' -%}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- liquid
+  assign collection = section.settings.collection
+  assign is_rail = false
+  if section.settings.layout == 'rail'
+    assign is_rail = true
+  endif
+
+  assign button_link = section.settings.button_link
+  if button_link == blank
+    if collection != blank
+      assign button_link = collection.url
+    else
+      assign button_link = routes.all_products_collection_url
+    endif
+  endif
+-%}
+
+<section
+  class="hira-section hira-collection color-{{ section.settings.color_scheme }} gradient"
+  style="--hira-pt: {{ section.settings.padding_top }}px; --hira-pb: {{ section.settings.padding_bottom }}px;"
+  data-hira-rail-scope
+>
+  <div class="hira-wrap">
+    <div class="hira-collection__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="hira-eyebrow" data-hira-reveal="fade">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {% render 'hira-heading-reveal',
+          text: section.settings.heading,
+          accent_last: section.settings.accent_last_line
+        %}
+        {%- if section.settings.text != blank -%}
+          <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2;">{{ section.settings.text }}</div>
+        {%- endif -%}
+      </div>
+
+      {%- if is_rail -%}
+        <div class="hira-collection__nav" data-hira-reveal="fade" style="--d: 3;">
+          <button type="button" data-hira-rail-prev aria-controls="HiraRail-{{ section.id }}" aria-label="Previous products">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>
+          </button>
+          <button type="button" data-hira-rail-next aria-controls="HiraRail-{{ section.id }}" aria-label="Next products">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <ul
+      id="HiraRail-{{ section.id }}"
+      class="hira-rail{% unless is_rail %} hira-rail--grid{% endunless %}"
+      style="--hira-cols: {{ section.settings.columns_desktop }};"
+      role="list"
+      {% if is_rail %}
+        data-hira-rail
+        tabindex="0"
+        aria-label="{{ section.settings.heading | strip_newlines | escape }}"
+      {% endif %}
+    >
+      {%- if collection != blank and collection.products_count > 0 -%}
+        {%- for product in collection.products limit: section.settings.products_to_show -%}
+          <li data-hira-reveal="fade" style="--d: {{ forloop.index0 | at_most: 4 }};">
+            {% render 'card-product',
+              card_product: product,
+              media_aspect_ratio: section.settings.image_ratio,
+              image_shape: 'default',
+              lazy_load: true,
+              show_secondary_image: section.settings.show_secondary_image,
+              show_vendor: false,
+              show_rating: false,
+              skip_styles: true,
+              section_id: section.id,
+              quick_add: section.settings.quick_add,
+              product_view_context: 'collection'
+            %}
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..4) -%}
+          <li data-hira-reveal="fade" style="--d: {{ forloop.index0 }};">
+            {%- assign placeholder_image = 'product-' | append: forloop.index -%}
+            {% render 'card-product',
+              media_aspect_ratio: section.settings.image_ratio,
+              image_shape: 'default',
+              lazy_load: false,
+              placeholder_image: placeholder_image
+            %}
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="hira-collection__footer" data-hira-reveal="fade">
+        {% render 'hira-button',
+          label: section.settings.button_label,
+          link: button_link,
+          style: 'primary'
+        %}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HIRA collection",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Ready-made"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ready to wear,\nmade by hand."
+    },
+    {
+      "type": "checkbox",
+      "id": "accent_last_line",
+      "label": "Highlight last line",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Finished pieces from the studio, each one made by hand and ready to ship.</p>"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 16,
+      "step": 1,
+      "label": "Products to show",
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "rail", "label": "Scrolling rail" },
+        { "value": "grid", "label": "Grid" }
+      ],
+      "default": "rail"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "label": "Products per row on desktop",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "adapt", "label": "Adapt to image" },
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "square", "label": "Square" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Show second image on hover",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "quick_add",
+      "label": "Quick add",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "standard", "label": "Standard" }
+      ],
+      "default": "standard"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Explore the Collection"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Leave empty to link to the selected collection."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 120
+    }
+  ],
+  "presets": [
+    {
+      "name": "HIRA collection"
+    }
+  ]
+}
+{% endschema %}

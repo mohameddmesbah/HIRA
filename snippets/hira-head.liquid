@@ -1,0 +1,52 @@
+{% comment %}
+  HIRA brand layer: tokens, motion flags, booking config and assets.
+  Rendered once from layout/theme.liquid, inside <head>.
+{% endcomment %}
+
+{%- liquid
+  assign hira_accent = settings.hira_accent | default: '#8E5BD0'
+  assign hira_motion = settings.hira_motion | default: 'full'
+-%}
+
+{% style %}
+  :root {
+    --hira-accent: {{ hira_accent }};
+    --hira-accent-rgb: {{ hira_accent | color_extract: 'red' }}, {{ hira_accent | color_extract: 'green' }}, {{ hira_accent | color_extract: 'blue' }};
+    --hira-accent-soft: {{ hira_accent | color_modify: 'alpha', 0.18 }};
+    --hira-accent-light: {{ hira_accent | color_lighten: 18 }};
+  }
+  {%- if settings.hira_page_transitions and hira_motion != 'off' %}
+    @media (prefers-reduced-motion: no-preference) {
+      @view-transition { navigation: auto; }
+    }
+  {%- endif %}
+{% endstyle %}
+
+<script>
+  (function () {
+    var motion = {{ hira_motion | json }};
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (motion !== 'off' && !reduce) {
+      document.documentElement.classList.add('hira-motion', 'hira-motion--' + motion);
+      // If the motion script never runs, show everything rather than leave it hidden.
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          if (!window.HIRA.initMotion) document.documentElement.classList.remove('hira-motion');
+        }, 3000);
+      });
+    }
+    window.HIRA = window.HIRA || {};
+    window.HIRA.booking = {
+      link: {{ settings.hira_cal_link | strip | json }},
+      theme: {{ settings.hira_cal_theme | default: 'dark' | json }},
+      accent: {{ hira_accent | json }}
+    };
+  })();
+</script>
+
+{{ 'hira-base.css' | asset_url | stylesheet_tag }}
+{%- if hira_motion != 'off' -%}
+  {{ 'hira-motion.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+<script src="{{ 'hira-motion.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'hira-booking.js' | asset_url }}" defer="defer"></script>

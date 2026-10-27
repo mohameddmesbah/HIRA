@@ -1,0 +1,94 @@
+{
+  "sections": {
+    "booking": {
+      "type": "hira-booking-embed",
+      "blocks": {
+        "n1": {
+          "type": "note",
+          "settings": {
+            "text": "Sessions are held online by video call"
+          }
+        },
+        "n2": {
+          "type": "note",
+          "settings": {
+            "text": "Bring references, sketches or moodboards"
+          }
+        },
+        "n3": {
+          "type": "note",
+          "settings": {
+            "text": "You'll get a confirmation and reminder by email"
+          }
+        }
+      },
+      "block_order": [
+        "n1",
+        "n2",
+        "n3"
+      ],
+      "settings": {
+        "cal_link": "",
+        "eyebrow": "Design session",
+        "heading": "Let's make\nsomething yours.",
+        "accent_last_line": true,
+        "text": "<p>Pick a time that suits you. In the session we talk through your idea, references and measurements, then plan your mask together.</p>",
+        "loading_text": "Loading available times…",
+        "fallback_label": "Open the booking page",
+        "embed_height": 720,
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 120
+      }
+    },
+    "faq": {
+      "type": "hira-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "What happens in a design session?",
+            "answer": "<p>We talk through your idea, look at your references, take or review measurements and agree on materials, price and timeline.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Is the session free?",
+            "answer": "<p>Add your session pricing here.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Can I reschedule?",
+            "answer": "<p>Yes. Use the link in your Cal.com confirmation email to reschedule or cancel.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "eyebrow": "Before you book",
+        "heading": "Good to know.",
+        "accent_last_line": false,
+        "text": "",
+        "button_label": "",
+        "button_link": "",
+        "button_booking": false,
+        "open_first": false,
+        "schema_markup": false,
+        "color_scheme": "scheme-2",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "booking",
+    "faq"
+  ]
+}

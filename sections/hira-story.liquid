@@ -1,0 +1,260 @@
+<section
+  class="hira-section hira-story color-{{ section.settings.color_scheme }} gradient"
+  style="--hira-pt: {{ section.settings.padding_top }}px; --hira-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="hira-wrap">
+    {%- if section.settings.heading != blank or section.settings.text != blank -%}
+      <div class="hira-story__intro">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="hira-eyebrow" data-hira-reveal="fade">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          {% render 'hira-heading-reveal',
+            text: section.settings.heading,
+            accent_last: section.settings.accent_last_line
+          %}
+        </div>
+        {%- if section.settings.text != blank -%}
+          <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2;">{{ section.settings.text }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- assign chapter_index = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'chapter' -%}
+          {%- liquid
+            assign chapter_index = chapter_index | plus: 1
+            assign reverse = false
+            assign remainder = chapter_index | modulo: 2
+            if section.settings.alternate and remainder == 0
+              assign reverse = true
+            endif
+          -%}
+          <article class="hira-chapter{% if reverse %} hira-chapter--reverse{% endif %}" {{ block.shopify_attributes }}>
+            <div
+              class="hira-chapter__media hira-media"
+              style="--hira-ratio: {{ block.settings.image_ratio }};"
+              data-hira-reveal="mask"
+            >
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 1800
+                  | image_tag:
+                    widths: '500, 750, 1000, 1400, 1800',
+                    sizes: '(min-width: 750px) 55vw, 100vw',
+                    loading: 'lazy'
+                }}
+              {%- else -%}
+                {%- assign placeholder_index = chapter_index | modulo: 2 | plus: 1 -%}
+                {{ 'lifestyle-' | append: placeholder_index | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            </div>
+            <div class="hira-chapter__copy">
+              {%- if block.settings.number != blank -%}
+                <span class="hira-chapter__num" aria-hidden="true" data-hira-reveal="fade">{{ block.settings.number | escape }}</span>
+              {%- endif -%}
+              {%- if block.settings.title != blank -%}
+                <h3 class="hira-chapter__title" data-hira-reveal="fade" style="--d: 1;">{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2;">{{ block.settings.text }}</div>
+              {%- endif -%}
+              {%- if block.settings.link_label != blank -%}
+                <div class="hira-actions" data-hira-reveal="fade" style="--d: 3;">
+                  {% render 'hira-button',
+                    label: block.settings.link_label,
+                    link: block.settings.link,
+                    booking: block.settings.link_booking,
+                    style: 'ghost'
+                  %}
+                </div>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- when 'quote' -%}
+          <figure class="hira-quote" {{ block.shopify_attributes }} data-hira-reveal="fade">
+            <blockquote>{{ block.settings.quote | escape }}</blockquote>
+            {%- if block.settings.author != blank -%}
+              <figcaption>{{ block.settings.author | escape }}</figcaption>
+            {%- endif -%}
+          </figure>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HIRA story",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The story"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Every knot\nholds a memory."
+    },
+    {
+      "type": "checkbox",
+      "id": "accent_last_line",
+      "label": "Highlight last line",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Intro text",
+      "default": "<p>HIRA began with a single cord and an old technique: hands looping, knotting and weaving fibre into form. Today each mask is still made the slow way, one piece at a time, as a bridge between ancestral craft and the way we dress now.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "alternate",
+      "label": "Alternate image side",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 128
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 128
+    }
+  ],
+  "blocks": [
+    {
+      "type": "chapter",
+      "name": "Chapter",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "label": "Image shape",
+          "options": [
+            { "value": "4 / 5", "label": "Portrait" },
+            { "value": "1 / 1", "label": "Square" },
+            { "value": "3 / 2", "label": "Landscape" }
+          ],
+          "default": "4 / 5"
+        },
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Chapter number",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "The origin"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Tell the story behind this chapter: where the craft comes from, who taught it, and why it still matters.</p>"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "link_booking",
+          "label": "Link opens booking",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "quote",
+      "name": "Quote",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "A mask is not a disguise. It is the face you choose to show."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Attribution",
+          "default": "HIRA"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HIRA story",
+      "blocks": [
+        {
+          "type": "chapter",
+          "settings": {
+            "number": "01",
+            "title": "The origin",
+            "text": "<p>Macramé is one of the oldest textile arts: knots tied by hand, long before looms. HIRA starts there, with cord, patience and fingers that remember.</p>"
+          }
+        },
+        {
+          "type": "chapter",
+          "settings": {
+            "number": "02",
+            "title": "The craft",
+            "text": "<p>Every mask is knotted, woven and stitched by hand in small batches. No two are identical, and that is the point.</p>"
+          }
+        },
+        {
+          "type": "quote"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

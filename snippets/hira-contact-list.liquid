@@ -1,0 +1,56 @@
+{% comment %}
+  Renders the contact details set in Theme settings > HIRA.
+  Each entry is a real action: mailto, tel and a WhatsApp chat link.
+
+  Accepts:
+  - class: {String} extra classes for the list (optional)
+
+  Usage:
+  {% render 'hira-contact-list' %}
+{% endcomment %}
+
+{%- liquid
+  assign email = settings.hira_contact_email | strip
+  assign phone = settings.hira_contact_phone | strip
+  assign whatsapp = settings.hira_contact_whatsapp | strip
+  assign address = settings.hira_contact_address | strip
+  assign hours = settings.hira_contact_hours | strip
+
+  assign phone_digits = phone | remove: ' ' | remove: '-' | remove: '(' | remove: ')' | remove: '.'
+  assign whatsapp_digits = whatsapp | remove: ' ' | remove: '-' | remove: '(' | remove: ')' | remove: '.' | remove: '+'
+-%}
+
+<ul class="hira-contact-list list-unstyled{% if class %} {{ class }}{% endif %}" role="list">
+  {%- if email != blank -%}
+    <li class="hira-contact-list__item">
+      <span class="hira-contact-list__label">Email</span>
+      <a class="hira-link" href="mailto:{{ email }}">{{ email | escape }}</a>
+    </li>
+  {%- endif -%}
+  {%- if whatsapp != blank -%}
+    <li class="hira-contact-list__item">
+      <span class="hira-contact-list__label">WhatsApp</span>
+      <a class="hira-link" href="https://wa.me/{{ whatsapp_digits }}" target="_blank" rel="noopener">
+        {{- whatsapp | escape -}}
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if phone != blank -%}
+    <li class="hira-contact-list__item">
+      <span class="hira-contact-list__label">Phone</span>
+      <a class="hira-link" href="tel:{{ phone_digits }}">{{ phone | escape }}</a>
+    </li>
+  {%- endif -%}
+  {%- if address != blank -%}
+    <li class="hira-contact-list__item">
+      <span class="hira-contact-list__label">Studio</span>
+      <address>{{ address | escape | newline_to_br }}</address>
+    </li>
+  {%- endif -%}
+  {%- if hours != blank -%}
+    <li class="hira-contact-list__item">
+      <span class="hira-contact-list__label">Hours</span>
+      <span>{{ hours | escape }}</span>
+    </li>
+  {%- endif -%}
+</ul>
