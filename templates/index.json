@@ -53,6 +53,7 @@
         "chapter-2": {
           "type": "chapter",
           "settings": {
+            "image": "shopify://shop_images/FD4151DC-EA62-4670-990B-723C0A97FCFD.png",
             "image_ratio": "4 / 5",
             "number": "02",
             "title": "The craft",
@@ -161,7 +162,6 @@
         "secondary_label": "Read the FAQ",
         "secondary_link": "",
         "image_1": "shopify://shop_images/472D9395-2D9C-41DD-99D7-6AE7C420FE46.png",
-        "image_2": "shopify://shop_images/472D9395-2D9C-41DD-99D7-6AE7C420FE46.png",
         "stamp_text": "Made to measure • Made by hand •",
         "color_scheme": "scheme-3",
         "padding_top": 128,
