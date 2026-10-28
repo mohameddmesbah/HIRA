@@ -7,17 +7,20 @@
 (function () {
   'use strict';
 
-  var OPENINGS = { wide: 'One wide', eyes: 'Two eyes', 'eyes-mouth': 'Eyes + mouth' };
-  var EARS = { none: 'None', bear: 'Bear ears', bunny: 'Bunny ears', horns: 'Horns', cat: 'Cat ears' };
+  var OPENINGS = { wide: 'One wide', eyes: 'Two eyes' };
+  var MOUTHS = { none: 'None', simple: 'Simple opening', teeth: 'Teeth' };
+  var EARS = { none: 'None', bear: 'Bear ears', bunny: 'Big bunny ears', horns: 'Horns', cat: 'Cat ears' };
+  var EAR_PRICE = { bear: 'small_ears', cat: 'small_ears', bunny: 'bunny', horns: 'horns' };
   var ACCESSORIES = {
-    chain: { label: 'Silver chain', weight: 'light' },
-    rings: { label: 'Metal rings', weight: 'light' },
-    crystals: { label: 'Red crystals', weight: 'heavy' },
-    charms: { label: 'Heart & bow charms', weight: 'light' },
-    stars: { label: 'Stars', weight: 'light' },
-    hearts: { label: 'Hearts', weight: 'light' },
-    pearls: { label: 'Pearls / beads', weight: 'heavy' }
+    chain: { label: 'Silver chain', price: 'chain' },
+    rings: { label: 'Metal rings', price: 'accessory' },
+    crystals: { label: 'Red crystals', price: 'accessory' },
+    charms: { label: 'Heart & bow charms', price: 'accessory' },
+    stars: { label: 'Stars', price: 'accessory' },
+    hearts: { label: 'Hearts', price: 'accessory' },
+    pearls: { label: 'Pearls / beads', price: 'accessory' }
   };
+  var MAX_STRIPES = 8;
   var ACC_ORDER = ['chain', 'rings', 'crystals', 'charms', 'stars', 'hearts', 'pearls'];
   var DEFAULT_COLORS = [
     { name: 'Brown', hex: '#6B4632' }, { name: 'Beige', hex: '#D9C3A5' }, { name: 'Black', hex: '#1A1A1C' },
@@ -68,16 +71,20 @@
       return { id: i, name: c.name || 'Color ' + (i + 1), hex: c.hex || '#888888' };
     });
     this.prices = config.prices || {};
+    this.usdRate = +config.usdRate > 0 ? +config.usdRate : 56;
     this.whatsapp = String(config.whatsapp || '').replace(/\D/g, '');
 
     var white = this.findColor('white');
     this.state = {
       base: 0,
       opening: 'eyes',
+      mouth: 'none',
       ears: 'none',
       earOuter: null, // null = follow the base colour
       earInner: white ? white.id : null,
       acc: {},
+      stripes: 0,
+      stripeColor: white ? white.id : 0,
       accent: null
     };
     this.step = 1;
@@ -88,6 +95,7 @@
     this.pngTimer = null;
 
     this.buildSwatches();
+    this.fillPriceTags();
     this.buildChain();
     this.buildPearls();
     this.bind();
@@ -134,6 +142,7 @@
       base: s.base,
       earOuter: s.earOuter === null ? s.base : s.earOuter,
       earInner: s.earInner === null ? '' : s.earInner,
+      stripe: s.stripeColor,
       accent: s.accent === null ? '' : s.accent
     };
     Object.keys(values).forEach(function (group) {
@@ -202,6 +211,10 @@
         s.earOuter = +t.value === s.base ? null : +t.value;
       } else if (t.name === 'cfg-earInner') {
         s.earInner = +t.value;
+      } else if (t.name === 'cfg-stripe') {
+        s.stripeColor = +t.value;
+      } else if (t.name === 'mouth') {
+        s.mouth = t.value;
       } else if (t.name === 'cfg-accent') {
         s.accent = t.value === '' ? null : +t.value;
       } else if (t.name === 'opening') {
@@ -235,6 +248,12 @@
         if (i + 1 <= self.maxStep) self.goTo(i + 1);
       });
     });
+    var stepStripes = function (delta) {
+      self.state.stripes = Math.max(0, Math.min(MAX_STRIPES, self.state.stripes + delta));
+      self.render();
+    };
+    this.root.querySelector('[data-stripes-minus]').addEventListener('click', function () { stepStripes(-1); });
+    this.root.querySelector('[data-stripes-plus]').addEventListener('click', function () { stepStripes(1); });
     this.root.querySelector('[data-cfg-save]').addEventListener('click', function () {
       self.save();
     });
@@ -308,8 +327,9 @@
 
     var on = {
       'open-wide': s.opening === 'wide',
-      'open-eyes': s.opening === 'eyes' || s.opening === 'eyes-mouth',
-      'open-mouth': s.opening === 'eyes-mouth',
+      'open-eyes': s.opening === 'eyes',
+      'mouth-simple': s.mouth === 'simple',
+      'mouth-teeth': s.mouth === 'teeth',
       'ears-bear': s.ears === 'bear',
       'ears-cat': s.ears === 'cat',
       'ears-bunny': s.ears === 'bunny',
@@ -326,35 +346,92 @@
     this.root.querySelector('[data-ear-inner-wrap]').hidden = s.ears === 'horns';
     this.root.querySelector('[data-ear-outer-label]').textContent = s.ears === 'horns' ? 'Horn color' : 'Ear outer color';
 
+    // Side stripes: count, stepper state and colour picker.
+    this.drawStripes();
+    this.root.querySelector('[data-stripes-value]').textContent = s.stripes;
+    this.root.querySelector('[data-stripes-minus]').disabled = s.stripes <= 0;
+    this.root.querySelector('[data-stripes-plus]').disabled = s.stripes >= MAX_STRIPES;
+    this.root.querySelector('[data-stripe-color]').hidden = s.stripes === 0;
+
     this.syncSwatches();
     this.renderPrice();
     this.queuePng();
   };
 
-  Configurator.prototype.price = function () {
+  // Stripes run down the sides of the head, following its contour; they
+  // alternate left / right (an odd count puts the extra one on the left).
+  Configurator.prototype.drawStripes = function () {
+    var holder = this.svg.querySelector('[data-stripes]');
+    if (!holder) return;
+    var s = this.state;
+    var color = this.color(s.stripeColor).hex;
+    while (holder.firstChild) holder.removeChild(holder.firstChild);
+    var left = Math.ceil(s.stripes / 2);
+    var right = Math.floor(s.stripes / 2);
+    var make = function (k, mirror) {
+      var o = 16 + k * 15;
+      var d = 'M' + (96 + o) + ' 86 C' + (64 + o) + ' 150 ' + (60 + o) + ' 282 ' + (110 + o) + ' 372';
+      var path = document.createElementNS(SVGNS, 'path');
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke-width', '7');
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('style', 'stroke: ' + color);
+      if (mirror) path.setAttribute('transform', 'translate(400 0) scale(-1 1)');
+      holder.appendChild(path);
+    };
+    for (var i = 0; i < left; i++) make(i, false);
+    for (var j = 0; j < right; j++) make(j, true);
+  };
+
+  Configurator.prototype.fillPriceTags = function () {
+    var prices = this.prices;
+    this.root.querySelectorAll('[data-price-tag]').forEach(function (el) {
+      var v = +prices[el.getAttribute('data-price-tag')] || 0;
+      el.textContent = '+' + formatNumber(v) + ' EGP' + (el.getAttribute('data-price-suffix') || '');
+    });
+  };
+
+  // Every priced selection as a line item: { label, egp }.
+  Configurator.prototype.lineItems = function () {
     var s = this.state;
     var p = this.prices;
-    var get = function (key) { return (p[key] || [0, 0]).map(function (v) { return +v || 0; }); };
-    var egp = get('base')[0];
-    var usd = get('base')[1];
-    var add = function (key, times) {
-      var v = get(key);
-      egp += v[0] * (times || 1);
-      usd += v[1] * (times || 1);
-    };
-    if (s.accent !== null) add('accent');
-    if (s.ears === 'bear' || s.ears === 'cat' || s.ears === 'horns') add('ears');
-    if (s.ears === 'bunny') add('bunny');
+    var c = this.resolved();
+    var price = function (key) { return +p[key] || 0; };
+    var items = [{ label: 'Base custom mask', egp: price('base') }];
+    if (s.mouth !== 'none') {
+      items.push({ label: 'Mouth (' + MOUTHS[s.mouth] + ')', egp: price(s.mouth === 'teeth' ? 'mouth_teeth' : 'mouth_simple') });
+    }
+    if (s.ears !== 'none') items.push({ label: EARS[s.ears], egp: price(EAR_PRICE[s.ears]) });
+    if (s.stripes > 0) {
+      items.push({
+        label: 'Side stripes x' + s.stripes + ' (' + this.color(s.stripeColor).name + ', ' + formatNumber(price('stripe')) + ' EGP each)',
+        egp: s.stripes * price('stripe')
+      });
+    }
     ACC_ORDER.forEach(function (k) {
-      if (s.acc[k]) add(ACCESSORIES[k].weight);
+      if (s.acc[k]) items.push({ label: ACCESSORIES[k].label, egp: price(ACCESSORIES[k].price) });
     });
-    return { egp: egp, usd: usd };
+    if (c.accent) items.push({ label: 'Accent color (' + c.accent.name + ')', egp: price('accent') });
+    return items;
+  };
+
+  Configurator.prototype.price = function () {
+    var egp = this.lineItems().reduce(function (sum, item) { return sum + item.egp; }, 0);
+    return { egp: egp, usd: Math.round(egp / this.usdRate) };
   };
 
   Configurator.prototype.renderPrice = function () {
     var price = this.price();
     this.root.querySelector('[data-cfg-egp]').textContent = formatNumber(price.egp);
     this.root.querySelector('[data-cfg-usd]').textContent = formatNumber(price.usd);
+    var list = this.root.querySelector('[data-cfg-breakdown]');
+    if (list) {
+      list.innerHTML = this.lineItems().map(function (item, i) {
+        var value = (i === 0 ? '' : '+') + formatNumber(item.egp) + ' EGP';
+        return '<li><span>' + item.label.replace(/</g, '&lt;') + '</span><span>' + value + '</span></li>';
+      }).join('');
+    }
   };
 
   /* ---------- summary / message ---------- */
@@ -369,6 +446,8 @@
     return {
       base: c.base.name,
       openings: OPENINGS[s.opening],
+      mouth: MOUTHS[s.mouth],
+      stripes: s.stripes ? s.stripes + ' (' + this.color(s.stripeColor).name + ')' : 'None',
       ears: ears,
       accessories: acc.length ? acc.join(', ') : 'None',
       accent: c.accent ? c.accent.name : 'None'
@@ -393,6 +472,9 @@
     var d = this.details();
     var sm = this.summary();
     var price = this.price();
+    var priced = this.lineItems().map(function (item, i) {
+      return '- ' + item.label + ': ' + (i === 0 ? '' : '+') + formatNumber(item.egp) + ' EGP';
+    });
     return [
       'NEW CUSTOM ORDER - HIRA',
       '',
@@ -402,18 +484,23 @@
       'City: ' + d.city,
       '',
       'Base color: ' + sm.base,
-      'Openings: ' + sm.openings,
+      'Eye openings: ' + sm.openings,
+      'Mouth: ' + sm.mouth,
       'Ears: ' + sm.ears,
+      'Side stripes: ' + sm.stripes,
       'Accessories: ' + sm.accessories,
       'Accent color: ' + sm.accent,
       '',
       'Head circumference: ' + d.head + ' cm',
       'Notes: ' + (d.notes || '-'),
       '',
+      'Price breakdown:'
+    ].concat(priced, [
+      '',
       'Estimated price: ' + formatNumber(price.egp) + ' EGP (~$' + formatNumber(price.usd) + ')',
       '',
       "(I'll attach my design image in this chat)"
-    ].join('\n');
+    ]).join('\n');
   };
 
   /* ---------- validation ---------- */
@@ -563,8 +650,8 @@
         ctx.fillStyle = '#ece8f2';
         ctx.font = '24px sans-serif';
         var lines = [
-          'Base: ' + sm.base + '   ·   Openings: ' + sm.openings,
-          'Ears: ' + sm.ears,
+          'Base: ' + sm.base + '   ·   Eyes: ' + sm.openings + '   ·   Mouth: ' + sm.mouth,
+          'Ears: ' + sm.ears + '   ·   Stripes: ' + sm.stripes,
           'Accessories: ' + sm.accessories,
           'Accent: ' + sm.accent + '   ·   Est. ' + formatNumber(price.egp) + ' EGP (~$' + formatNumber(price.usd) + ')'
         ];

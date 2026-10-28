@@ -1455,6 +1455,82 @@
       },
       {
         "type": "header",
+        "content": "Design your own prices (EGP)"
+      },
+      {
+        "type": "paragraph",
+        "content": "Shown live on the Design Your Own page and in the WhatsApp order message. USD is calculated from the rate below."
+      },
+      {
+        "type": "number",
+        "id": "hira_price_base",
+        "label": "Base custom mask",
+        "default": 2000
+      },
+      {
+        "type": "number",
+        "id": "hira_price_bunny",
+        "label": "Big bunny ears",
+        "default": 600
+      },
+      {
+        "type": "number",
+        "id": "hira_price_small_ears",
+        "label": "Small ears (bear / cat)",
+        "default": 280
+      },
+      {
+        "type": "number",
+        "id": "hira_price_horns",
+        "label": "Horns",
+        "default": 280
+      },
+      {
+        "type": "number",
+        "id": "hira_price_mouth_simple",
+        "label": "Mouth: simple opening",
+        "default": 0
+      },
+      {
+        "type": "number",
+        "id": "hira_price_mouth_teeth",
+        "label": "Mouth: teeth",
+        "default": 400
+      },
+      {
+        "type": "number",
+        "id": "hira_price_stripe",
+        "label": "Side stripe (each, up to 8)",
+        "default": 50
+      },
+      {
+        "type": "number",
+        "id": "hira_price_chain",
+        "label": "Silver chain",
+        "default": 180
+      },
+      {
+        "type": "number",
+        "id": "hira_price_accessory",
+        "label": "Other accessory (each)",
+        "info": "Metal rings, crystals, charms, stars, hearts, pearls / beads.",
+        "default": 100
+      },
+      {
+        "type": "number",
+        "id": "hira_price_accent",
+        "label": "Accent color",
+        "default": 0
+      },
+      {
+        "type": "number",
+        "id": "hira_price_usd_rate",
+        "label": "EGP per 1 USD",
+        "info": "Used for the approximate USD price.",
+        "default": 56
+      },
+      {
+        "type": "header",
         "content": "Booking (Cal.com)"
       },
       {

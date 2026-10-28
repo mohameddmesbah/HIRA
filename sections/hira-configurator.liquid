@@ -122,6 +122,7 @@
             <g class="cfg-head">
               <path class="cfg-fill" d="M200 38 C285 38 330 105 330 200 C330 270 305 330 282 368 C300 395 340 420 352 470 L48 470 C60 420 100 395 118 368 C95 330 70 270 70 200 C70 105 115 38 200 38 Z" style="fill: var(--c-base)"/>
               <g clip-path="url(#headclip-{{ sid }})">
+                <g data-stripes></g>
                 <rect x="0" y="0" width="400" height="480" fill="url(#knit-{{ sid }})"/>
                 <rect class="cfg-fill" x="0" y="396" width="400" height="80" style="fill: var(--c-base-dark)"/>
                 <rect x="0" y="396" width="400" height="80" fill="url(#rib-{{ sid }})"/>
@@ -142,10 +143,26 @@
               <path class="cfg-trim" d="M120 205 C136 181 180 181 196 205 C180 228 136 228 120 205 Z M204 205 C220 181 264 181 280 205 C264 228 220 228 204 205 Z" fill="none" style="stroke: var(--c-trim)" stroke-width="7" stroke-linejoin="round"/>
               <path d="M120 205 C136 181 180 181 196 205 C180 228 136 228 120 205 Z M204 205 C220 181 264 181 280 205 C264 228 220 228 204 205 Z" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2" stroke-dasharray="2 5"/>
             </g>
-            <g class="cfg-layer" data-layer="open-mouth" data-on="false">
+            <g class="cfg-layer" data-layer="mouth-simple" data-on="false">
               <ellipse cx="200" cy="300" rx="40" ry="21" fill="url(#void-{{ sid }})"/>
               <ellipse class="cfg-trim" cx="200" cy="300" rx="40" ry="21" fill="none" style="stroke: var(--c-trim)" stroke-width="7"/>
               <ellipse cx="200" cy="300" rx="40" ry="21" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2" stroke-dasharray="2 5"/>
+            </g>
+            <g class="cfg-layer" data-layer="mouth-teeth" data-on="false">
+              <rect x="138" y="280" width="124" height="44" rx="16" fill="url(#void-{{ sid }})"/>
+              <g class="cfg-fill" style="fill: var(--c-base)">
+                <rect x="138" y="299" width="124" height="6"/>
+                <rect x="152" y="280" width="7" height="44" rx="3.5"/>
+                <rect x="168" y="280" width="7" height="44" rx="3.5"/>
+                <rect x="184" y="280" width="7" height="44" rx="3.5"/>
+                <rect x="200" y="280" width="7" height="44" rx="3.5"/>
+                <rect x="216" y="280" width="7" height="44" rx="3.5"/>
+                <rect x="232" y="280" width="7" height="44" rx="3.5"/>
+                <rect x="248" y="280" width="7" height="44" rx="3.5"/>
+              </g>
+              <rect x="138" y="280" width="124" height="44" rx="16" fill="#000" fill-opacity=".12"/>
+              <rect class="cfg-trim" x="138" y="280" width="124" height="44" rx="16" fill="none" style="stroke: var(--c-trim)" stroke-width="7"/>
+              <rect x="138" y="280" width="124" height="44" rx="16" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2" stroke-dasharray="2 5"/>
             </g>
 
             {%- comment -%} Accessories {%- endcomment -%}
@@ -210,6 +227,7 @@
           <strong class="hira-cfg__price-value"><span data-cfg-egp>—</span> EGP</strong>
           <span class="hira-cfg__price-usd">(~$<span data-cfg-usd>—</span>)</span>
           <p class="hira-cfg__price-note">{{ section.settings.price_note | escape }}</p>
+          <ul class="hira-cfg__breakdown" data-cfg-breakdown role="list"></ul>
         </div>
 
         <button type="button" class="hira-btn hira-btn--secondary hira-cfg__save" data-cfg-save>
@@ -221,7 +239,7 @@
       {%- comment -%} Steps {%- endcomment -%}
       <div class="hira-cfg__panel">
         <ol class="hira-cfg__progress" role="list" data-cfg-progress>
-          <li>Color</li><li>Openings</li><li>Ears</li><li>Extras</li><li>Accent</li><li>Details</li>
+          <li>Color</li><li>Openings</li><li>Ears</li><li>Extras</li><li>Stripes</li><li>Details</li>
         </ol>
 
         <form class="hira-cfg__form" data-cfg-form novalidate>
@@ -232,10 +250,18 @@
 
           <fieldset class="hira-cfg__step" data-step="2" hidden>
             <legend class="hira-cfg__legend"><span>02</span> Openings</legend>
+            <p class="hira-cfg__sublabel">Eyes</p>
             <div class="hira-cfg__options">
               <label class="hira-cfg__option"><input type="radio" name="opening" value="wide"><span>One wide</span></label>
               <label class="hira-cfg__option"><input type="radio" name="opening" value="eyes" checked><span>Two eyes</span></label>
-              <label class="hira-cfg__option"><input type="radio" name="opening" value="eyes-mouth"><span>Eyes + mouth</span></label>
+            </div>
+            <div class="hira-cfg__sub">
+              <p class="hira-cfg__sublabel">Mouth</p>
+              <div class="hira-cfg__options">
+                <label class="hira-cfg__option"><input type="radio" name="mouth" value="none" checked><span>None</span></label>
+                <label class="hira-cfg__option"><input type="radio" name="mouth" value="simple"><span>Simple opening <small data-price-tag="mouth_simple"></small></span></label>
+                <label class="hira-cfg__option"><input type="radio" name="mouth" value="teeth"><span>Teeth <small data-price-tag="mouth_teeth"></small></span></label>
+              </div>
             </div>
           </fieldset>
 
@@ -243,10 +269,10 @@
             <legend class="hira-cfg__legend"><span>03</span> Ears</legend>
             <div class="hira-cfg__options">
               <label class="hira-cfg__option"><input type="radio" name="ears" value="none" checked><span>None</span></label>
-              <label class="hira-cfg__option"><input type="radio" name="ears" value="bear"><span>Bear ears</span></label>
-              <label class="hira-cfg__option"><input type="radio" name="ears" value="bunny"><span>Bunny ears</span></label>
-              <label class="hira-cfg__option"><input type="radio" name="ears" value="horns"><span>Horns</span></label>
-              <label class="hira-cfg__option"><input type="radio" name="ears" value="cat"><span>Cat ears</span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="bear"><span>Bear ears <small data-price-tag="small_ears"></small></span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="bunny"><span>Big bunny ears <small data-price-tag="bunny"></small></span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="horns"><span>Horns <small data-price-tag="horns"></small></span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="cat"><span>Cat ears <small data-price-tag="small_ears"></small></span></label>
             </div>
             <div class="hira-cfg__sub" data-ear-colors hidden>
               <p class="hira-cfg__sublabel" data-ear-outer-label>Ear outer color</p>
@@ -261,20 +287,34 @@
           <fieldset class="hira-cfg__step" data-step="4" hidden>
             <legend class="hira-cfg__legend"><span>04</span> Accessories <small>Choose any</small></legend>
             <div class="hira-cfg__options hira-cfg__options--multi">
-              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="chain"><span>Silver chain</span></label>
-              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="rings"><span>Metal rings</span></label>
-              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="crystals"><span>Red crystals</span></label>
-              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="charms"><span>Heart &amp; bow charms</span></label>
-              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="stars"><span>Stars</span></label>
-              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="hearts"><span>Hearts</span></label>
-              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="pearls"><span>Pearls / beads</span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="chain"><span>Silver chain <small data-price-tag="chain"></small></span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="rings"><span>Metal rings <small data-price-tag="accessory"></small></span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="crystals"><span>Red crystals <small data-price-tag="accessory"></small></span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="charms"><span>Heart &amp; bow charms <small data-price-tag="accessory"></small></span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="stars"><span>Stars <small data-price-tag="accessory"></small></span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="hearts"><span>Hearts <small data-price-tag="accessory"></small></span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="pearls"><span>Pearls / beads <small data-price-tag="accessory"></small></span></label>
             </div>
           </fieldset>
 
           <fieldset class="hira-cfg__step" data-step="5" hidden>
-            <legend class="hira-cfg__legend"><span>05</span> Accent color <small>Optional</small></legend>
-            <p class="hira-cfg__hint">Used for trims, the neck stripe and details like stars, hearts and the bow.</p>
-            <div class="hira-cfg__swatches" data-swatches="accent"></div>
+            <legend class="hira-cfg__legend"><span>05</span> Stripes &amp; accent</legend>
+            <p class="hira-cfg__sublabel">Side stripes <small data-price-tag="stripe" data-price-suffix=" each"></small></p>
+            <div class="hira-cfg__stepper" data-cfg-stepper>
+              <button type="button" class="hira-cfg__stepper-btn" data-stripes-minus aria-label="Fewer stripes">&minus;</button>
+              <output class="hira-cfg__stepper-value" data-stripes-value aria-live="polite">0</output>
+              <button type="button" class="hira-cfg__stepper-btn" data-stripes-plus aria-label="More stripes">+</button>
+              <span class="hira-cfg__stepper-label">stripes (0–8)</span>
+            </div>
+            <div data-stripe-color hidden>
+              <p class="hira-cfg__sublabel" style="margin-top: 2rem;">Stripe color</p>
+              <div class="hira-cfg__swatches" data-swatches="stripe"></div>
+            </div>
+            <div class="hira-cfg__sub">
+              <p class="hira-cfg__sublabel">Accent color <small>Optional</small> <small data-price-tag="accent"></small></p>
+              <p class="hira-cfg__hint">Used for trims, the neck stripe and details like stars, hearts and the bow.</p>
+              <div class="hira-cfg__swatches" data-swatches="accent"></div>
+            </div>
           </fieldset>
 
           <fieldset class="hira-cfg__step" data-step="6" hidden>
@@ -356,13 +396,18 @@
           { "name": {{ block.settings.name | json }}, "hex": {{ block.settings.color | json }} }{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       ],
+      "usdRate": {{ settings.hira_price_usd_rate | default: 56 | json }},
       "prices": {
-        "base": [{{ section.settings.price_base_egp | json }}, {{ section.settings.price_base_usd | json }}],
-        "accent": [{{ section.settings.price_accent_egp | json }}, {{ section.settings.price_accent_usd | json }}],
-        "ears": [{{ section.settings.price_ears_egp | json }}, {{ section.settings.price_ears_usd | json }}],
-        "bunny": [{{ section.settings.price_bunny_egp | json }}, {{ section.settings.price_bunny_usd | json }}],
-        "light": [{{ section.settings.price_light_egp | json }}, {{ section.settings.price_light_usd | json }}],
-        "heavy": [{{ section.settings.price_heavy_egp | json }}, {{ section.settings.price_heavy_usd | json }}]
+        "base": {{ settings.hira_price_base | default: 0 | json }},
+        "bunny": {{ settings.hira_price_bunny | default: 0 | json }},
+        "small_ears": {{ settings.hira_price_small_ears | default: 0 | json }},
+        "horns": {{ settings.hira_price_horns | default: 0 | json }},
+        "mouth_simple": {{ settings.hira_price_mouth_simple | default: 0 | json }},
+        "mouth_teeth": {{ settings.hira_price_mouth_teeth | default: 0 | json }},
+        "stripe": {{ settings.hira_price_stripe | default: 0 | json }},
+        "chain": {{ settings.hira_price_chain | default: 0 | json }},
+        "accessory": {{ settings.hira_price_accessory | default: 0 | json }},
+        "accent": {{ settings.hira_price_accent | default: 0 | json }}
       }
     }
   </script>
@@ -439,30 +484,10 @@
       "label": "Price note",
       "default": "Estimated price. Final price confirmed on WhatsApp."
     },
-    { "type": "number", "id": "price_base_egp", "label": "Base mask (EGP)", "default": 3200 },
-    { "type": "number", "id": "price_base_usd", "label": "Base mask (USD)", "default": 90 },
-    { "type": "number", "id": "price_accent_egp", "label": "Extra accent color (EGP)", "default": 250 },
-    { "type": "number", "id": "price_accent_usd", "label": "Extra accent color (USD)", "default": 7 },
-    { "type": "number", "id": "price_ears_egp", "label": "Bear ears, cat ears or horns (EGP)", "default": 400 },
-    { "type": "number", "id": "price_ears_usd", "label": "Bear ears, cat ears or horns (USD)", "default": 10 },
-    { "type": "number", "id": "price_bunny_egp", "label": "Bunny ears (EGP)", "default": 900 },
-    { "type": "number", "id": "price_bunny_usd", "label": "Bunny ears (USD)", "default": 25 },
     {
-      "type": "number",
-      "id": "price_light_egp",
-      "label": "Light accessory, each (EGP)",
-      "info": "Silver chain, heart & bow charms, metal rings, stars, hearts.",
-      "default": 300
+      "type": "paragraph",
+      "content": "Prices are set in Theme settings > HIRA > Design your own prices."
     },
-    { "type": "number", "id": "price_light_usd", "label": "Light accessory, each (USD)", "default": 8 },
-    {
-      "type": "number",
-      "id": "price_heavy_egp",
-      "label": "Heavy accessory, each (EGP)",
-      "info": "Red crystals, pearls / beads.",
-      "default": 650
-    },
-    { "type": "number", "id": "price_heavy_usd", "label": "Heavy accessory, each (USD)", "default": 17 },
     {
       "type": "color_scheme",
       "id": "color_scheme",

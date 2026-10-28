@@ -496,3 +496,88 @@
     animation: none !important;
   }
 }
+
+/* --- Price tags, breakdown, stripes stepper ------------------------------- */
+
+.hira-cfg__option small,
+.hira-cfg__sublabel small {
+  display: inline-block;
+  margin-left: 0.4rem;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--hira-accent-light);
+}
+
+.hira-cfg__breakdown {
+  display: grid;
+  gap: 0.4rem;
+  width: 100%;
+  max-width: 42rem;
+  margin: 1.2rem auto 0;
+  padding: 1.2rem 0 0;
+  border-top: 1px solid rgba(var(--color-foreground), 0.12);
+  list-style: none;
+  font-size: 1.3rem;
+  text-align: left;
+  color: rgba(var(--color-foreground), 0.72);
+}
+
+.hira-cfg__breakdown li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.6rem;
+}
+
+.hira-cfg__breakdown li span:last-child {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  color: rgb(var(--color-foreground));
+}
+
+.hira-cfg__stepper {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.hira-cfg__stepper-btn {
+  display: grid;
+  place-items: center;
+  width: 4.8rem;
+  height: 4.8rem;
+  border: 1px solid rgba(var(--color-foreground), 0.3);
+  background: none;
+  color: rgb(var(--color-foreground));
+  font-size: 2.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.hira-cfg__stepper-btn:hover:not([disabled]) {
+  border-color: var(--hira-accent);
+  background: rgba(var(--hira-accent-rgb), 0.14);
+}
+
+.hira-cfg__stepper-btn[disabled] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.hira-cfg__stepper-value {
+  min-width: 3ch;
+  font-family: var(--font-heading-family);
+  font-size: 2.8rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.hira-cfg__stepper-label {
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.hira-cfg__svg [data-stripes] path {
+  transition: stroke 0.35s ease;
+}
