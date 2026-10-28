@@ -203,7 +203,7 @@
   },
   "presets": {
     "Dawn": {
-      "logo_width": 90,
+      "logo_width": 200,
       "customer_account_menu": "customer-account-main-menu",
       "color_schemes": {
         "scheme-1": {

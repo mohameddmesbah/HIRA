@@ -39,8 +39,8 @@
               class="announcement-bar__link link link--text focus-inset animate-arrow"
             >
           {%- endif -%}
-          <p class="announcement-bar__message h5">
-            <span>{{ section.blocks.first.settings.text | escape }}</span>
+          <p class="announcement-bar__message h5{% if settings.hira_logo_hanging and settings.logo != blank %} hira-ann-split{% endif %}">
+            {% render 'hira-announcement-text', text: section.blocks.first.settings.text %}
             {%- if section.blocks.first.settings.link != blank -%}
               {{- 'icon-arrow.svg' | inline_asset_content -}}
             {%- endif -%}
@@ -99,8 +99,8 @@
                         class="announcement-bar__link link link--text focus-inset animate-arrow"
                       >
                     {%- endif -%}
-                    <p class="announcement-bar__message h5">
-                      <span>{{ block.settings.text | escape }}</span>
+                    <p class="announcement-bar__message h5{% if settings.hira_logo_hanging and settings.logo != blank %} hira-ann-split{% endif %}">
+                      {% render 'hira-announcement-text', text: block.settings.text %}
                       {%- if block.settings.link != blank -%}
                         {{- 'icon-arrow.svg' | inline_asset_content -}}
                       {%- endif -%}

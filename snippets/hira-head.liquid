@@ -15,6 +15,23 @@
     --hira-accent-soft: {{ hira_accent | color_modify: 'alpha', 0.18 }};
     --hira-accent-light: {{ hira_accent | color_lighten: 18 }};
   }
+  {%- if settings.hira_logo_hanging and settings.logo != blank %}
+    :root {
+      --hira-logo-ratio: {{ settings.logo.aspect_ratio | default: 1 }};
+      --hira-logo-w: min({{ settings.hira_logo_width_mobile }}px, calc(100vw - 23rem));
+      --hira-logo-h: calc(var(--hira-logo-w) / var(--hira-logo-ratio));
+      --hira-rope-pos: {{ settings.hira_rope_position | divided_by: 100.0 }};
+      --hira-rope-x: calc((var(--hira-rope-pos) - 0.5) * var(--hira-logo-w));
+      --hira-rope-gap: {{ settings.hira_rope_clearance }}px;
+      --hira-rope-share: {{ settings.hira_rope_share | divided_by: 100.0 }};
+    }
+    @media screen and (min-width: 750px) {
+      :root { --hira-logo-w: {{ settings.hira_logo_width_tablet }}px; }
+    }
+    @media screen and (min-width: 990px) {
+      :root { --hira-logo-w: {{ settings.logo_width }}px; }
+    }
+  {%- endif %}
   {%- if settings.hira_page_transitions and hira_motion != 'off' %}
     @media (prefers-reduced-motion: no-preference) {
       @view-transition { navigation: auto; }

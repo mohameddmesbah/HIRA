@@ -19,11 +19,78 @@
         "type": "range",
         "id": "logo_width",
         "min": 50,
-        "max": 300,
+        "max": 400,
         "step": 10,
         "default": 100,
         "unit": "px",
-        "label": "t:settings_schema.logo.settings.logo_width.label"
+        "label": "t:settings_schema.logo.settings.logo_width.label",
+        "info": "Desktop logo width. With the hanging logo, this is the width on screens 990px and wider."
+      },
+      {
+        "type": "header",
+        "content": "Hanging logo (HIRA)"
+      },
+      {
+        "type": "checkbox",
+        "id": "hira_logo_hanging",
+        "label": "Hang the logo from the top of the page",
+        "default": true,
+        "info": "Centers the logo and lets the top of the image overlap the announcement bar, so a rope at the top edge of the logo hangs from the top of the site. Use a transparent PNG whose rope touches the top edge."
+      },
+      {
+        "type": "range",
+        "id": "hira_logo_width_tablet",
+        "min": 60,
+        "max": 360,
+        "step": 10,
+        "unit": "px",
+        "label": "Logo width on tablet",
+        "info": "Screens 750–989px wide.",
+        "default": 160
+      },
+      {
+        "type": "range",
+        "id": "hira_logo_width_mobile",
+        "min": 50,
+        "max": 260,
+        "step": 5,
+        "unit": "px",
+        "label": "Logo width on mobile",
+        "info": "Screens under 750px wide.",
+        "default": 120
+      },
+      {
+        "type": "range",
+        "id": "hira_rope_position",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Rope position across the logo",
+        "info": "Where the rope sits, from the logo's left edge. The announcement text splits around this point.",
+        "default": 37
+      },
+      {
+        "type": "range",
+        "id": "hira_rope_share",
+        "min": 10,
+        "max": 90,
+        "step": 5,
+        "unit": "%",
+        "label": "Rope length above the letters",
+        "info": "How much of the logo's height is rope only, from the top edge down to where the letters start. If the announcement bar is taller than that (for example when its text wraps on phones), the text moves clear of the whole logo.",
+        "default": 45
+      },
+      {
+        "type": "range",
+        "id": "hira_rope_clearance",
+        "min": 0,
+        "max": 120,
+        "step": 4,
+        "unit": "px",
+        "label": "Space kept clear around the rope",
+        "info": "Gap left in the announcement text so the rope never covers it.",
+        "default": 40
       },
       {
         "type": "image_picker",

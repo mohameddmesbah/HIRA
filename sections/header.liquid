@@ -103,6 +103,8 @@
 {%- style -%}
   .header {
     padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
+    --hira-header-pt: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px;
+    --hira-header-pb: {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px;
   }
 
   .section-header {
@@ -120,11 +122,17 @@
     .header {
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
+      --hira-header-pt: {{ section.settings.padding_top }}px;
+      --hira-header-pb: {{ section.settings.padding_bottom }}px;
     }
   }
 {%- endstyle -%}
 
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+
+{%- if settings.hira_logo_hanging and settings.logo != blank -%}
+  {% render 'hira-hanging-logo-script' %}
+{%- endif -%}
 
 {%- liquid
   for block in section.blocks
@@ -136,6 +144,18 @@
 
 {% liquid
   assign header_tag = 'div'
+
+  assign hira_hanging = false
+  if settings.hira_logo_hanging and settings.logo != blank
+    assign hira_hanging = true
+  endif
+
+  assign logo_position = section.settings.logo_position
+  assign mobile_logo_position = section.settings.mobile_logo_position
+  if hira_hanging
+    assign logo_position = 'middle-center'
+    assign mobile_logo_position = 'center'
+  endif
 
   if section.settings.sticky_header_type != 'none'
     assign header_tag = 'sticky-header'
@@ -164,10 +184,10 @@
       assign language_selector = true
     endif
   -%}
-  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if country_selector or language_selector %} header--has-localizations{% endif %}">
+  <header class="header header--{{ logo_position }} header--mobile-{{ mobile_logo_position }} page-width{% if hira_hanging %} hira-hanging{% endif %}{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if country_selector or language_selector %} header--has-localizations{% endif %}">
     {%- liquid
       assign render_search_left = false
-      if section.settings.logo_position == 'top-center' or section.settings.menu == blank or shop.customer_accounts_enabled
+      if logo_position == 'top-center' or section.settings.menu == blank or shop.customer_accounts_enabled
         assign render_search_left = true
       endif
 
@@ -180,7 +200,7 @@
       endif
     -%}
 
-    {%- if section.settings.logo_position != 'middle-center' -%}
+    {%- if logo_position != 'middle-center' -%}
       {%- if request.page_type == 'index' -%}
         <h1 class="header__heading">
       {%- endif -%}
@@ -223,12 +243,37 @@
       endif
     %}
 
-    {%- if section.settings.logo_position == 'middle-center' -%}
+    {%- if logo_position == 'middle-center' -%}
       {%- if request.page_type == 'index' -%}
-        <h1 class="header__heading">
+        <h1 class="header__heading{% if hira_hanging %} hira-hanging-logo{% endif %}">
       {%- endif -%}
-      <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
-        {%- if settings.logo != blank -%}
+      <a
+        href="{{ routes.root_url }}"
+        class="header__heading-link link link--text focus-inset{% if hira_hanging and request.page_type != 'index' %} hira-hanging-logo{% endif %}"
+      >
+        {%- if hira_hanging -%}
+          {%- liquid
+            assign logo_alt = settings.logo.alt | default: shop.name | escape
+            assign logo_max = settings.logo_width | at_least: settings.hira_logo_width_tablet | at_least: settings.hira_logo_width_mobile
+            assign logo_height = logo_max | divided_by: settings.logo.aspect_ratio | round
+          -%}
+          {% capture sizes %}(min-width: 990px) {{ settings.logo_width }}px, (min-width: 750px) {{ settings.hira_logo_width_tablet }}px, {{ settings.hira_logo_width_mobile }}px{% endcapture %}
+          {% capture widths %}{{ settings.hira_logo_width_mobile }}, {{ settings.hira_logo_width_tablet }}, {{ settings.logo_width }}, {{ settings.hira_logo_width_mobile | times: 2 }}, {{ settings.hira_logo_width_tablet | times: 2 }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+          <span class="hira-hanging-logo__box">
+            {{
+              settings.logo
+              | image_url: width: 1200
+              | image_tag:
+                class: 'header__heading-logo hira-hanging-logo__img',
+                widths: widths,
+                height: logo_height,
+                width: logo_max,
+                alt: logo_alt,
+                sizes: sizes,
+                preload: true
+            }}
+          </span>
+        {%- elsif settings.logo != blank -%}
           <div class="header__heading-logo-wrapper">
             {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
             {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
