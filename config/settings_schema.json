@@ -2292,7 +2292,7 @@
         "type": "image_picker",
         "id": "hira_layer_stripe",
         "label": "Image",
-        "info": "Mirrored for the right side and repeated for more stripes."
+        "info": "Draw it on the left side, on the same canvas as the mask. It follows the mask (position and scale), is mirrored for the right side and repeated for more stripes; the sliders below fine-tune on top."
       },
       {
         "type": "range",

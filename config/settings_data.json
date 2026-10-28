@@ -161,7 +161,7 @@
     "hira_layer_horns_scale": 60,
     "hira_layer_horns_spread": 20,
     "hira_layer_stripe": "shopify://shop_images/13A025C1-CA47-4BAA-AB7F-24A1E6094AF2.png",
-    "hira_layer_stripe_scale": 220,
+    "hira_layer_stripe_scale": 100,
     "predictive_search_enabled": true,
     "predictive_search_show_vendor": false,
     "predictive_search_show_price": false,

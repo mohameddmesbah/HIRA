@@ -682,39 +682,49 @@
     return shift + this.chain(key).map(this.transform, this).join(' ');
   };
 
-  // The same placement on a canvas (export composites and drag hit maps).
-  Layers.prototype.draw = function (ctx, key, source, extra) {
-    var self = this;
+  // One layer's offset and scale on a canvas (same as transform()).
+  Layers.prototype.applyTransform = function (ctx, key) {
+    var l = this.cfg[key] || {};
+    var sc = (+l.scale || 100) / 100;
+    ctx.translate(+l.x || 0, +l.y || 0);
+    ctx.translate(200, 230);
+    ctx.scale(sc, sc);
+    ctx.translate(-200, -230);
+  };
+
+  // A layer image fitted (meet) into the square frame.
+  Layers.prototype.drawFitted = function (ctx, source) {
     var w = source.naturalWidth || source.width;
     var h = source.naturalHeight || source.height;
     var f = Math.min(VB.size / w, VB.size / h);
     var dw = w * f, dh = h * f;
+    ctx.drawImage(source, VB.x + (VB.size - dw) / 2, VB.y + (VB.size - dh) / 2, dw, dh);
+  };
+
+  // The same placement on a canvas (export composites and drag hit maps).
+  Layers.prototype.draw = function (ctx, key, source, extra) {
+    var self = this;
     var halves = this.isSplit(key) ? [-1, 1] : [0];
     halves.forEach(function (half) {
       ctx.save();
       if (extra) extra(ctx);
       if (half) ctx.translate(half * self.spread(key) / 2, 0);
-      self.chain(key).forEach(function (k) {
-        var l = self.cfg[k] || {};
-        var sc = (+l.scale || 100) / 100;
-        ctx.translate(+l.x || 0, +l.y || 0);
-        ctx.translate(200, 230);
-        ctx.scale(sc, sc);
-        ctx.translate(-200, -230);
-      });
+      self.chain(key).forEach(function (k) { self.applyTransform(ctx, k); });
       if (half) {
         ctx.beginPath();
         if (half < 0) ctx.rect(-5000, -5000, 5200, 10000);
         else ctx.rect(200, -5000, 5200, 10000);
         ctx.clip();
       }
-      ctx.drawImage(source, VB.x + (VB.size - dw) / 2, VB.y + (VB.size - dh) / 2, dw, dh);
+      self.drawFitted(ctx, source);
       ctx.restore();
     });
   };
 
-  // Stripes: the stripe PNG (left side) tinted, repeated inward with spacing,
-  // mirrored for the right side, then clipped to the mask's shape.
+  // Stripes: the stripe PNG (left side) tinted, placed like the mask (it is part
+  // of the mask artwork) with its own sliders as fine adjustments on top,
+  // repeated inward with spacing, mirrored around the mask's centre line for
+  // the right side, then clipped to the mask's shape (eye holes included).
   Layers.prototype.stripes = function (opts) {
     var self = this;
     var cw = VB.size * CANVAS_SCALE, ch = VB.size * CANVAS_SCALE;
@@ -729,22 +739,22 @@
       var left = Math.ceil(opts.count / 2), right = Math.floor(opts.count / 2);
       var spacing = +self.cfg.stripeSpacing || 14;
       var one = function (k, mirror) {
+        ctx.save();
+        if (opts.maskKey) self.applyTransform(ctx, opts.maskKey);
+        if (mirror) { ctx.translate(W, 0); ctx.scale(-1, 1); }
+        ctx.translate(k * spacing, 0);
         if (res[0]) {
-          self.draw(ctx, 'stripe', res[0].canvas, function (c) {
-            if (mirror) { c.translate(W, 0); c.scale(-1, 1); }
-            c.translate(k * spacing, 0);
-          });
+          self.applyTransform(ctx, 'stripe');
+          self.drawFitted(ctx, res[0].canvas);
         } else {
-          // No stripe image: the SVG stripe path, drawn here so it can be clipped to a PNG mask.
+          // No stripe image: the drawn stripe path, so it can still be clipped to a PNG mask.
           var o = 14 + k * 13;
-          var d = 'M' + (118 + o) + ' 70 C' + (90 + o) + ' 150 ' + (94 + o) + ' 270 ' + (146 + o) + ' 356';
-          ctx.save();
           ctx.strokeStyle = opts.color;
           ctx.lineWidth = 7;
           ctx.lineCap = 'round';
-          ctx.stroke(new Path2D(mirror ? mirrorPath(d) : d));
-          ctx.restore();
+          ctx.stroke(new Path2D('M' + (118 + o) + ' 70 C' + (90 + o) + ' 150 ' + (94 + o) + ' 270 ' + (146 + o) + ' 356'));
         }
+        ctx.restore();
       };
       for (var i = 0; i < left; i++) one(i, false);
       for (var j = 0; j < right; j++) one(j, true);
