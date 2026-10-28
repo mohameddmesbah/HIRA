@@ -142,7 +142,7 @@
 
 .hira-cfg__progress {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 0.6rem;
   margin: 0 0 3.2rem;
   padding: 0;
@@ -454,12 +454,90 @@
   display: block;
 }
 
-.hira-cfg__send {
-  width: 100%;
+.hira-cfg__howto {
   margin-top: 3.2rem;
+  padding: 2rem 2.2rem;
+  border: 1px solid rgba(var(--color-foreground), 0.18);
+  border-left: 3px solid var(--hira-accent-light);
+  border-radius: 1.2rem;
+  background: rgba(var(--color-foreground), 0.04);
+  font-size: 1.5rem;
+  line-height: 1.5;
 }
 
-.hira-cfg__send + .hira-cfg__hint {
+.hira-cfg__howto-title {
+  margin: 0 0 0.8rem;
+  font-weight: 700;
+  font-size: 1.7rem;
+  color: rgb(var(--color-foreground));
+}
+
+.hira-cfg__howto-list {
+  margin: 0;
+  padding-left: 2rem;
+}
+
+.hira-cfg__howto-list li + li {
+  margin-top: 0.6rem;
+}
+
+.hira-cfg__save--final {
+  width: 100%;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+}
+
+.hira-cfg__save.is-saved {
+  border-color: var(--hira-accent-light);
+}
+
+.hira-cfg__saved {
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--hira-accent-light);
+}
+
+.hira-cfg__saved[hidden] {
+  display: none;
+}
+
+.hira-cfg__send {
+  width: 100%;
+  margin-top: 1.2rem;
+}
+
+.hira-cfg__remind {
+  margin-top: 1.2rem;
+  padding: 1.6rem 1.8rem;
+  border: 1px solid var(--hira-accent-light);
+  border-radius: 1.2rem;
+  background: rgba(var(--color-foreground), 0.06);
+  font-size: 1.4rem;
+}
+
+.hira-cfg__remind[hidden] {
+  display: none;
+}
+
+.hira-cfg__remind p {
+  margin: 0 0 1.2rem;
+}
+
+.hira-cfg__remind-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.hira-cfg__remind-actions .hira-btn {
+  flex: 1 1 14rem;
+  min-height: 4.4rem;
+}
+
+.hira-cfg__send + .hira-cfg__hint,
+.hira-cfg__remind + .hira-cfg__hint {
   margin: 1.2rem 0 0;
 }
 
@@ -796,9 +874,4 @@
 
 .hira-cfg__copy:hover {
   border-color: var(--hira-accent-light);
-}
-
-.hira-cfg__option.is-disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }

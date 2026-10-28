@@ -63,7 +63,7 @@
       {%- comment -%} Steps {%- endcomment -%}
       <div class="hira-cfg__panel">
         <ol class="hira-cfg__progress" role="list" data-cfg-progress>
-          <li>Color</li><li>Openings</li><li>Face</li><li>Ears</li><li>Extras</li><li>Stripes</li><li>Details</li>
+          <li>Color</li><li>Openings</li><li>Ears</li><li>Extras</li><li>Stripes</li><li>Details</li>
         </ol>
 
         <form class="hira-cfg__form" data-cfg-form novalidate>
@@ -81,33 +81,25 @@
             </div>
             <div class="hira-cfg__sub">
               <p class="hira-cfg__sublabel">Mouth</p>
-              <p class="hira-cfg__hint" data-mouth-note hidden>Teeth included in the skull face piece.</p>
               <div class="hira-cfg__options">
                 <label class="hira-cfg__option"><input type="radio" name="mouth" value="none" checked><span>None</span></label>
                 <label class="hira-cfg__option"><input type="radio" name="mouth" value="simple"><span>Simple opening <small data-price-tag="mouth_simple"></small></span></label>
                 <label class="hira-cfg__option"><input type="radio" name="mouth" value="teeth"><span>Teeth <small data-price-tag="mouth_teeth"></small></span></label>
+                <label class="hira-cfg__option"><input type="radio" name="mouth" value="skull"><span>Skull mask <small data-price-tag="face_skull"></small></span></label>
               </div>
               <div data-mouth-color hidden>
                 <p class="hira-cfg__sublabel" style="margin-top: 2rem;">Mouth color</p>
                 <div class="hira-cfg__swatches" data-swatches="mouth"></div>
               </div>
+              <div data-face-color hidden>
+                <p class="hira-cfg__sublabel" style="margin-top: 2rem;">Face piece color</p>
+                <div class="hira-cfg__swatches" data-swatches="face"></div>
+              </div>
             </div>
           </fieldset>
 
           <fieldset class="hira-cfg__step" data-step="3" hidden>
-            <legend class="hira-cfg__legend"><span>03</span> Face piece</legend>
-            <div class="hira-cfg__options">
-              <label class="hira-cfg__option"><input type="radio" name="face" value="none" checked><span>None</span></label>
-              <label class="hira-cfg__option"><input type="radio" name="face" value="skull"><span>Skull <small data-price-tag="face_skull"></small></span></label>
-            </div>
-            <div data-face-color hidden>
-              <p class="hira-cfg__sublabel" style="margin-top: 2rem;">Face piece color</p>
-              <div class="hira-cfg__swatches" data-swatches="face"></div>
-            </div>
-          </fieldset>
-
-          <fieldset class="hira-cfg__step" data-step="4" hidden>
-            <legend class="hira-cfg__legend"><span>04</span> Ears</legend>
+            <legend class="hira-cfg__legend"><span>03</span> Ears</legend>
             <div class="hira-cfg__options">
               <label class="hira-cfg__option"><input type="radio" name="ears" value="none" checked><span>None</span></label>
               <label class="hira-cfg__option"><input type="radio" name="ears" value="bear"><span>Bear ears <small data-price-tag="bear"></small></span></label>
@@ -125,8 +117,8 @@
             </div>
           </fieldset>
 
-          <fieldset class="hira-cfg__step" data-step="5" hidden>
-            <legend class="hira-cfg__legend"><span>05</span> Accessories <small>Choose any</small></legend>
+          <fieldset class="hira-cfg__step" data-step="4" hidden>
+            <legend class="hira-cfg__legend"><span>04</span> Accessories <small>Choose any</small></legend>
             <p class="hira-cfg__hint">Each one appears on your mask: drag it anywhere on the mask or ears. Tap a piece to remove it.</p>
             <div class="hira-cfg__acc-list">
               <div class="hira-cfg__acc" data-acc-row="chain">
@@ -186,8 +178,8 @@
             </div>
           </fieldset>
 
-          <fieldset class="hira-cfg__step" data-step="6" hidden>
-            <legend class="hira-cfg__legend"><span>06</span> Stripes &amp; accent</legend>
+          <fieldset class="hira-cfg__step" data-step="5" hidden>
+            <legend class="hira-cfg__legend"><span>05</span> Stripes &amp; accent</legend>
             <p class="hira-cfg__sublabel">Side stripes <small data-price-tag="stripe" data-price-suffix=" per stripe"></small></p>
             <div class="hira-cfg__stepper" data-cfg-stepper>
               <button type="button" class="hira-cfg__stepper-btn" data-stripes-minus aria-label="Fewer stripes">&minus;</button>
@@ -206,8 +198,8 @@
             </div>
           </fieldset>
 
-          <fieldset class="hira-cfg__step" data-step="7" hidden>
-            <legend class="hira-cfg__legend"><span>07</span> Your details</legend>
+          <fieldset class="hira-cfg__step" data-step="6" hidden>
+            <legend class="hira-cfg__legend"><span>06</span> Your details</legend>
             <div class="hira-cfg__fields">
               <label class="hira-cfg__field">
                 <span>Full name *</span>
@@ -245,9 +237,29 @@
                 <textarea name="notes" rows="4" placeholder="References, size details, anything we should know"></textarea>
               </label>
             </div>
-            <button type="button" class="hira-btn hira-btn--primary hira-cfg__send" data-cfg-send>
-              <span class="hira-btn__label">{{ section.settings.send_label | escape }}</span>
+            <div class="hira-cfg__howto">
+              {%- if section.settings.howto_heading != blank -%}
+                <p class="hira-cfg__howto-title">{{ section.settings.howto_heading | escape }}</p>
+              {%- endif -%}
+              <ol class="hira-cfg__howto-list">
+                {%- if section.settings.howto_step_1 != blank -%}<li>{{ section.settings.howto_step_1 | escape }}</li>{%- endif -%}
+                {%- if section.settings.howto_step_2 != blank -%}<li>{{ section.settings.howto_step_2 | escape }}</li>{%- endif -%}
+              </ol>
+            </div>
+            <button type="button" class="hira-btn hira-btn--secondary hira-cfg__save hira-cfg__save--final" data-cfg-save>
+              <span class="hira-btn__label">1. {{ section.settings.save_label | escape }}</span>
+              <span class="hira-cfg__saved" data-cfg-saved hidden>{{ section.settings.saved_label | escape }}</span>
             </button>
+            <button type="button" class="hira-btn hira-btn--primary hira-cfg__send" data-cfg-send>
+              <span class="hira-btn__label">2. {{ section.settings.send_label | escape }}</span>
+            </button>
+            <div class="hira-cfg__remind" data-cfg-remind hidden role="alertdialog" aria-labelledby="HiraCfgRemind-{{ sid }}">
+              <p id="HiraCfgRemind-{{ sid }}">{{ section.settings.remind_text | escape }}</p>
+              <div class="hira-cfg__remind-actions">
+                <button type="button" class="hira-btn hira-btn--secondary" data-cfg-remind-save>Save now</button>
+                <button type="button" class="hira-btn hira-btn--ghost" data-cfg-remind-continue>Continue anyway</button>
+              </div>
+            </div>
             <p class="hira-cfg__hint">{{ section.settings.send_note | escape }}</p>
 
             <div class="hira-cfg__confirm" data-cfg-confirm hidden tabindex="-1" role="status" aria-live="polite">
@@ -398,6 +410,40 @@
       "id": "send_label",
       "label": "Send button label",
       "default": "Send my order on WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "saved_label",
+      "label": "Saved confirmation on the save button",
+      "default": "Design saved ✓"
+    },
+    {
+      "type": "text",
+      "id": "remind_text",
+      "label": "Reminder when sending before saving",
+      "default": "Don't forget to save your design first so you can attach it."
+    },
+    {
+      "type": "header",
+      "content": "Final step instructions"
+    },
+    {
+      "type": "text",
+      "id": "howto_heading",
+      "label": "Heading",
+      "default": "Almost done!"
+    },
+    {
+      "type": "text",
+      "id": "howto_step_1",
+      "label": "Step 1",
+      "default": "Tap \"Save my design\" to save your mask image."
+    },
+    {
+      "type": "text",
+      "id": "howto_step_2",
+      "label": "Step 2",
+      "default": "Tap \"Send my order on WhatsApp\", then attach the saved image in the chat before sending."
     },
     {
       "type": "text",

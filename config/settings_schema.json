@@ -1569,7 +1569,7 @@
         "type": "number",
         "id": "hira_price_face_skull",
         "label": "Face piece: skull",
-        "default": 600
+        "default": 700
       },
       {
         "type": "number",

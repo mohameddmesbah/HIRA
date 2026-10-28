@@ -971,12 +971,12 @@
         case 'cfg-mouth': s.mouthColor = +t.value === s.base ? null : +t.value; break;
         case 'cfg-accent': s.accent = t.value === '' ? null : +t.value; break;
         case 'opening': s.opening = t.value; break;
-        case 'mouth': s.mouth = t.value; break;
-        case 'cfg-face': s.faceColor = +t.value; break;
-        case 'face':
-          s.face = t.value;
-          if (s.face === 'skull') s.mouth = 'none'; // the skull has its own teeth
+        case 'mouth':
+          // "Skull mask" is the skull face piece: it replaces the mouth (teeth included).
+          s.face = t.value === 'skull' ? 'skull' : 'none';
+          s.mouth = t.value === 'skull' ? 'none' : t.value;
           break;
+        case 'cfg-face': s.faceColor = +t.value; break;
         case 'ears':
           s.ears = t.value;
           self.scene.setEars(s.ears);
@@ -1019,8 +1019,21 @@
         if (i + 1 <= self.maxStep) self.goTo(i + 1);
       });
     });
-    this.root.querySelector('[data-cfg-save]').addEventListener('click', function () { self.save(); });
+    this.root.querySelectorAll('[data-cfg-save]').forEach(function (btn) {
+      btn.addEventListener('click', function () { self.save(); });
+    });
     this.root.querySelector('[data-cfg-send]').addEventListener('click', function () { self.send(); });
+    var remind = this.root.querySelector('[data-cfg-remind]');
+    if (remind) {
+      this.root.querySelector('[data-cfg-remind-save]').addEventListener('click', function () {
+        remind.hidden = true;
+        self.save();
+      });
+      this.root.querySelector('[data-cfg-remind-continue]').addEventListener('click', function () {
+        remind.hidden = true;
+        self.send(true);
+      });
+    }
     var copy = this.root.querySelector('[data-copy-number]');
     if (copy) {
       copy.addEventListener('click', function () {
@@ -1144,11 +1157,8 @@
     // Skull face piece: its own colour, and it replaces the mouth (teeth included).
     var skull = s.face === 'skull';
     this.root.querySelector('[data-face-color]').hidden = !skull;
-    this.root.querySelector('[data-mouth-note]').hidden = !skull;
     this.root.querySelectorAll('input[name="mouth"]').forEach(function (input) {
-      input.disabled = skull;
-      input.checked = input.value === s.mouth;
-      input.closest('label').classList.toggle('is-disabled', skull);
+      input.checked = input.value === (skull ? 'skull' : s.mouth);
     });
 
     // Accessory rows: count + "Add another" when active.
@@ -1699,6 +1709,8 @@
     var acc = this.accessoryLines();
     var priced = this.lineItems().map(function (item) { return '- ' + itemText(item); });
     return [
+      "Hi HIRA! Here is my custom order. \uD83D\uDCCE I'm attaching my design image below.",
+      '',
       'NEW CUSTOM ORDER - HIRA',
       '',
       'Name: ' + d.name,
@@ -1722,9 +1734,7 @@
       'Price breakdown:'
     ], priced, [
       '',
-      'Estimated price: ' + formatNumber(price.egp) + ' EGP (~$' + formatNumber(price.usd) + ')',
-      '',
-      "(I'll attach my design image in this chat)"
+      'Estimated price: ' + formatNumber(price.egp) + ' EGP (~$' + formatNumber(price.usd) + ')'
     ]).join('\n');
   };
 
@@ -1777,9 +1787,16 @@
     this.root.querySelector('[data-cfg-status]').textContent = text || '';
   };
 
-  Configurator.prototype.send = function () {
+  Configurator.prototype.send = function (skipReminder) {
     if (!this.validate()) {
       this.status('Please complete the required details.');
+      return;
+    }
+    // Saving first is step 1: remind once before WhatsApp opens without an image.
+    var remind = this.root.querySelector('[data-cfg-remind]');
+    if (!skipReminder && remind && !this.isSaved()) {
+      remind.hidden = false;
+      remind.querySelector('[data-cfg-remind-save]').focus();
       return;
     }
     var text = this.message();
@@ -1823,6 +1840,7 @@
   Configurator.prototype.queuePng = function () {
     var self = this;
     this.pngBlob = null;
+    this.showSaved();
     clearTimeout(this.pngTimer);
     this.pngTimer = setTimeout(function () {
       self.renderPng().then(function (blob) { self.pngBlob = blob; }).catch(function () {});
@@ -1914,6 +1932,7 @@
       var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
       if (coarse && file && navigator.canShare && navigator.canShare({ files: [file] })) {
         navigator.share({ files: [file], title: 'My HIRA design' }).then(function () {
+          self.markSaved();
           self.status('Design ready. Attach it in your WhatsApp chat.');
         }).catch(function (err) {
           if (err && err.name === 'AbortError') return;
@@ -1937,6 +1956,32 @@
     });
   };
 
+  // What the saved image shows; a change after saving means it needs saving again.
+  Configurator.prototype.designKey = function () {
+    return JSON.stringify([this.state, this.pieces.map(function (p) { return [p.type, p.x, p.y, p.a, p.b]; })]);
+  };
+
+  Configurator.prototype.isSaved = function () {
+    return this.savedKey === this.designKey();
+  };
+
+  Configurator.prototype.markSaved = function () {
+    this.savedKey = this.designKey();
+    this.showSaved();
+  };
+
+  Configurator.prototype.showSaved = function () {
+    var saved = this.isSaved();
+    this.root.querySelectorAll('[data-cfg-saved]').forEach(function (node) {
+      node.hidden = !saved;
+      node.closest('[data-cfg-save]').classList.toggle('is-saved', saved);
+    });
+    if (saved) {
+      var remind = this.root.querySelector('[data-cfg-remind]');
+      if (remind) remind.hidden = true;
+    }
+  };
+
   Configurator.prototype.download = function (blob, filename) {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
@@ -1946,6 +1991,7 @@
     a.click();
     a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    this.markSaved();
     this.status('Design saved as ' + filename + '. Attach it in your WhatsApp chat.');
   };
 
