@@ -40,6 +40,7 @@
         "chapter-1": {
           "type": "chapter",
           "settings": {
+            "image": "shopify://shop_images/A8311FF5-9B93-444E-9717-72B59D8A0BB3.png",
             "image_ratio": "4 / 5",
             "number": "01",
             "title": "The origin",
@@ -64,6 +65,7 @@
         "chapter-3": {
           "type": "chapter",
           "settings": {
+            "image": "shopify://shop_images/978D53F7-0E04-4B23-A6C7-0ACA7AC17B81.png",
             "image_ratio": "4 / 5",
             "number": "03",
             "title": "The wearer",
