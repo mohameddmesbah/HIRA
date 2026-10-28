@@ -65,6 +65,9 @@
           %}
         {%- endif -%}
       </div>
+      {%- if settings.hira_start_price_text != blank and compact == false -%}
+        <p class="hira-custom__price" data-hira-reveal="fade" style="--d: 4;">{{ settings.hira_start_price_text | escape }}</p>
+      {%- endif -%}
       {%- if settings.hira_show_cal_link -%}
         <p class="hira-custom__cal" data-hira-reveal="fade" style="--d: 4;">
           {% render 'hira-cal-link', label: section.settings.cal_label %}

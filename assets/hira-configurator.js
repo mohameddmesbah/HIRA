@@ -19,10 +19,10 @@
 
   var OPENINGS = { wide: 'One wide', eyes: 'Two eyes' };
   var MOUTHS = { none: 'None', simple: 'Simple opening', teeth: 'Teeth' };
-  var EARS = { none: 'None', bear: 'Bear ears', bunny: 'Big bunny ears', horns: 'Horns', cat: 'Cat ears' };
-  var EAR_PRICE = { bear: 'small_ears', cat: 'small_ears', bunny: 'bunny', horns: 'horns' };
+  var EARS = { none: 'None', bear: 'Bear ears', bunny: 'Bunny ears', horns: 'Horns', cat: 'Cat ears' };
+  var EAR_PRICE = { bear: 'bear', cat: 'cat', bunny: 'bunny', horns: 'horns' };
   var ACCESSORIES = {
-    chain: { label: 'Silver chain', price: 'chain', start: [262, 150] },
+    chain: { label: 'Steel chain', price: 'chain', start: [262, 150] },
     rings: { label: 'Metal rings', price: 'accessory', start: [244, 150] },
     crystals: { label: 'Crystals', price: 'accessory', start: [200, 252] },
     charms: { label: 'Heart & bow charms', price: 'accessory', start: [146, 140] },
@@ -976,6 +976,18 @@
     });
     this.root.querySelector('[data-cfg-save]').addEventListener('click', function () { self.save(); });
     this.root.querySelector('[data-cfg-send]').addEventListener('click', function () { self.send(); });
+    var copy = this.root.querySelector('[data-copy-number]');
+    if (copy) {
+      copy.addEventListener('click', function () {
+        var number = self.root.querySelector('[data-pay-number]').textContent.trim();
+        var done = function () {
+          copy.textContent = 'Copied';
+          setTimeout(function () { copy.textContent = 'Copy number'; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(number).then(done).catch(function () {});
+        else done();
+      });
+    }
     this.root.querySelector('[data-piece-remove]').addEventListener('click', function () {
       if (self.selected) self.removePiece(self.selected.piece);
     });
@@ -1505,28 +1517,35 @@
 
   /* ---------- price ---------- */
 
+  // Every priced selection: { label, qty, unit, egp }. Stripes and accessories
+  // are charged per stripe / per placed piece.
   Configurator.prototype.lineItems = function () {
     var s = this.state;
     var p = this.prices;
     var c = this.resolved();
     var price = function (key) { return +p[key] || 0; };
-    var items = [{ label: 'Base custom mask', egp: price('base') }];
+    var item = function (label, unit, qty) {
+      qty = qty || 1;
+      return { label: label, qty: qty, unit: unit, egp: unit * qty };
+    };
+    var items = [item('Base custom mask', price('base'))];
     if (s.mouth !== 'none') {
-      items.push({ label: 'Mouth (' + MOUTHS[s.mouth] + ')', egp: price(s.mouth === 'teeth' ? 'mouth_teeth' : 'mouth_simple') });
+      items.push(item('Mouth (' + MOUTHS[s.mouth] + ')', price(s.mouth === 'teeth' ? 'mouth_teeth' : 'mouth_simple')));
     }
-    if (s.ears !== 'none') items.push({ label: EARS[s.ears], egp: price(EAR_PRICE[s.ears]) });
-    if (s.stripes > 0) {
-      items.push({
-        label: 'Side stripes x' + s.stripes + ' (' + c.stripe.name + ', ' + formatNumber(price('stripe')) + ' EGP each)',
-        egp: s.stripes * price('stripe')
-      });
-    }
+    if (s.ears !== 'none') items.push(item(EARS[s.ears], price(EAR_PRICE[s.ears])));
+    if (s.stripes > 0) items.push(item('Side stripes (' + c.stripe.name + ')', price('stripe'), s.stripes));
     ACC_ORDER.forEach(function (k) {
-      if (s.acc[k]) items.push({ label: this.accLabel(k), egp: price(ACCESSORIES[k].price) });
+      var n = s.acc[k] ? this.countOf(k) : 0;
+      if (n) items.push(item(this.accLabel(k), price(ACCESSORIES[k].price), n));
     }, this);
-    if (c.accent) items.push({ label: 'Accent color (' + c.accent.name + ')', egp: price('accent') });
+    if (c.accent) items.push(item('Accent color (' + c.accent.name + ')', price('accent')));
     return items;
   };
+
+  // "Crystals (red) × 6 = 210 EGP" / "Bunny ears = 750 EGP"
+  function itemText(item) {
+    return item.label + (item.qty > 1 ? ' × ' + item.qty : '') + ' = ' + formatNumber(item.egp) + ' EGP';
+  }
 
   Configurator.prototype.accLabel = function (type) {
     if (type === 'crystals') return 'Crystals (' + this.state.crystalColor + ')';
@@ -1544,9 +1563,9 @@
     this.root.querySelector('[data-cfg-usd]').textContent = formatNumber(price.usd);
     var list = this.root.querySelector('[data-cfg-breakdown]');
     if (list) {
-      list.innerHTML = this.lineItems().map(function (item, i) {
-        var value = (i === 0 ? '' : '+') + formatNumber(item.egp) + ' EGP';
-        return '<li><span>' + item.label.replace(/</g, '&lt;') + '</span><span>' + value + '</span></li>';
+      list.innerHTML = this.lineItems().map(function (item) {
+        var label = item.label + (item.qty > 1 ? ' × ' + item.qty : '');
+        return '<li><span>' + label.replace(/</g, '&lt;') + '</span><span>' + formatNumber(item.egp) + ' EGP</span></li>';
       }).join('');
     }
   };
@@ -1614,9 +1633,7 @@
     var sm = this.summary();
     var price = this.price();
     var acc = this.accessoryLines();
-    var priced = this.lineItems().map(function (item, i) {
-      return '- ' + item.label + ': ' + (i === 0 ? '' : '+') + formatNumber(item.egp) + ' EGP';
-    });
+    var priced = this.lineItems().map(function (item) { return '- ' + itemText(item); });
     return [
       'NEW CUSTOM ORDER - HIRA',
       '',
@@ -1709,6 +1726,15 @@
     if (win) win.opener = null;
     else window.location.href = url;
     this.status('WhatsApp is opening with your order. Attach your saved design image in the chat.');
+    this.showConfirmation();
+  };
+
+  Configurator.prototype.showConfirmation = function () {
+    var panel = this.root.querySelector('[data-cfg-confirm]');
+    if (!panel) return;
+    panel.hidden = false;
+    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    panel.focus({ preventScroll: true });
   };
 
   Configurator.prototype.emailCopy = function (text) {

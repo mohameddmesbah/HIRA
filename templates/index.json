@@ -230,11 +230,19 @@
             "question": "Can I return or exchange a piece?",
             "answer": "<p>Ready-made pieces follow our refund policy. Custom pieces are made for you and can't be returned. Add your exact terms here.</p>"
           }
+        },
+        "q-price": {
+          "type": "question",
+          "settings": {
+            "question": "How much does a custom mask cost?",
+            "answer": "<p>Custom pieces start from 2,500 EGP (~$45). Use Design Your Own to see an estimated price as you build; the final price is confirmed on WhatsApp.</p>"
+          }
         }
       },
       "block_order": [
         "q1",
         "q2",
+        "q-price",
         "q3",
         "q4",
         "q5",

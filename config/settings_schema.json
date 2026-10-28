@@ -1527,56 +1527,63 @@
         "type": "number",
         "id": "hira_price_base",
         "label": "Base custom mask",
-        "default": 2000
+        "default": 2500
       },
       {
         "type": "number",
         "id": "hira_price_bunny",
-        "label": "Big bunny ears",
-        "default": 600
+        "label": "Bunny ears",
+        "default": 750
       },
       {
         "type": "number",
-        "id": "hira_price_small_ears",
-        "label": "Small ears (bear / cat)",
-        "default": 280
+        "id": "hira_price_cat",
+        "label": "Cat ears",
+        "default": 550
+      },
+      {
+        "type": "number",
+        "id": "hira_price_bear",
+        "label": "Bear ears",
+        "default": 550
       },
       {
         "type": "number",
         "id": "hira_price_horns",
         "label": "Horns",
-        "default": 280
+        "default": 500
       },
       {
         "type": "number",
         "id": "hira_price_mouth_simple",
         "label": "Mouth: simple opening",
-        "default": 0
+        "default": 150
       },
       {
         "type": "number",
         "id": "hira_price_mouth_teeth",
         "label": "Mouth: teeth",
-        "default": 400
+        "default": 450
       },
       {
         "type": "number",
         "id": "hira_price_stripe",
-        "label": "Side stripe (each, up to 8)",
-        "default": 50
+        "label": "Side stripe (per stripe, up to 8)",
+        "default": 350
       },
       {
         "type": "number",
         "id": "hira_price_chain",
-        "label": "Silver chain",
-        "default": 180
+        "label": "Steel chain (per chain)",
+        "default": 180,
+        "info": "Charged for each chain placed on the mask."
       },
       {
         "type": "number",
         "id": "hira_price_accessory",
-        "label": "Other accessory (each)",
-        "info": "Metal rings, crystals, charms, stars, hearts, pearls / beads.",
-        "default": 100
+        "label": "Other accessories (per piece)",
+        "info": "Metal rings, crystals, charms, stars, hearts, pearls / beads: charged for each piece placed on the mask.",
+        "default": 35
       },
       {
         "type": "number",
@@ -1590,6 +1597,65 @@
         "label": "EGP per 1 USD",
         "info": "Used for the approximate USD price.",
         "default": 56
+      },
+      {
+        "type": "text",
+        "id": "hira_start_price_text",
+        "label": "Starting price line",
+        "default": "Custom pieces start from 2,500 EGP (~$45)",
+        "info": "Shown under the Design Your Own button on the homepage and on the Design Your Own page."
+      },
+      {
+        "type": "header",
+        "content": "Order confirmation (after WhatsApp)"
+      },
+      {
+        "type": "text",
+        "id": "hira_confirm_heading",
+        "label": "Heading",
+        "default": "Thank you!"
+      },
+      {
+        "type": "textarea",
+        "id": "hira_confirm_text",
+        "label": "Text",
+        "default": "We'll confirm your design and final price on WhatsApp within 24 hours."
+      },
+      {
+        "type": "textarea",
+        "id": "hira_confirm_deposit",
+        "label": "Deposit text",
+        "default": "To start production, a 50% deposit is required."
+      },
+      {
+        "type": "text",
+        "id": "hira_confirm_egypt_label",
+        "label": "Egypt label",
+        "default": "Egypt"
+      },
+      {
+        "type": "text",
+        "id": "hira_confirm_egypt_text",
+        "label": "Egypt payment text",
+        "default": "InstaPay or Vodafone Cash to"
+      },
+      {
+        "type": "text",
+        "id": "hira_payment_number",
+        "label": "Payment number (InstaPay / Vodafone Cash)",
+        "default": "+201033189288"
+      },
+      {
+        "type": "text",
+        "id": "hira_confirm_intl_label",
+        "label": "International label",
+        "default": "International"
+      },
+      {
+        "type": "text",
+        "id": "hira_confirm_intl_text",
+        "label": "International payment text",
+        "default": "we'll send you a secure card payment link."
       },
       {
         "type": "header",

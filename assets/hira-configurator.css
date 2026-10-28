@@ -729,3 +729,71 @@
   outline: 2px solid var(--hira-accent-light);
   outline-offset: 2px;
 }
+
+/* --- Starting price + order confirmation --------------------------------- */
+
+.hira-cfg__start-price {
+  margin: 1.6rem 0 0;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: var(--hira-accent-light);
+}
+
+.hira-cfg__confirm {
+  margin-top: 2.4rem;
+  padding: 2.4rem;
+  border: 1px solid rgba(var(--hira-accent-rgb), 0.6);
+  background: rgba(var(--hira-accent-rgb), 0.12);
+  font-size: 1.5rem;
+  line-height: 1.6;
+  outline: none;
+  animation: hira-cfg-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hira-cfg__confirm[hidden] {
+  display: none;
+}
+
+.hira-cfg__confirm-title {
+  margin: 0 0 1rem;
+  font-family: var(--font-heading-family);
+  font-size: 2.6rem;
+  font-weight: 400;
+}
+
+.hira-cfg__confirm p {
+  margin: 0 0 1rem;
+}
+
+.hira-cfg__confirm-deposit {
+  font-weight: 600;
+}
+
+.hira-cfg__confirm-pay {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hira-cfg__pay-number {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hira-cfg__copy {
+  margin-left: 0.6rem;
+  min-height: 3.2rem;
+  padding: 0 1rem;
+  border: 1px solid rgba(var(--color-foreground), 0.35);
+  background: none;
+  color: rgb(var(--color-foreground));
+  font: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.hira-cfg__copy:hover {
+  border-color: var(--hira-accent-light);
+}

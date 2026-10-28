@@ -22,6 +22,9 @@
       {%- if section.settings.text != blank -%}
         <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2;">{{ section.settings.text }}</div>
       {%- endif -%}
+      {%- if settings.hira_start_price_text != blank -%}
+        <p class="hira-cfg__start-price" data-hira-reveal="fade" style="--d: 3;">{{ settings.hira_start_price_text | escape }}</p>
+      {%- endif -%}
     </header>
 
     <div class="hira-cfg__grid">
@@ -90,10 +93,10 @@
             <legend class="hira-cfg__legend"><span>03</span> Ears</legend>
             <div class="hira-cfg__options">
               <label class="hira-cfg__option"><input type="radio" name="ears" value="none" checked><span>None</span></label>
-              <label class="hira-cfg__option"><input type="radio" name="ears" value="bear"><span>Bear ears <small data-price-tag="small_ears"></small></span></label>
-              <label class="hira-cfg__option"><input type="radio" name="ears" value="bunny"><span>Big bunny ears <small data-price-tag="bunny"></small></span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="bear"><span>Bear ears <small data-price-tag="bear"></small></span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="bunny"><span>Bunny ears <small data-price-tag="bunny"></small></span></label>
               <label class="hira-cfg__option"><input type="radio" name="ears" value="horns"><span>Horns <small data-price-tag="horns"></small></span></label>
-              <label class="hira-cfg__option"><input type="radio" name="ears" value="cat"><span>Cat ears <small data-price-tag="small_ears"></small></span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="cat"><span>Cat ears <small data-price-tag="cat"></small></span></label>
             </div>
             <div class="hira-cfg__sub" data-ear-colors hidden>
               <p class="hira-cfg__sublabel" data-ear-outer-label>Ear outer color</p>
@@ -110,21 +113,21 @@
             <p class="hira-cfg__hint">Each one appears on your mask: drag it anywhere on the mask or ears. Tap a piece to remove it.</p>
             <div class="hira-cfg__acc-list">
               <div class="hira-cfg__acc" data-acc-row="chain">
-                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="chain"><span>Silver chain <small data-price-tag="chain"></small></span></label>
+                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="chain"><span>Steel chain <small data-price-tag="chain" data-price-suffix=" per chain"></small></span></label>
                 <div class="hira-cfg__acc-tools" data-acc-tools hidden>
                   <span class="hira-cfg__acc-count" data-acc-count></span>
                   <button type="button" class="hira-cfg__acc-add" data-acc-add="chain">+ Add another</button>
                 </div>
               </div>
               <div class="hira-cfg__acc" data-acc-row="rings">
-                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="rings"><span>Metal rings <small data-price-tag="accessory"></small></span></label>
+                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="rings"><span>Metal rings <small data-price-tag="accessory" data-price-suffix=" per piece"></small></span></label>
                 <div class="hira-cfg__acc-tools" data-acc-tools hidden>
                   <span class="hira-cfg__acc-count" data-acc-count></span>
                   <button type="button" class="hira-cfg__acc-add" data-acc-add="rings">+ Add another</button>
                 </div>
               </div>
               <div class="hira-cfg__acc" data-acc-row="crystals">
-                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="crystals"><span>Crystals <small data-price-tag="accessory"></small></span></label>
+                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="crystals"><span>Crystals <small data-price-tag="accessory" data-price-suffix=" per piece"></small></span></label>
                 <div class="hira-cfg__acc-tools" data-acc-tools hidden>
                   <span class="hira-cfg__acc-count" data-acc-count></span>
                   <button type="button" class="hira-cfg__acc-add" data-acc-add="crystals">+ Add another</button>
@@ -136,28 +139,28 @@
                 </div>
               </div>
               <div class="hira-cfg__acc" data-acc-row="charms">
-                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="charms"><span>Heart &amp; bow charms <small data-price-tag="accessory"></small></span></label>
+                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="charms"><span>Heart &amp; bow charms <small data-price-tag="accessory" data-price-suffix=" per piece"></small></span></label>
                 <div class="hira-cfg__acc-tools" data-acc-tools hidden>
                   <span class="hira-cfg__acc-count" data-acc-count></span>
                   <button type="button" class="hira-cfg__acc-add" data-acc-add="charms">+ Add another</button>
                 </div>
               </div>
               <div class="hira-cfg__acc" data-acc-row="stars">
-                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="stars"><span>Stars <small data-price-tag="accessory"></small></span></label>
+                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="stars"><span>Stars <small data-price-tag="accessory" data-price-suffix=" per piece"></small></span></label>
                 <div class="hira-cfg__acc-tools" data-acc-tools hidden>
                   <span class="hira-cfg__acc-count" data-acc-count></span>
                   <button type="button" class="hira-cfg__acc-add" data-acc-add="stars">+ Add another</button>
                 </div>
               </div>
               <div class="hira-cfg__acc" data-acc-row="hearts">
-                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="hearts"><span>Hearts <small data-price-tag="accessory"></small></span></label>
+                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="hearts"><span>Hearts <small data-price-tag="accessory" data-price-suffix=" per piece"></small></span></label>
                 <div class="hira-cfg__acc-tools" data-acc-tools hidden>
                   <span class="hira-cfg__acc-count" data-acc-count></span>
                   <button type="button" class="hira-cfg__acc-add" data-acc-add="hearts">+ Add another</button>
                 </div>
               </div>
               <div class="hira-cfg__acc" data-acc-row="pearls">
-                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="pearls"><span>Pearls / beads <small data-price-tag="accessory"></small></span></label>
+                <label class="hira-cfg__option"><input type="checkbox" name="acc" value="pearls"><span>Pearls / beads <small data-price-tag="accessory" data-price-suffix=" per piece"></small></span></label>
                 <div class="hira-cfg__acc-tools" data-acc-tools hidden>
                   <span class="hira-cfg__acc-count" data-acc-count></span>
                   <button type="button" class="hira-cfg__acc-add" data-acc-add="pearls">+ Add another</button>
@@ -168,7 +171,7 @@
 
           <fieldset class="hira-cfg__step" data-step="5" hidden>
             <legend class="hira-cfg__legend"><span>05</span> Stripes &amp; accent</legend>
-            <p class="hira-cfg__sublabel">Side stripes <small data-price-tag="stripe" data-price-suffix=" each"></small></p>
+            <p class="hira-cfg__sublabel">Side stripes <small data-price-tag="stripe" data-price-suffix=" per stripe"></small></p>
             <div class="hira-cfg__stepper" data-cfg-stepper>
               <button type="button" class="hira-cfg__stepper-btn" data-stripes-minus aria-label="Fewer stripes">&minus;</button>
               <output class="hira-cfg__stepper-value" data-stripes-value aria-live="polite">0</output>
@@ -229,6 +232,33 @@
               <span class="hira-btn__label">{{ section.settings.send_label | escape }}</span>
             </button>
             <p class="hira-cfg__hint">{{ section.settings.send_note | escape }}</p>
+
+            <div class="hira-cfg__confirm" data-cfg-confirm hidden tabindex="-1" role="status" aria-live="polite">
+              {%- if settings.hira_confirm_heading != blank -%}
+                <h2 class="hira-cfg__confirm-title">{{ settings.hira_confirm_heading | escape }}</h2>
+              {%- endif -%}
+              {%- if settings.hira_confirm_text != blank -%}
+                <p>{{ settings.hira_confirm_text | escape }}</p>
+              {%- endif -%}
+              {%- if settings.hira_confirm_deposit != blank -%}
+                <p class="hira-cfg__confirm-deposit">{{ settings.hira_confirm_deposit | escape }}</p>
+              {%- endif -%}
+              <ul class="hira-cfg__confirm-pay" role="list">
+                {%- if settings.hira_confirm_egypt_text != blank or settings.hira_payment_number != blank -%}
+                  <li>
+                    <strong>{{ settings.hira_confirm_egypt_label | escape }}:</strong>
+                    {{ settings.hira_confirm_egypt_text | escape }}
+                    {%- if settings.hira_payment_number != blank %}
+                      <span class="hira-cfg__pay-number" data-pay-number>{{ settings.hira_payment_number | escape }}</span>.
+                      <button type="button" class="hira-cfg__copy" data-copy-number>Copy number</button>
+                    {%- endif -%}
+                  </li>
+                {%- endif -%}
+                {%- if settings.hira_confirm_intl_text != blank -%}
+                  <li><strong>{{ settings.hira_confirm_intl_label | escape }}:</strong> {{ settings.hira_confirm_intl_text | escape }}</li>
+                {%- endif -%}
+              </ul>
+            </div>
           </fieldset>
 
           <div class="hira-cfg__nav">
@@ -295,7 +325,8 @@
       "prices": {
         "base": {{ settings.hira_price_base | default: 0 | json }},
         "bunny": {{ settings.hira_price_bunny | default: 0 | json }},
-        "small_ears": {{ settings.hira_price_small_ears | default: 0 | json }},
+        "cat": {{ settings.hira_price_cat | default: 0 | json }},
+        "bear": {{ settings.hira_price_bear | default: 0 | json }},
         "horns": {{ settings.hira_price_horns | default: 0 | json }},
         "mouth_simple": {{ settings.hira_price_mouth_simple | default: 0 | json }},
         "mouth_teeth": {{ settings.hira_price_mouth_teeth | default: 0 | json }},
