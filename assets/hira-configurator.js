@@ -128,7 +128,7 @@
   function Scene(svg) {
     this.svg = svg;
     this.uid = 'hc' + Math.random().toString(36).slice(2, 8);
-    this.paint = { base: [], baseDark: [], earOuter: [], earInner: [], earInnerDark: [], trim: [] };
+    this.paint = { base: [], baseDark: [], earOuter: [], earInner: [], earInnerDark: [], trim: [], mouth: [], mouthRim: [] };
     this.earShapes = { bear: [], cat: [], horns: [], bunny: [] };
     this.earGroups = {};
     this.build();
@@ -250,15 +250,15 @@
     var simple = el('g', { 'data-mo': 'simple' }, g);
     el('ellipse', { cx: 200, cy: 300, rx: 22, ry: 13, fill: '#151518' }, simple);
     el('path', { d: 'M186 301 Q200 297 214 301 Q200 308 186 301 Z', fill: '#0c0c0e' }, simple);
-    this.paint.trim.push(el('ellipse', { cx: 200, cy: 300, rx: 22, ry: 13, fill: 'none', 'stroke-width': '7' }, simple));
+    this.paint.mouthRim.push(el('ellipse', { cx: 200, cy: 300, rx: 22, ry: 13, fill: 'none', 'stroke-width': '7' }, simple));
     el('ellipse', { cx: 200, cy: 300, rx: 22, ry: 13, fill: 'none', stroke: this.url('rimStitch'), 'stroke-width': '7' }, simple);
     var teeth = el('g', { 'data-mo': 'teeth' }, g);
     el('rect', { x: 160, y: 284, width: 80, height: 36, rx: 12, fill: '#151518' }, teeth);
     TEETH_BARS.forEach(function (x) {
-      self.paint.base.push(el('rect', { x: x, y: 284, width: 6, height: 36, rx: 3 }, teeth));
+      self.paint.mouth.push(el('rect', { x: x, y: 284, width: 6, height: 36, rx: 3 }, teeth));
       el('rect', { x: x, y: 284, width: 6, height: 36, rx: 3, fill: self.url('stitch') }, teeth);
     });
-    this.paint.trim.push(el('rect', { x: 160, y: 284, width: 80, height: 36, rx: 12, fill: 'none', 'stroke-width': '7' }, teeth));
+    this.paint.mouthRim.push(el('rect', { x: 160, y: 284, width: 80, height: 36, rx: 12, fill: 'none', 'stroke-width': '7' }, teeth));
     el('rect', { x: 160, y: 284, width: 80, height: 36, rx: 12, fill: 'none', stroke: this.url('rimStitch'), 'stroke-width': '7' }, teeth);
   };
 
@@ -406,6 +406,8 @@
     p.earInner.forEach(function (n) { paint(n, c.earInner); });
     p.earInnerDark.forEach(function (n) { paint(n, c.earInner); });
     p.trim.forEach(function (n) { n.style.stroke = c.trim; });
+    p.mouth.forEach(function (n) { paint(n, c.mouth); });
+    p.mouthRim.forEach(function (n) { n.style.stroke = c.mouth; });
   };
 
   Scene.prototype.setOpenings = function (opening, mouth) {
@@ -825,6 +827,7 @@
       base: brown ? brown.id : 0,
       opening: 'eyes',
       mouth: 'none',
+      mouthColor: null, // follows the base colour until chosen
       ears: 'none',
       earOuter: null, // follows the base colour until chosen
       earInner: null, // null = automatic: darker outer for bear ears, White otherwise
@@ -897,6 +900,7 @@
       'cfg-earOuter': s.earOuter === null ? s.base : s.earOuter,
       'cfg-earInner': s.earInner === null ? (s.ears === 'bear' ? '' : this.defaultInnerId()) : s.earInner,
       'cfg-stripe': s.stripeColor,
+      'cfg-mouth': s.mouthColor === null ? s.base : s.mouthColor,
       'cfg-accent': s.accent === null ? '' : s.accent
     };
     Object.keys(values).forEach(function (name) {
@@ -929,6 +933,7 @@
         case 'cfg-earOuter': s.earOuter = +t.value === s.base ? null : +t.value; break;
         case 'cfg-earInner': s.earInner = +t.value; break;
         case 'cfg-stripe': s.stripeColor = +t.value; break;
+        case 'cfg-mouth': s.mouthColor = +t.value === s.base ? null : +t.value; break;
         case 'cfg-accent': s.accent = t.value === '' ? null : +t.value; break;
         case 'opening': s.opening = t.value; break;
         case 'mouth': s.mouth = t.value; break;
@@ -1035,7 +1040,8 @@
       accent: s.accent === null ? null : this.color(s.accent),
       earOuter: this.color(s.earOuter === null ? s.base : s.earOuter),
       earInner: this.innerColor(),
-      stripe: this.color(s.stripeColor)
+      stripe: this.color(s.stripeColor),
+      mouth: this.color(s.mouthColor === null ? s.base : s.mouthColor)
     };
   };
 
@@ -1062,14 +1068,15 @@
       base: c.base.hex,
       earOuter: c.earOuter.hex,
       earInner: c.earInner.hex,
+      mouth: c.mouth.hex,
       trim: c.accent ? c.accent.hex : shade(c.base.hex, 0.22)
     });
     var mode = this.layerMode();
     this.scene.mannequinSvg.style.display = mode.mannequin ? 'none' : '';
     this.scene.body.style.display = mode.mask ? 'none' : '';
     this.scene.rims.style.display = mode.mask ? 'none' : '';
-    this.scene.setOpenings(s.opening, mode.mouth ? 'none' : s.mouth);
-    this.scene.setMouthOverlay(mode.mask && !mode.mouth ? s.mouth : 'none');
+    this.scene.setOpenings(s.opening, 'none');
+    this.scene.setMouthOverlay(mode.mouth ? 'none' : s.mouth);
     this.scene.setEars(mode.ears ? 'none' : s.ears);
     this.scene.earType = s.ears;
     this.scene.setStripes(mode.stripesCanvas ? 0 : s.stripes, c.stripe.hex);
@@ -1090,6 +1097,7 @@
     this.root.querySelector('[data-stripes-minus]').disabled = s.stripes <= 0;
     this.root.querySelector('[data-stripes-plus]').disabled = s.stripes >= MAX_STRIPES;
     this.root.querySelector('[data-stripe-color]').hidden = s.stripes === 0;
+    this.root.querySelector('[data-mouth-color]').hidden = s.mouth === 'none';
 
     // Accessory rows: count + "Add another" when active.
     ACC_ORDER.forEach(function (type) {
@@ -1142,7 +1150,7 @@
     var jobs = [
       ['mannequin', mode.mannequin ? L.tinted('mannequin', null) : null],
       ['mask', mode.mask ? L.tinted(mode.maskKey, tint(c.base.hex)) : null],
-      ['mouth', mode.mouth ? L.tinted(mode.mouthKey, tint(c.base.hex)) : null],
+      ['mouth', mode.mouth ? L.tinted(mode.mouthKey, tint(c.mouth.hex)) : null],
       ['stripes', mode.stripesCanvas ? L.stripes({
         usePng: mode.stripePng, color: mode.stripePng ? tint(c.stripe.hex) : c.stripe.hex, count: s.stripes,
         maskKey: mode.mask ? mode.maskKey : null
@@ -1530,7 +1538,7 @@
     };
     var items = [item('Base custom mask', price('base'))];
     if (s.mouth !== 'none') {
-      items.push(item('Mouth (' + MOUTHS[s.mouth] + ')', price(s.mouth === 'teeth' ? 'mouth_teeth' : 'mouth_simple')));
+      items.push(item('Mouth (' + MOUTHS[s.mouth] + ', mouth color: ' + c.mouth.name + ')', price(s.mouth === 'teeth' ? 'mouth_teeth' : 'mouth_simple')));
     }
     if (s.ears !== 'none') items.push(item(EARS[s.ears], price(EAR_PRICE[s.ears])));
     if (s.stripes > 0) items.push(item('Side stripes (' + c.stripe.name + ')', price('stripe'), s.stripes));
@@ -1611,7 +1619,7 @@
     return {
       base: c.base.name,
       openings: OPENINGS[s.opening],
-      mouth: MOUTHS[s.mouth],
+      mouth: MOUTHS[s.mouth] + (s.mouth === 'none' ? '' : ' (mouth color: ' + c.mouth.name + ')'),
       stripes: s.stripes ? s.stripes + ' (' + c.stripe.name + ')' : 'None',
       ears: ears,
       accessories: short.length ? short.join(', ') : 'None',
