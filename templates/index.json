@@ -17,10 +17,10 @@
         "overlay_opacity": 55,
         "parallax": 20,
         "show_thread": true,
-        "eyebrow": "Handmade textile & macramé masks",
+        "eyebrow": "Handmade crochet & knitted masks",
         "heading": "An Art As Old As Time.\nReimagined for Today.",
         "accent_last_line": true,
-        "subheading": "<p>Masks knotted, woven and stitched by hand. Wearable sculpture for the ones who dress as an act of expression.</p>",
+        "subheading": "<p>Masks crocheted and knitted by hand, stitch by stitch. Wearable sculpture for the ones who dress as an act of expression.</p>",
         "button_label_1": "Explore the Collection",
         "button_link_1": "shopify://collections/all",
         "button_1_booking": false,
@@ -44,7 +44,7 @@
             "image_ratio": "4 / 5",
             "number": "01",
             "title": "The origin",
-            "text": "<p>Macramé is one of the oldest textile arts: knots tied by hand, long before looms. HIRA starts there, with cord, patience and fingers that remember.</p>",
+            "text": "<p>Crochet and knitting are among the oldest textile arts: loops of yarn shaped by hand, stitch by stitch. HIRA starts there, with yarn, patience and fingers that remember.</p>",
             "link_label": "",
             "link": "",
             "link_booking": false
@@ -57,7 +57,7 @@
             "image_ratio": "4 / 5",
             "number": "02",
             "title": "The craft",
-            "text": "<p>Every mask is knotted, woven and stitched by hand in small batches. Natural fibres, hand-dyed threads, hours of slow work. No two are identical, and that is the point.</p>",
+            "text": "<p>Every mask is crocheted or knitted by hand in small batches. Natural fibres, hand-dyed yarns, hours of slow work. No two are identical, and that is the point.</p>",
             "link_label": "",
             "link": "",
             "link_booking": false
@@ -92,9 +92,9 @@
       ],
       "settings": {
         "eyebrow": "The story",
-        "heading": "Every knot\nholds a memory.",
+        "heading": "Every stitch\nholds a memory.",
         "accent_last_line": true,
-        "text": "<p>HIRA began with a single cord and an old technique: hands looping, knotting and weaving fibre into form. Today each mask is still made the slow way, one piece at a time, as a bridge between ancestral craft and the way we dress now.</p>",
+        "text": "<p>HIRA began with a ball of yarn and an old technique: hands looping, hooking and knitting fibre into form. Today each mask is still made the slow way, one piece at a time, as a bridge between ancestral craft and the way we dress now.</p>",
         "alternate": true,
         "color_scheme": "scheme-1",
         "padding_top": 128,
@@ -143,7 +143,7 @@
           "type": "step",
           "settings": {
             "title": "Stitch",
-            "text": "Your mask is knotted and stitched by hand, then finished and sent to you."
+            "text": "Your mask is crocheted or knitted by hand, then finished and sent to you."
           }
         }
       },
@@ -192,7 +192,7 @@
           "type": "question",
           "settings": {
             "question": "Are the masks really handmade?",
-            "answer": "<p>Yes. Every mask is knotted, woven and stitched by hand. Small variations are part of the piece.</p>"
+            "answer": "<p>Yes. Every mask is crocheted or knitted and finished by hand. Small variations are part of the piece.</p>"
           }
         },
         "q2": {
