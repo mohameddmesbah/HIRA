@@ -1729,6 +1729,534 @@
     ]
   },
   {
+    "name": "Configurator layers",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Layered PNG images for the Design Your Own preview. Export every layer from the same canvas size, in white yarn on a transparent background (except the mannequin), and they line up automatically. Layers are tinted with the customer's colors. Any layer left empty keeps the drawn version. Use the sliders to fine-tune alignment."
+      },
+      {
+        "type": "header",
+        "content": "Mannequin (background)"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_mannequin",
+        "label": "Image",
+        "info": "Not tinted. Use a full image with its background (not transparent)."
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mannequin_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mannequin_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mannequin_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Mask: two eyes"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_mask_eyes",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mask_eyes_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mask_eyes_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mask_eyes_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Mask: one wide"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_mask_wide",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mask_wide_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mask_wide_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mask_wide_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Mouth: simple"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_mouth_simple",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mouth_simple_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mouth_simple_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mouth_simple_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Mouth: teeth"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_mouth_teeth",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mouth_teeth_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mouth_teeth_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_mouth_teeth_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Bunny ears: outer"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_bunny_outer",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bunny_outer_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bunny_outer_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bunny_outer_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Bunny ears: inner"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_bunny_inner",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bunny_inner_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bunny_inner_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bunny_inner_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Bear ears: outer"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_bear_outer",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bear_outer_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bear_outer_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bear_outer_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Bear ears: inner"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_bear_inner",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bear_inner_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bear_inner_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bear_inner_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Cat ears: outer"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_cat_outer",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_cat_outer_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_cat_outer_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_cat_outer_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Cat ears: inner"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_cat_inner",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_cat_inner_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_cat_inner_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_cat_inner_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Horns"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_horns",
+        "label": "Image"
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_horns_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_horns_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_horns_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Side stripe (left side)"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_stripe",
+        "label": "Image",
+        "info": "Mirrored for the right side and repeated for more stripes."
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_stripe_x",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_stripe_y",
+        "min": -100,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_stripe_scale",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_stripe_spacing",
+        "min": 0,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Space between repeated stripes",
+        "default": 14
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.search_input.name",
     "settings": [
       {

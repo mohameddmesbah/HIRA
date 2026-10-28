@@ -144,8 +144,14 @@
     var defs = el('defs', null, svg);
     this.buildDefs(defs);
 
+    // PNG layers (Theme settings > Configurator layers) sit in these slots, in
+    // stack order; any part without an image keeps its SVG drawing.
+    this.img = {};
+    this.img.mannequin = this.imageSlot(svg);
+
     // Mannequin: shoulders, neck and a matte head (visible through the openings).
     var mannequin = el('g', { class: 'cfg-mannequin' }, svg);
+    this.mannequinSvg = mannequin;
     el('path', { d: SHOULDERS, fill: this.url('matte') }, mannequin);
     el('path', { d: 'M136 372 L264 372 L268 434 L132 434 Z', fill: '#1c1c20' }, mannequin);
     el('path', { d: HEAD, fill: this.url('matte') }, mannequin);
@@ -168,6 +174,7 @@
 
     // The balaclava, with the openings cut out by a mask.
     var body = el('g', { mask: this.url('open') }, svg);
+    this.body = body;
     this.headFill = el('path', { d: HEAD }, body);
     this.paint.base.push(this.headFill);
     var clip = el('g', { 'clip-path': this.url('head') }, body);
@@ -197,6 +204,14 @@
       el('rect', { x: x - 0.5, y: 284, width: 7, height: 36, rx: 3.5, fill: 'none', stroke: '#000', 'stroke-opacity': '.28', 'stroke-width': '1.2' }, teethRim);
     });
 
+    // PNG mask, mouth, stripes and ears (inner below outer).
+    this.img.mask = this.imageSlot(svg);
+    this.img.mouth = this.imageSlot(svg);
+    this.buildMouthOverlay(svg);
+    this.img.stripes = this.imageSlot(svg);
+    this.img.earInner = this.imageSlot(svg);
+    this.img.earOuter = this.imageSlot(svg);
+
     // Bunny ears hang in front of the face and onto the shoulders.
     var front = el('g', null, svg);
     this.buildBunny(front);
@@ -204,6 +219,40 @@
     this.pieces = el('g', { class: 'cfg-pieces' }, svg);
     this.ui = el('g', { class: 'cfg-ui', 'data-ui': '' }, svg);
     this.selectRing = el('circle', { r: 15, fill: 'none', stroke: '#b08ae0', 'stroke-width': '2', 'stroke-dasharray': '4 3', style: 'display:none' }, this.ui);
+  };
+
+  Scene.prototype.imageSlot = function (parent) {
+    return el('image', {
+      class: 'cfg-png', x: 0, y: -40, width: W, height: 540,
+      preserveAspectRatio: 'xMidYMid meet', style: 'display:none'
+    }, parent);
+  };
+
+  // Mouth drawn on top of a PNG mask (used when that mouth has no PNG yet).
+  Scene.prototype.buildMouthOverlay = function (parent) {
+    var self = this;
+    var g = el('g', { style: 'display:none' }, parent);
+    this.mouthOverlay = g;
+    var simple = el('g', { 'data-mo': 'simple' }, g);
+    el('ellipse', { cx: 200, cy: 300, rx: 22, ry: 13, fill: '#151518' }, simple);
+    el('path', { d: 'M186 301 Q200 297 214 301 Q200 308 186 301 Z', fill: '#0c0c0e' }, simple);
+    this.paint.trim.push(el('ellipse', { cx: 200, cy: 300, rx: 22, ry: 13, fill: 'none', 'stroke-width': '7' }, simple));
+    el('ellipse', { cx: 200, cy: 300, rx: 22, ry: 13, fill: 'none', stroke: this.url('rimStitch'), 'stroke-width': '7' }, simple);
+    var teeth = el('g', { 'data-mo': 'teeth' }, g);
+    el('rect', { x: 160, y: 284, width: 80, height: 36, rx: 12, fill: '#151518' }, teeth);
+    TEETH_BARS.forEach(function (x) {
+      self.paint.base.push(el('rect', { x: x, y: 284, width: 6, height: 36, rx: 3 }, teeth));
+      el('rect', { x: x, y: 284, width: 6, height: 36, rx: 3, fill: self.url('stitch') }, teeth);
+    });
+    this.paint.trim.push(el('rect', { x: 160, y: 284, width: 80, height: 36, rx: 12, fill: 'none', 'stroke-width': '7' }, teeth));
+    el('rect', { x: 160, y: 284, width: 80, height: 36, rx: 12, fill: 'none', stroke: this.url('rimStitch'), 'stroke-width': '7' }, teeth);
+  };
+
+  Scene.prototype.setMouthOverlay = function (mouth) {
+    this.mouthOverlay.style.display = mouth === 'simple' || mouth === 'teeth' ? '' : 'none';
+    this.mouthOverlay.querySelectorAll('[data-mo]').forEach(function (g) {
+      g.style.display = g.getAttribute('data-mo') === mouth ? '' : 'none';
+    });
   };
 
   Scene.prototype.buildDefs = function (defs) {
@@ -389,7 +438,17 @@
     }
   };
 
+  // Alpha maps (400 x 540, one cell per viewBox unit) built from PNG layers.
+  Scene.prototype.alphaAt = function (map, x, y) {
+    var ix = Math.round(x), iy = Math.round(y + 40);
+    if (ix < 0 || iy < 0 || ix >= W || iy >= 540) return false;
+    return map[(iy * W + ix) * 4 + 3] > 40;
+  };
+
   Scene.prototype.onEar = function (x, y) {
+    if (this.alpha && this.alpha.ears) {
+      return this.alphaAt(this.alpha.ears, x, y) ? (x < 200 ? 'left' : 'right') : null;
+    }
     var list = this.ears && this.earShapes[this.ears];
     if (!list) return null;
     for (var i = 0; i < list.length; i++) {
@@ -399,13 +458,15 @@
   };
 
   Scene.prototype.isOnMask = function (x, y) {
-    return !!this.onEar(x, y) || this.inShape(this.headFill, x, y);
+    if (this.onEar(x, y)) return true;
+    if (this.alpha && this.alpha.mask) return this.alphaAt(this.alpha.mask, x, y);
+    return this.inShape(this.headFill, x, y);
   };
 
   // Plain-language spot, as seen from the front.
   Scene.prototype.region = function (x, y) {
     var ear = this.onEar(x, y);
-    if (ear) return ear + ' ' + (this.ears === 'horns' ? 'horn' : 'ear');
+    if (ear) return ear + ' ' + ((this.earType || this.ears) === 'horns' ? 'horn' : 'ear');
     var side = x < 200 ? 'left' : 'right';
     var mid = Math.abs(x - 200);
     if (y < 172) return 'forehead';
@@ -490,6 +551,180 @@
   };
 
   /* =====================================================================
+   * PNG layers: load on demand, tint (multiply, keeping stitches/shading),
+   * composite stripes, and build alpha maps for dragging.
+   * =================================================================== */
+
+  var XLINK = 'http://www.w3.org/1999/xlink';
+  var CANVAS_SCALE = 2; // composites are 800 x 1080 (viewBox x 2)
+
+  function Layers(config) {
+    this.cfg = config || {};
+    this.images = {};   // key -> Promise<HTMLImageElement>
+    this.tints = {};    // key -> { color, promise } (latest only, to save memory)
+    this.failed = {};
+    this.canvasFor = {}; // object URL -> canvas (for export)
+  }
+
+  Layers.prototype.has = function (key) {
+    var l = key && this.cfg[key];
+    return !!(l && l.url) && !this.failed[key];
+  };
+
+  Layers.prototype.load = function (key) {
+    if (!this.images[key]) {
+      var url = this.cfg[key].url;
+      this.images[key] = new Promise(function (resolve, reject) {
+        var img = new Image();
+        img.crossOrigin = 'anonymous'; // needed to tint on a canvas and export
+        img.decoding = 'async';
+        img.onload = function () { resolve(img); };
+        img.onerror = function () { reject(new Error('layer failed: ' + key)); };
+        img.src = url;
+      });
+    }
+    return this.images[key];
+  };
+
+  Layers.prototype.toUrl = function (canvas) {
+    var self = this;
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (blob) {
+        if (!blob) { reject(new Error('toBlob failed')); return; }
+        var url = URL.createObjectURL(blob);
+        self.canvasFor[url] = canvas;
+        resolve(url);
+      }, 'image/png');
+    });
+  };
+
+  // White-yarn PNG x colour (multiply), with the original transparency kept.
+  Layers.prototype.tinted = function (key, hex) {
+    var self = this;
+    var cached = this.tints[key];
+    if (cached && cached.color === hex) return cached.promise;
+    // Free the previous colour once the new one has had time to swap in on screen.
+    if (cached) cached.promise.then(function (r) { setTimeout(function () { self.release(r.url); }, 3000); }).catch(function () {});
+    var promise = this.load(key).then(function (img) {
+      var canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      if (hex) {
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.fillStyle = hex;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.drawImage(img, 0, 0);
+      }
+      ctx.getImageData(0, 0, 1, 1); // throws now (not at export) if the image is not CORS-enabled
+      return self.toUrl(canvas).then(function (url) { return { url: url, canvas: canvas, img: img }; });
+    });
+    this.tints[key] = { color: hex, promise: promise };
+    return promise;
+  };
+
+  Layers.prototype.release = function (url) {
+    if (!url) return;
+    delete this.canvasFor[url];
+    URL.revokeObjectURL(url);
+  };
+
+  // Where a layer image sits in the viewBox: fitted (meet) into 0,-40,400,540,
+  // then the theme-editor offset and scale around the centre.
+  Layers.prototype.transform = function (key) {
+    var l = this.cfg[key] || {};
+    var s = (+l.scale || 100) / 100;
+    return 'translate(' + (+l.x || 0) + ' ' + (+l.y || 0) + ') translate(200 230) scale(' + s + ') translate(-200 -230)';
+  };
+
+  Layers.prototype.draw = function (ctx, key, source, extra) {
+    var l = this.cfg[key] || {};
+    var w = source.naturalWidth || source.width;
+    var h = source.naturalHeight || source.height;
+    var f = Math.min(W / w, 540 / h);
+    var dw = w * f, dh = h * f;
+    ctx.save();
+    if (extra) extra(ctx);
+    ctx.translate(+l.x || 0, +l.y || 0);
+    ctx.translate(200, 230);
+    var sc = (+l.scale || 100) / 100;
+    ctx.scale(sc, sc);
+    ctx.translate(-200, -230);
+    ctx.drawImage(source, (W - dw) / 2, -40 + (540 - dh) / 2, dw, dh);
+    ctx.restore();
+  };
+
+  // Stripes: the stripe PNG (left side) tinted, repeated inward with spacing,
+  // mirrored for the right side, then clipped to the mask's shape.
+  Layers.prototype.stripes = function (opts) {
+    var self = this;
+    var cw = W * CANVAS_SCALE, ch = 540 * CANVAS_SCALE;
+    var stripe = opts.usePng ? this.tinted('stripe', opts.color) : Promise.resolve(null);
+    var mask = opts.maskKey ? this.load(opts.maskKey) : Promise.resolve(null);
+    return Promise.all([stripe, mask]).then(function (res) {
+      var canvas = document.createElement('canvas');
+      canvas.width = cw;
+      canvas.height = ch;
+      var ctx = canvas.getContext('2d');
+      ctx.setTransform(CANVAS_SCALE, 0, 0, CANVAS_SCALE, 0, 40 * CANVAS_SCALE);
+      var left = Math.ceil(opts.count / 2), right = Math.floor(opts.count / 2);
+      var spacing = +self.cfg.stripeSpacing || 14;
+      var one = function (k, mirror) {
+        if (res[0]) {
+          self.draw(ctx, 'stripe', res[0].canvas, function (c) {
+            if (mirror) { c.translate(W, 0); c.scale(-1, 1); }
+            c.translate(k * spacing, 0);
+          });
+        } else {
+          // No stripe image: the SVG stripe path, drawn here so it can be clipped to a PNG mask.
+          var o = 14 + k * 13;
+          var d = 'M' + (118 + o) + ' 70 C' + (90 + o) + ' 150 ' + (94 + o) + ' 270 ' + (146 + o) + ' 356';
+          ctx.save();
+          ctx.strokeStyle = opts.color;
+          ctx.lineWidth = 7;
+          ctx.lineCap = 'round';
+          ctx.stroke(new Path2D(mirror ? mirrorPath(d) : d));
+          ctx.restore();
+        }
+      };
+      for (var i = 0; i < left; i++) one(i, false);
+      for (var j = 0; j < right; j++) one(j, true);
+      ctx.globalCompositeOperation = 'destination-in';
+      if (res[1]) self.draw(ctx, opts.maskKey, res[1]);
+      else ctx.fill(new Path2D(HEAD));
+      return self.toUrl(canvas);
+    });
+  };
+
+  // 400 x 540 alpha map of the given layers (for "stay on the mask" and naming spots).
+  Layers.prototype.alphaMap = function (keys) {
+    var self = this;
+    keys = keys.filter(function (k) { return self.has(k); });
+    if (!keys.length) return Promise.resolve(null);
+    return Promise.all(keys.map(function (k) { return self.load(k); })).then(function (imgs) {
+      var canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = 540;
+      var ctx = canvas.getContext('2d');
+      ctx.setTransform(1, 0, 0, 1, 0, 40);
+      imgs.forEach(function (img, i) { self.draw(ctx, keys[i], img); });
+      return ctx.getImageData(0, 0, W, 540).data;
+    });
+  };
+
+  function setHref(node, url) {
+    if (url) {
+      node.setAttribute('href', url);
+      node.setAttributeNS(XLINK, 'xlink:href', url);
+      node.style.display = '';
+    } else {
+      node.style.display = 'none';
+    }
+  }
+
+  /* =====================================================================
    * Configurator
    * =================================================================== */
 
@@ -506,6 +741,10 @@
     this.prices = config.prices || {};
     this.usdRate = +config.usdRate > 0 ? +config.usdRate : 56;
     this.whatsapp = String(config.whatsapp || '').replace(/\D/g, '');
+    var layerCfg = config.layers || {};
+    layerCfg.stripeSpacing = config.stripeSpacing;
+    this.layers = new Layers(layerCfg);
+    this.layerToken = 0;
 
     var find = this.findColor.bind(this);
     var white = find('white'), brown = find('brown');
@@ -740,9 +979,16 @@
       earInner: c.earInner.hex,
       trim: c.accent ? c.accent.hex : shade(c.base.hex, 0.22)
     });
-    this.scene.setOpenings(s.opening, s.mouth);
-    this.scene.setEars(s.ears);
-    this.scene.setStripes(s.stripes, c.stripe.hex);
+    var mode = this.layerMode();
+    this.scene.mannequinSvg.style.display = mode.mannequin ? 'none' : '';
+    this.scene.body.style.display = mode.mask ? 'none' : '';
+    this.scene.rims.style.display = mode.mask ? 'none' : '';
+    this.scene.setOpenings(s.opening, mode.mouth ? 'none' : s.mouth);
+    this.scene.setMouthOverlay(mode.mask && !mode.mouth ? s.mouth : 'none');
+    this.scene.setEars(mode.ears ? 'none' : s.ears);
+    this.scene.earType = s.ears;
+    this.scene.setStripes(mode.stripesCanvas ? 0 : s.stripes, c.stripe.hex);
+    this.updateLayers(mode);
 
     var applique = this.appliqueColor();
     this.svg.querySelectorAll('[data-applique]').forEach(function (node) {
@@ -774,6 +1020,91 @@
     this.syncInputs();
     this.renderPrice();
     this.queuePng();
+  };
+
+  /* ---------- PNG layers ---------- */
+
+  // Which parts use an uploaded PNG right now (the rest keep their SVG drawing).
+  Configurator.prototype.layerMode = function () {
+    var s = this.state;
+    var L = this.layers;
+    var maskKey = s.opening === 'wide' ? 'mask_wide' : 'mask_eyes';
+    var mouthKey = s.mouth === 'simple' ? 'mouth_simple' : s.mouth === 'teeth' ? 'mouth_teeth' : null;
+    var outerKey = s.ears === 'none' ? null : s.ears === 'horns' ? 'horns' : s.ears + '_outer';
+    var ears = !!outerKey && L.has(outerKey);
+    var innerKey = ears && s.ears !== 'horns' && L.has(s.ears + '_inner') ? s.ears + '_inner' : null;
+    var mask = L.has(maskKey);
+    return {
+      mannequin: L.has('mannequin'),
+      mask: mask, maskKey: maskKey,
+      mouth: !!mouthKey && L.has(mouthKey), mouthKey: mouthKey,
+      ears: ears, outerKey: outerKey, innerKey: innerKey,
+      stripePng: L.has('stripe'),
+      stripesCanvas: s.stripes > 0 && (L.has('stripe') || mask)
+    };
+  };
+
+  Configurator.prototype.updateLayers = function (mode) {
+    var self = this;
+    var L = this.layers;
+    var s = this.state;
+    var c = this.resolved();
+    var img = this.scene.img;
+    var token = ++this.layerToken;
+    // Black yarn tinted to a dark grey so the stitch texture stays visible.
+    var tint = function (hex) { return luminance(hex) < 0.12 ? '#2b2b2b' : hex; };
+
+    var jobs = [
+      ['mannequin', mode.mannequin ? L.tinted('mannequin', null) : null],
+      ['mask', mode.mask ? L.tinted(mode.maskKey, tint(c.base.hex)) : null],
+      ['mouth', mode.mouth ? L.tinted(mode.mouthKey, tint(c.base.hex)) : null],
+      ['stripes', mode.stripesCanvas ? L.stripes({
+        usePng: mode.stripePng, color: mode.stripePng ? tint(c.stripe.hex) : c.stripe.hex, count: s.stripes,
+        maskKey: mode.mask ? mode.maskKey : null
+      }).then(function (url) { return { url: url, own: true }; }) : null],
+      ['earInner', mode.innerKey ? L.tinted(mode.innerKey, tint(c.earInner.hex)) : null],
+      ['earOuter', mode.ears ? L.tinted(mode.outerKey, tint(c.earOuter.hex)) : null]
+    ];
+    var keyFor = { mannequin: 'mannequin', mask: mode.maskKey, mouth: mode.mouthKey, earInner: mode.innerKey, earOuter: mode.outerKey, stripes: 'stripe' };
+
+    jobs.forEach(function (job) {
+      var slot = job[0];
+      var promise = job[1];
+      if (!promise) {
+        setHref(img[slot], null);
+        return;
+      }
+      promise.then(function (res) {
+        if (token !== self.layerToken) {
+          if (res.own) L.release(res.url);
+          return;
+        }
+        if (slot !== 'stripes') img[slot].setAttribute('transform', L.transform(keyFor[slot]));
+        var previous = img[slot].getAttribute('data-own-url');
+        if (previous && previous !== res.url) L.release(previous);
+        if (res.own) img[slot].setAttribute('data-own-url', res.url);
+        else img[slot].removeAttribute('data-own-url');
+        setHref(img[slot], res.url);
+        self.queuePng();
+      }).catch(function () {
+        // Image missing, blocked (CORS) or broken: fall back to the SVG part.
+        if (keyFor[slot] && slot !== 'stripes') L.failed[keyFor[slot]] = true;
+        if (slot === 'stripes') L.failed.stripe = true;
+        if (token === self.layerToken) self.render();
+      });
+    });
+
+    // Alpha maps so pieces stay on the PNG mask / ears.
+    Promise.all([
+      mode.mask ? L.alphaMap([mode.maskKey]) : Promise.resolve(null),
+      mode.ears ? L.alphaMap([mode.outerKey, mode.innerKey].filter(Boolean)) : Promise.resolve(null)
+    ]).then(function (maps) {
+      if (token !== self.layerToken) return;
+      self.scene.alpha = { mask: maps[0], ears: maps[1] };
+      self.keepPiecesOnMask();
+    }).catch(function () {
+      if (token === self.layerToken) self.scene.alpha = null;
+    });
   };
 
   /* ---------- pieces ---------- */
@@ -1331,7 +1662,20 @@
   // A standalone copy of the preview: no selection UI, no touch targets.
   Configurator.prototype.svgMarkup = function () {
     var clone = this.svg.cloneNode(true);
+    var layers = this.layers;
     clone.querySelectorAll('[data-ui], .cfg-hit, [data-on="false"]').forEach(function (n) { n.remove(); });
+    // PNG layers are blob: URLs on screen; embed them so the standalone image can draw them.
+    clone.querySelectorAll('image.cfg-png').forEach(function (node) {
+      var url = node.getAttribute('href');
+      var canvas = url && layers.canvasFor[url];
+      if (node.style.display === 'none' || !canvas) {
+        node.remove();
+        return;
+      }
+      var data = canvas.toDataURL('image/png');
+      node.setAttribute('href', data);
+      node.setAttributeNS(XLINK, 'xlink:href', data);
+    });
     clone.setAttribute('width', '800');
     clone.setAttribute('height', '1080');
     return new XMLSerializer().serializeToString(clone);
