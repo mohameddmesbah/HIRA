@@ -446,8 +446,9 @@
 
 .hira-cfg__measure {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: 1.2rem;
+  gap: 1rem;
 }
 
 .hira-cfg__measure-text {
@@ -462,7 +463,6 @@
 }
 
 .hira-cfg__measure-thumb {
-  flex: 0 0 12rem;
   width: 12rem;
   padding: 0;
   border: 1px solid rgba(var(--color-foreground), 0.2);

@@ -1809,6 +1809,16 @@
       },
       {
         "type": "header",
+        "content": "Head measurement guide"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_measure_image",
+        "label": "Head measurement guide image",
+        "info": "Shown as a small thumbnail under the Head circumference note in Design Your Own. Tapping it opens it larger. Hidden when empty."
+      },
+      {
+        "type": "header",
         "content": "Mannequin (background)"
       },
       {
