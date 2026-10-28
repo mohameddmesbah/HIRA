@@ -1,0 +1,504 @@
+{{ 'hira-configurator.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'hira-configurator.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign sid = section.id
+  assign wa_number = settings.hira_whatsapp_order | default: '201033189288' | remove: '+' | remove: ' ' | remove: '-'
+-%}
+
+<section
+  id="design-your-own"
+  class="hira-section hira-cfg color-{{ section.settings.color_scheme }} gradient"
+  style="--hira-pt: {{ section.settings.padding_top }}px; --hira-pb: {{ section.settings.padding_bottom }}px;"
+  data-hira-configurator
+>
+  <div class="hira-wrap">
+    <header class="hira-cfg__head">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hira-eyebrow" data-hira-reveal="fade">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {% render 'hira-heading-reveal', text: section.settings.heading, accent_last: section.settings.accent_last_line, tag: 'h1' %}
+      {%- if section.settings.text != blank -%}
+        <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2;">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </header>
+
+    <div class="hira-cfg__grid">
+      {%- comment -%} Live preview {%- endcomment -%}
+      <div class="hira-cfg__stage">
+        <div class="hira-cfg__preview" aria-live="polite">
+          <svg
+            class="hira-cfg__svg"
+            viewBox="0 -40 400 520"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-labelledby="HiraCfgTitle-{{ sid }}"
+            data-cfg-svg
+          >
+            <title id="HiraCfgTitle-{{ sid }}">Preview of your HIRA mask</title>
+            <defs>
+              <pattern id="knit-{{ sid }}" width="12" height="11" patternUnits="userSpaceOnUse">
+                <path d="M0 0 L6 8 L12 0" fill="none" stroke="#000" stroke-opacity=".2" stroke-width="1.3"/>
+                <path d="M0 2.5 L6 10.5 L12 2.5" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="1"/>
+              </pattern>
+              <pattern id="rib-{{ sid }}" width="9" height="20" patternUnits="userSpaceOnUse">
+                <rect width="4" height="20" fill="#000" fill-opacity=".16"/>
+                <rect x="4" width="1" height="20" fill="#fff" fill-opacity=".07"/>
+              </pattern>
+              <radialGradient id="shade-{{ sid }}" cx="38%" cy="28%" r="78%">
+                <stop offset="0" stop-color="#fff" stop-opacity=".16"/>
+                <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
+                <stop offset="1" stop-color="#000" stop-opacity=".42"/>
+              </radialGradient>
+              <radialGradient id="void-{{ sid }}" cx="50%" cy="40%" r="70%">
+                <stop offset="0" stop-color="#2a2530"/>
+                <stop offset="1" stop-color="#0b0a0d"/>
+              </radialGradient>
+              <linearGradient id="silver-{{ sid }}" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#f4f5f8"/>
+                <stop offset=".5" stop-color="#a9adb6"/>
+                <stop offset="1" stop-color="#e2e4ea"/>
+              </linearGradient>
+              <radialGradient id="pearl-{{ sid }}" cx="35%" cy="30%" r="70%">
+                <stop offset="0" stop-color="#fff"/>
+                <stop offset="1" stop-color="#d9d1c3"/>
+              </radialGradient>
+              <clipPath id="headclip-{{ sid }}">
+                <path d="M200 38 C285 38 330 105 330 200 C330 270 305 330 282 368 C300 395 340 420 352 470 L48 470 C60 420 100 395 118 368 C95 330 70 270 70 200 C70 105 115 38 200 38 Z"/>
+              </clipPath>
+            </defs>
+
+            {%- comment -%} Ears (behind the head) {%- endcomment -%}
+            <g class="cfg-layer" data-layer="ears-bear" data-on="false">
+              <g>
+                <circle cx="112" cy="80" r="44" style="fill: var(--c-ear-outer)"/>
+                <circle cx="112" cy="80" r="44" fill="url(#knit-{{ sid }})"/>
+                <circle cx="102" cy="70" r="22" style="fill: var(--c-ear-inner)"/>
+              </g>
+              <g transform="translate(400 0) scale(-1 1)">
+                <circle cx="112" cy="80" r="44" style="fill: var(--c-ear-outer)"/>
+                <circle cx="112" cy="80" r="44" fill="url(#knit-{{ sid }})"/>
+                <circle cx="102" cy="70" r="22" style="fill: var(--c-ear-inner)"/>
+              </g>
+            </g>
+            <g class="cfg-layer" data-layer="ears-cat" data-on="false">
+              <g>
+                <path d="M78 118 C80 70 86 22 96 -10 C122 8 152 30 176 58 Z" style="fill: var(--c-ear-outer)" stroke-linejoin="round"/>
+                <path d="M78 118 C80 70 86 22 96 -10 C122 8 152 30 176 58 Z" fill="url(#knit-{{ sid }})"/>
+                <path d="M98 92 C100 62 104 34 110 14 C126 28 142 42 154 58 Z" style="fill: var(--c-ear-inner)"/>
+              </g>
+              <g transform="translate(400 0) scale(-1 1)">
+                <path d="M78 118 C80 70 86 22 96 -10 C122 8 152 30 176 58 Z" style="fill: var(--c-ear-outer)"/>
+                <path d="M78 118 C80 70 86 22 96 -10 C122 8 152 30 176 58 Z" fill="url(#knit-{{ sid }})"/>
+                <path d="M98 92 C100 62 104 34 110 14 C126 28 142 42 154 58 Z" style="fill: var(--c-ear-inner)"/>
+              </g>
+            </g>
+            <g class="cfg-layer" data-layer="ears-bunny" data-on="false">
+              <g>
+                <path d="M128 78 C112 20 118 -36 146 -38 C176 -40 182 18 170 72 Z" style="fill: var(--c-ear-outer)"/>
+                <path d="M128 78 C112 20 118 -36 146 -38 C176 -40 182 18 170 72 Z" fill="url(#knit-{{ sid }})"/>
+                <path d="M138 66 C130 22 134 -18 147 -20 C161 -21 165 20 158 64 Z" style="fill: var(--c-ear-inner)"/>
+              </g>
+              <g>
+                <path d="M232 72 C236 10 268 -28 312 -18 C352 -8 372 34 350 52 C332 66 312 40 292 40 C270 40 262 60 268 82 Z" style="fill: var(--c-ear-outer)"/>
+                <path d="M232 72 C236 10 268 -28 312 -18 C352 -8 372 34 350 52 C332 66 312 40 292 40 C270 40 262 60 268 82 Z" fill="url(#knit-{{ sid }})"/>
+                <path d="M246 64 C252 18 274 -8 308 -2 C334 4 348 30 336 38 C322 46 306 26 288 28 C266 30 258 46 258 66 Z" style="fill: var(--c-ear-inner)"/>
+              </g>
+            </g>
+            <g class="cfg-layer" data-layer="ears-horns" data-on="false">
+              <g>
+                <path d="M126 96 C96 60 92 14 62 -14 C110 -6 146 34 158 80 Z" style="fill: var(--c-ear-outer)"/>
+                <path d="M126 96 C96 60 92 14 62 -14 C110 -6 146 34 158 80 Z" fill="#000" fill-opacity=".14"/>
+                <path d="M118 74 C130 72 140 66 146 58 M104 50 C116 50 126 44 132 36 M90 26 C100 26 108 20 112 14" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/>
+              </g>
+              <g transform="translate(400 0) scale(-1 1)">
+                <path d="M126 96 C96 60 92 14 62 -14 C110 -6 146 34 158 80 Z" style="fill: var(--c-ear-outer)"/>
+                <path d="M126 96 C96 60 92 14 62 -14 C110 -6 146 34 158 80 Z" fill="#000" fill-opacity=".14"/>
+                <path d="M118 74 C130 72 140 66 146 58 M104 50 C116 50 126 44 132 36 M90 26 C100 26 108 20 112 14" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/>
+              </g>
+            </g>
+
+            {%- comment -%} Head {%- endcomment -%}
+            <g class="cfg-head">
+              <path class="cfg-fill" d="M200 38 C285 38 330 105 330 200 C330 270 305 330 282 368 C300 395 340 420 352 470 L48 470 C60 420 100 395 118 368 C95 330 70 270 70 200 C70 105 115 38 200 38 Z" style="fill: var(--c-base)"/>
+              <g clip-path="url(#headclip-{{ sid }})">
+                <rect x="0" y="0" width="400" height="480" fill="url(#knit-{{ sid }})"/>
+                <rect class="cfg-fill" x="0" y="396" width="400" height="80" style="fill: var(--c-base-dark)"/>
+                <rect x="0" y="396" width="400" height="80" fill="url(#rib-{{ sid }})"/>
+                <rect class="cfg-fill" x="0" y="396" width="400" height="5" style="fill: var(--c-trim)"/>
+                <rect x="0" y="0" width="400" height="480" fill="url(#shade-{{ sid }})"/>
+              </g>
+              <path d="M200 38 C285 38 330 105 330 200 C330 270 305 330 282 368 C300 395 340 420 352 470 L48 470 C60 420 100 395 118 368 C95 330 70 270 70 200 C70 105 115 38 200 38 Z" fill="none" stroke="#fff" stroke-opacity=".14" stroke-width="2"/>
+            </g>
+
+            {%- comment -%} Openings {%- endcomment -%}
+            <g class="cfg-layer" data-layer="open-wide" data-on="false">
+              <rect x="110" y="168" width="180" height="74" rx="36" fill="url(#void-{{ sid }})"/>
+              <rect class="cfg-trim" x="110" y="168" width="180" height="74" rx="36" fill="none" style="stroke: var(--c-trim)" stroke-width="7"/>
+              <rect x="110" y="168" width="180" height="74" rx="36" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2" stroke-dasharray="2 5"/>
+            </g>
+            <g class="cfg-layer" data-layer="open-eyes" data-on="false">
+              <path d="M120 205 C136 181 180 181 196 205 C180 228 136 228 120 205 Z M204 205 C220 181 264 181 280 205 C264 228 220 228 204 205 Z" fill="url(#void-{{ sid }})"/>
+              <path class="cfg-trim" d="M120 205 C136 181 180 181 196 205 C180 228 136 228 120 205 Z M204 205 C220 181 264 181 280 205 C264 228 220 228 204 205 Z" fill="none" style="stroke: var(--c-trim)" stroke-width="7" stroke-linejoin="round"/>
+              <path d="M120 205 C136 181 180 181 196 205 C180 228 136 228 120 205 Z M204 205 C220 181 264 181 280 205 C264 228 220 228 204 205 Z" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2" stroke-dasharray="2 5"/>
+            </g>
+            <g class="cfg-layer" data-layer="open-mouth" data-on="false">
+              <ellipse cx="200" cy="300" rx="40" ry="21" fill="url(#void-{{ sid }})"/>
+              <ellipse class="cfg-trim" cx="200" cy="300" rx="40" ry="21" fill="none" style="stroke: var(--c-trim)" stroke-width="7"/>
+              <ellipse cx="200" cy="300" rx="40" ry="21" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2" stroke-dasharray="2 5"/>
+            </g>
+
+            {%- comment -%} Accessories {%- endcomment -%}
+            <g class="cfg-layer" data-layer="acc-chain" data-on="false">
+              <path data-chain-path d="M92 142 Q200 92 308 142" fill="none" stroke="none"/>
+              <path data-chain-path d="M122 392 Q200 432 278 392" fill="none" stroke="none"/>
+              <g data-chain-links></g>
+            </g>
+            <g class="cfg-layer" data-layer="acc-rings" data-on="false" fill="none" stroke="url(#silver-{{ sid }})" stroke-width="3.2">
+              <circle cx="104" cy="172" r="8"/>
+              <circle cx="98" cy="192" r="7"/>
+              <circle cx="300" cy="300" r="8"/>
+              <circle cx="168" cy="414" r="7"/>
+              <circle cx="232" cy="414" r="7"/>
+            </g>
+            <g class="cfg-layer" data-layer="acc-crystals" data-on="false">
+              <g fill="#d11a35" stroke="#ff7a8c" stroke-width=".8">
+                <path d="M128 240 l5 -6 l5 6 l-5 6 Z"/><path d="M146 246 l5 -6 l5 6 l-5 6 Z"/><path d="M166 246 l5 -6 l5 6 l-5 6 Z"/><path d="M184 240 l5 -6 l5 6 l-5 6 Z"/>
+                <path d="M206 240 l5 -6 l5 6 l-5 6 Z"/><path d="M224 246 l5 -6 l5 6 l-5 6 Z"/><path d="M244 246 l5 -6 l5 6 l-5 6 Z"/><path d="M262 240 l5 -6 l5 6 l-5 6 Z"/>
+                <path d="M150 160 l4 -5 l4 5 l-4 5 Z"/><path d="M246 160 l4 -5 l4 5 l-4 5 Z"/><path d="M196 150 l4 -5 l4 5 l-4 5 Z"/>
+              </g>
+              <g fill="#fff" fill-opacity=".7">
+                <circle cx="132" cy="238" r="1.2"/><circle cx="150" cy="244" r="1.2"/><circle cx="170" cy="244" r="1.2"/><circle cx="188" cy="238" r="1.2"/>
+                <circle cx="210" cy="238" r="1.2"/><circle cx="228" cy="244" r="1.2"/><circle cx="248" cy="244" r="1.2"/><circle cx="266" cy="238" r="1.2"/>
+              </g>
+            </g>
+            <g class="cfg-layer" data-layer="acc-charms" data-on="false">
+              <g transform="translate(286 108) rotate(18)">
+                <path d="M0 0 C-22 -16 -26 8 -4 4 Z M0 0 C22 -16 26 8 4 4 Z" style="fill: var(--c-charm)"/>
+                <circle r="4.5" style="fill: var(--c-charm)"/>
+                <path d="M-2 4 L-8 20 M2 4 L8 20" style="stroke: var(--c-charm)" stroke-width="3.5" stroke-linecap="round"/>
+              </g>
+              <path d="M200 112 L200 132" stroke="url(#silver-{{ sid }})" stroke-width="2"/>
+              <path d="M200 152 C186 142 186 128 196 128 C199 128 200 131 200 133 C200 131 201 128 204 128 C214 128 214 142 200 152 Z" fill="url(#silver-{{ sid }})" stroke="#8d929c" stroke-width=".8"/>
+            </g>
+            <g class="cfg-layer" data-layer="acc-stars" data-on="false" style="fill: var(--c-star)">
+              <path d="M112 116 l3 7 l7 1 l-5 5 l1 7 l-6 -3 l-6 3 l1 -7 l-5 -5 l7 -1 Z"/>
+              <path d="M280 90 l2.5 5.5 l6 1 l-4.5 4 l1 6 l-5 -2.8 l-5 2.8 l1 -6 l-4.5 -4 l6 -1 Z"/>
+              <path d="M300 168 l2 4.5 l5 .8 l-3.6 3.4 l.9 5 l-4.3 -2.4 l-4.3 2.4 l.9 -5 l-3.6 -3.4 l5 -.8 Z"/>
+              <path d="M96 268 l2.5 5.5 l6 1 l-4.5 4 l1 6 l-5 -2.8 l-5 2.8 l1 -6 l-4.5 -4 l6 -1 Z"/>
+              <path d="M292 330 l3 7 l7 1 l-5 5 l1 7 l-6 -3 l-6 3 l1 -7 l-5 -5 l7 -1 Z"/>
+              <path d="M160 74 l2 4.5 l5 .8 l-3.6 3.4 l.9 5 l-4.3 -2.4 l-4.3 2.4 l.9 -5 l-3.6 -3.4 l5 -.8 Z"/>
+            </g>
+            <g class="cfg-layer" data-layer="acc-hearts" data-on="false" style="fill: var(--c-heart)">
+              <path d="M118 300 C106 292 106 280 114 280 C117 280 118 283 118 285 C118 283 119 280 122 280 C130 280 130 292 118 300 Z"/>
+              <path d="M282 270 C270 262 270 250 278 250 C281 250 282 253 282 255 C282 253 283 250 286 250 C294 250 294 262 282 270 Z"/>
+              <path d="M246 100 C238 95 238 87 243 87 C245 87 246 89 246 90 C246 89 247 87 249 87 C254 87 254 95 246 100 Z"/>
+              <path d="M140 352 C132 347 132 339 137 339 C139 339 140 341 140 342 C140 341 141 339 143 339 C148 339 148 347 140 352 Z"/>
+              <path d="M262 360 C254 355 254 347 259 347 C261 347 262 349 262 350 C262 349 263 347 265 347 C270 347 270 355 262 360 Z"/>
+              <path d="M128 140 C122 136 122 130 126 130 C127.5 130 128 131.5 128 132.5 C128 131.5 128.5 130 130 130 C134 130 134 136 128 140 Z"/>
+            </g>
+            <g class="cfg-layer" data-layer="acc-pearls" data-on="false">
+              <g data-pearls fill="url(#pearl-{{ sid }})" stroke="#bfb6a6" stroke-width=".6"></g>
+              <path data-pearl-path d="M70 400 Q200 452 330 400" fill="none" stroke="none"/>
+              <path data-pearl-path d="M104 160 Q200 128 296 160" fill="none" stroke="none"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="hira-cfg__price" aria-live="polite">
+          <span class="hira-cfg__price-label">{{ section.settings.price_label | escape }}</span>
+          <strong class="hira-cfg__price-value"><span data-cfg-egp>—</span> EGP</strong>
+          <span class="hira-cfg__price-usd">(~$<span data-cfg-usd>—</span>)</span>
+          <p class="hira-cfg__price-note">{{ section.settings.price_note | escape }}</p>
+        </div>
+
+        <button type="button" class="hira-btn hira-btn--secondary hira-cfg__save" data-cfg-save>
+          <span class="hira-btn__label">{{ section.settings.save_label | escape }}</span>
+        </button>
+        <p class="hira-cfg__status" data-cfg-status role="status"></p>
+      </div>
+
+      {%- comment -%} Steps {%- endcomment -%}
+      <div class="hira-cfg__panel">
+        <ol class="hira-cfg__progress" role="list" data-cfg-progress>
+          <li>Color</li><li>Openings</li><li>Ears</li><li>Extras</li><li>Accent</li><li>Details</li>
+        </ol>
+
+        <form class="hira-cfg__form" data-cfg-form novalidate>
+          <fieldset class="hira-cfg__step" data-step="1">
+            <legend class="hira-cfg__legend"><span>01</span> Base color</legend>
+            <div class="hira-cfg__swatches" data-swatches="base"></div>
+          </fieldset>
+
+          <fieldset class="hira-cfg__step" data-step="2" hidden>
+            <legend class="hira-cfg__legend"><span>02</span> Openings</legend>
+            <div class="hira-cfg__options">
+              <label class="hira-cfg__option"><input type="radio" name="opening" value="wide"><span>One wide</span></label>
+              <label class="hira-cfg__option"><input type="radio" name="opening" value="eyes" checked><span>Two eyes</span></label>
+              <label class="hira-cfg__option"><input type="radio" name="opening" value="eyes-mouth"><span>Eyes + mouth</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="hira-cfg__step" data-step="3" hidden>
+            <legend class="hira-cfg__legend"><span>03</span> Ears</legend>
+            <div class="hira-cfg__options">
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="none" checked><span>None</span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="bear"><span>Bear ears</span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="bunny"><span>Bunny ears</span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="horns"><span>Horns</span></label>
+              <label class="hira-cfg__option"><input type="radio" name="ears" value="cat"><span>Cat ears</span></label>
+            </div>
+            <div class="hira-cfg__sub" data-ear-colors hidden>
+              <p class="hira-cfg__sublabel" data-ear-outer-label>Ear outer color</p>
+              <div class="hira-cfg__swatches" data-swatches="earOuter"></div>
+              <div data-ear-inner-wrap>
+                <p class="hira-cfg__sublabel">Ear inner color</p>
+                <div class="hira-cfg__swatches" data-swatches="earInner"></div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="hira-cfg__step" data-step="4" hidden>
+            <legend class="hira-cfg__legend"><span>04</span> Accessories <small>Choose any</small></legend>
+            <div class="hira-cfg__options hira-cfg__options--multi">
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="chain"><span>Silver chain</span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="rings"><span>Metal rings</span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="crystals"><span>Red crystals</span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="charms"><span>Heart &amp; bow charms</span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="stars"><span>Stars</span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="hearts"><span>Hearts</span></label>
+              <label class="hira-cfg__option"><input type="checkbox" name="acc" value="pearls"><span>Pearls / beads</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="hira-cfg__step" data-step="5" hidden>
+            <legend class="hira-cfg__legend"><span>05</span> Accent color <small>Optional</small></legend>
+            <p class="hira-cfg__hint">Used for trims, the neck stripe and details like stars, hearts and the bow.</p>
+            <div class="hira-cfg__swatches" data-swatches="accent"></div>
+          </fieldset>
+
+          <fieldset class="hira-cfg__step" data-step="6" hidden>
+            <legend class="hira-cfg__legend"><span>06</span> Your details</legend>
+            <div class="hira-cfg__fields">
+              <label class="hira-cfg__field">
+                <span>Full name *</span>
+                <input type="text" name="name" autocomplete="name" required>
+                <small class="hira-cfg__error" data-error-for="name">Please enter your name.</small>
+              </label>
+              <label class="hira-cfg__field">
+                <span>WhatsApp number (with country code) *</span>
+                <input type="tel" name="whatsapp" autocomplete="tel" inputmode="tel" placeholder="+20 10 1234 5678" required>
+                <small class="hira-cfg__error" data-error-for="whatsapp">Enter your number with the country code, e.g. +20 10 1234 5678.</small>
+              </label>
+              <label class="hira-cfg__field">
+                <span>Country *</span>
+                <input type="text" name="country" autocomplete="country-name" required>
+                <small class="hira-cfg__error" data-error-for="country">Please enter your country.</small>
+              </label>
+              <label class="hira-cfg__field">
+                <span>City *</span>
+                <input type="text" name="city" autocomplete="address-level2" required>
+                <small class="hira-cfg__error" data-error-for="city">Please enter your city.</small>
+              </label>
+              <label class="hira-cfg__field">
+                <span>Head circumference (cm) *</span>
+                <input type="number" name="head" inputmode="decimal" min="35" max="75" step="0.5" placeholder="e.g. 56" required>
+                <small class="hira-cfg__note">{{ section.settings.measure_note | escape }}</small>
+                <small class="hira-cfg__error" data-error-for="head">Enter a measurement between 35 and 75 cm.</small>
+              </label>
+              <label class="hira-cfg__field">
+                <span>Email <em>(optional, for a copy of your order)</em></span>
+                <input type="email" name="email" autocomplete="email">
+                <small class="hira-cfg__error" data-error-for="email">Please check your email address.</small>
+              </label>
+              <label class="hira-cfg__field hira-cfg__field--wide">
+                <span>Notes</span>
+                <textarea name="notes" rows="4" placeholder="References, size details, anything we should know"></textarea>
+              </label>
+            </div>
+            <button type="button" class="hira-btn hira-btn--primary hira-cfg__send" data-cfg-send>
+              <span class="hira-btn__label">{{ section.settings.send_label | escape }}</span>
+            </button>
+            <p class="hira-cfg__hint">{{ section.settings.send_note | escape }}</p>
+          </fieldset>
+
+          <div class="hira-cfg__nav">
+            <button type="button" class="hira-btn hira-btn--ghost" data-cfg-back>Back</button>
+            <button type="button" class="hira-btn hira-btn--primary" data-cfg-next>Next</button>
+          </div>
+        </form>
+
+        {%- if settings.hira_show_cal_link and settings.hira_cal_link != blank -%}
+          <p class="hira-cfg__cal">
+            Prefer to talk it through first?
+            {% render 'hira-cal-link' %}
+          </p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Silent email copy via Shopify's contact form {%- endcomment -%}
+  <div class="hira-cfg__contact" hidden>
+    {%- form 'contact', id: 'HiraCfgContact' -%}
+      <input type="hidden" name="contact[name]">
+      <input type="hidden" name="contact[email]">
+      <input type="hidden" name="contact[phone]">
+      <input type="hidden" name="contact[body]">
+    {%- endform -%}
+  </div>
+
+  <script type="application/json" data-cfg-config>
+    {
+      "whatsapp": {{ wa_number | json }},
+      "colors": [
+        {%- for block in section.blocks -%}
+          { "name": {{ block.settings.name | json }}, "hex": {{ block.settings.color | json }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "prices": {
+        "base": [{{ section.settings.price_base_egp | json }}, {{ section.settings.price_base_usd | json }}],
+        "accent": [{{ section.settings.price_accent_egp | json }}, {{ section.settings.price_accent_usd | json }}],
+        "ears": [{{ section.settings.price_ears_egp | json }}, {{ section.settings.price_ears_usd | json }}],
+        "bunny": [{{ section.settings.price_bunny_egp | json }}, {{ section.settings.price_bunny_usd | json }}],
+        "light": [{{ section.settings.price_light_egp | json }}, {{ section.settings.price_light_usd | json }}],
+        "heavy": [{{ section.settings.price_heavy_egp | json }}, {{ section.settings.price_heavy_usd | json }}]
+      }
+    }
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "HIRA design your own",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Design your own"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Idea.\nHer Hands.\nYour Mask."
+    },
+    {
+      "type": "checkbox",
+      "id": "accent_last_line",
+      "label": "Highlight last line",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Intro text",
+      "default": "<p>Build your mask step by step and see it come to life. Send it to us on WhatsApp and we'll confirm the details and the final price.</p>"
+    },
+    {
+      "type": "text",
+      "id": "save_label",
+      "label": "Save button label",
+      "default": "Save my design"
+    },
+    {
+      "type": "text",
+      "id": "send_label",
+      "label": "Send button label",
+      "default": "Send my order on WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "send_note",
+      "label": "Note under the send button",
+      "default": "WhatsApp opens with your order ready to send. Save your design first so you can attach the image in the chat."
+    },
+    {
+      "type": "text",
+      "id": "measure_note",
+      "label": "How to measure note",
+      "default": "Wrap a soft tape around your head just above the eyebrows and ears, at the widest point."
+    },
+    {
+      "type": "header",
+      "content": "Estimated price"
+    },
+    {
+      "type": "text",
+      "id": "price_label",
+      "label": "Price label",
+      "default": "Estimated price"
+    },
+    {
+      "type": "text",
+      "id": "price_note",
+      "label": "Price note",
+      "default": "Estimated price. Final price confirmed on WhatsApp."
+    },
+    { "type": "number", "id": "price_base_egp", "label": "Base mask (EGP)", "default": 3200 },
+    { "type": "number", "id": "price_base_usd", "label": "Base mask (USD)", "default": 90 },
+    { "type": "number", "id": "price_accent_egp", "label": "Extra accent color (EGP)", "default": 250 },
+    { "type": "number", "id": "price_accent_usd", "label": "Extra accent color (USD)", "default": 7 },
+    { "type": "number", "id": "price_ears_egp", "label": "Bear ears, cat ears or horns (EGP)", "default": 400 },
+    { "type": "number", "id": "price_ears_usd", "label": "Bear ears, cat ears or horns (USD)", "default": 10 },
+    { "type": "number", "id": "price_bunny_egp", "label": "Bunny ears (EGP)", "default": 900 },
+    { "type": "number", "id": "price_bunny_usd", "label": "Bunny ears (USD)", "default": 25 },
+    {
+      "type": "number",
+      "id": "price_light_egp",
+      "label": "Light accessory, each (EGP)",
+      "info": "Silver chain, heart & bow charms, metal rings, stars, hearts.",
+      "default": 300
+    },
+    { "type": "number", "id": "price_light_usd", "label": "Light accessory, each (USD)", "default": 8 },
+    {
+      "type": "number",
+      "id": "price_heavy_egp",
+      "label": "Heavy accessory, each (EGP)",
+      "info": "Red crystals, pearls / beads.",
+      "default": 650
+    },
+    { "type": "number", "id": "price_heavy_usd", "label": "Heavy accessory, each (USD)", "default": 17 },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 200, "step": 8, "unit": "px", "label": "Top padding", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 200, "step": 8, "unit": "px", "label": "Bottom padding", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "color",
+      "name": "Color swatch",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Brown" },
+        { "type": "color", "id": "color", "label": "Color", "default": "#6B4632" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HIRA design your own",
+      "blocks": [
+        { "type": "color", "settings": { "name": "Brown", "color": "#6B4632" } },
+        { "type": "color", "settings": { "name": "Beige", "color": "#D9C3A5" } },
+        { "type": "color", "settings": { "name": "Black", "color": "#1A1A1C" } },
+        { "type": "color", "settings": { "name": "Blue", "color": "#2F4F8F" } },
+        { "type": "color", "settings": { "name": "Pink", "color": "#E8A3B8" } },
+        { "type": "color", "settings": { "name": "White", "color": "#F2EFEA" } },
+        { "type": "color", "settings": { "name": "Orange", "color": "#E07A2E" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

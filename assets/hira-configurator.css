@@ -1,0 +1,498 @@
+/* ==========================================================================
+   HIRA "Design your own" configurator
+   ========================================================================== */
+
+.hira-cfg__head {
+  max-width: 80rem;
+  margin-bottom: clamp(3.2rem, 5vw, 5.6rem);
+}
+
+.hira-cfg__head .hira-text {
+  margin-top: 2.4rem;
+}
+
+.hira-cfg__grid {
+  display: grid;
+  gap: clamp(2.4rem, 4vw, 6.4rem);
+  align-items: start;
+}
+
+@media screen and (min-width: 990px) {
+  .hira-cfg__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+
+  .hira-cfg__stage {
+    position: sticky;
+    top: 2.4rem;
+  }
+}
+
+/* --- Preview --------------------------------------------------------------- */
+
+.hira-cfg__stage {
+  display: grid;
+  gap: 1.6rem;
+  justify-items: center;
+}
+
+.hira-cfg__preview {
+  position: relative;
+  width: 100%;
+  padding: clamp(1.2rem, 3vw, 3.2rem);
+  border: 1px solid rgba(var(--color-foreground), 0.12);
+  background:
+    radial-gradient(70% 60% at 50% 40%, rgba(var(--hira-accent-rgb), 0.18), transparent 70%),
+    #141216;
+}
+
+.hira-cfg__svg {
+  display: block;
+  width: 100%;
+  max-height: 52vh;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+@media screen and (min-width: 990px) {
+  .hira-cfg__svg {
+    max-height: 64vh;
+  }
+}
+
+.hira-cfg__svg .cfg-fill,
+.hira-cfg__svg [style*='fill: var'] {
+  transition: fill 0.35s ease;
+}
+
+.hira-cfg__svg .cfg-trim {
+  transition: stroke 0.35s ease;
+}
+
+.hira-cfg__svg .cfg-layer {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 0.35s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hira-cfg__svg .cfg-layer[data-on='false'] {
+  opacity: 0;
+  transform: scale(0.94);
+  pointer-events: none;
+}
+
+.hira-cfg__svg .cfg-layer[data-on='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Price ----------------------------------------------------------------- */
+
+.hira-cfg__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.4rem 1rem;
+  text-align: center;
+}
+
+.hira-cfg__price-label {
+  width: 100%;
+  font-size: 1.1rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.hira-cfg__price-value {
+  font-family: var(--font-heading-family);
+  font-size: clamp(2.8rem, 3vw, 3.6rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.hira-cfg__price-usd {
+  font-size: 1.6rem;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.hira-cfg__price-note {
+  width: 100%;
+  margin: 0.4rem 0 0;
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.hira-cfg__save {
+  min-height: 4.8rem;
+}
+
+.hira-cfg__status {
+  min-height: 1.6em;
+  margin: 0;
+  font-size: 1.4rem;
+  text-align: center;
+  color: var(--hira-accent-light);
+}
+
+/* --- Panel / progress ----------------------------------------------------- */
+
+.hira-cfg__progress {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 0 0 3.2rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: cfg;
+}
+
+.hira-cfg__progress li {
+  counter-increment: cfg;
+  position: relative;
+  padding-top: 1.4rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.45);
+  cursor: default;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hira-cfg__progress li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(var(--color-foreground), 0.14);
+  transition: background 0.35s ease;
+}
+
+.hira-cfg__progress li.is-reachable {
+  cursor: pointer;
+}
+
+.hira-cfg__progress li.is-done::before,
+.hira-cfg__progress li.is-current::before {
+  background: var(--hira-accent);
+}
+
+.hira-cfg__progress li.is-current {
+  color: rgb(var(--color-foreground));
+}
+
+@media screen and (max-width: 749px) {
+  .hira-cfg__progress li {
+    font-size: 0;
+  }
+
+  .hira-cfg__progress li::after {
+    content: counter(cfg, decimal-leading-zero);
+    font-size: 1.1rem;
+  }
+}
+
+/* --- Steps ----------------------------------------------------------------- */
+
+.hira-cfg__step {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.hira-cfg__step.is-active {
+  animation: hira-cfg-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes hira-cfg-in {
+  from { opacity: 0; transform: translate3d(0, 1.2rem, 0); }
+}
+
+.hira-cfg__legend {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+  margin-bottom: 2.4rem;
+  padding: 0;
+  font-family: var(--font-heading-family);
+  font-size: clamp(2.6rem, 3vw, 3.4rem);
+  line-height: 1.15;
+  outline: none;
+}
+
+.hira-cfg__legend span {
+  font-size: 0.55em;
+  font-style: italic;
+  color: var(--hira-accent-light);
+}
+
+.hira-cfg__legend small {
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.5);
+}
+
+.hira-cfg__hint {
+  margin: -1.2rem 0 2rem;
+  font-size: 1.4rem;
+  color: rgba(var(--color-foreground), 0.65);
+}
+
+.hira-cfg__sub {
+  margin-top: 3.2rem;
+  padding-top: 2.4rem;
+  border-top: 1px solid rgba(var(--color-foreground), 0.12);
+}
+
+.hira-cfg__sublabel {
+  margin: 0 0 1.2rem;
+  font-size: 1.2rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+[data-ear-inner-wrap] {
+  margin-top: 2rem;
+}
+
+/* Swatches */
+
+.hira-cfg__swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.4rem, 1fr));
+  gap: 1.2rem;
+}
+
+.hira-cfg__swatch {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.8rem;
+  padding: 1.2rem 0.4rem 1rem;
+  border: 1px solid rgba(var(--color-foreground), 0.12);
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.hira-cfg__swatch:hover {
+  border-color: rgba(var(--color-foreground), 0.35);
+}
+
+.hira-cfg__swatch input,
+.hira-cfg__option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.hira-cfg__chip {
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 50%;
+  background: var(--chip, transparent);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+
+.hira-cfg__swatch--none .hira-cfg__chip {
+  background:
+    linear-gradient(135deg, transparent 47%, rgba(255, 255, 255, 0.55) 48%, rgba(255, 255, 255, 0.55) 52%, transparent 53%);
+}
+
+.hira-cfg__swatch-name {
+  font-size: 1.3rem;
+}
+
+.hira-cfg__swatch:has(input:checked) {
+  border-color: var(--hira-accent);
+  background: rgba(var(--hira-accent-rgb), 0.12);
+}
+
+.hira-cfg__swatch:has(input:checked) .hira-cfg__chip {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px #141216, 0 0 0 5px var(--hira-accent-light);
+}
+
+.hira-cfg__swatch:has(input:focus-visible),
+.hira-cfg__option:has(input:focus-visible) {
+  outline: 2px solid var(--hira-accent-light);
+  outline-offset: 2px;
+}
+
+/* Option cards */
+
+.hira-cfg__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1.2rem;
+}
+
+.hira-cfg__option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  min-height: 5.6rem;
+  padding: 1.2rem 1.6rem;
+  border: 1px solid rgba(var(--color-foreground), 0.16);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.hira-cfg__option::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid rgba(var(--color-foreground), 0.5);
+  border-radius: 50%;
+  transition: background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.hira-cfg__options--multi .hira-cfg__option::before {
+  border-radius: 0.3rem;
+}
+
+.hira-cfg__option:hover {
+  border-color: rgba(var(--color-foreground), 0.4);
+}
+
+.hira-cfg__option:has(input:checked) {
+  border-color: var(--hira-accent);
+  background: rgba(var(--hira-accent-rgb), 0.12);
+}
+
+.hira-cfg__option:has(input:checked)::before {
+  border-color: var(--hira-accent-light);
+  background: var(--hira-accent);
+  box-shadow: inset 0 0 0 3px #1c1c1f;
+}
+
+/* Fields */
+
+.hira-cfg__fields {
+  display: grid;
+  gap: 2rem;
+}
+
+@media screen and (min-width: 750px) {
+  .hira-cfg__fields {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hira-cfg__field--wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.hira-cfg__field {
+  display: grid;
+  gap: 0.8rem;
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+}
+
+.hira-cfg__field em {
+  font-style: normal;
+  color: rgba(var(--color-foreground), 0.55);
+}
+
+.hira-cfg__field input,
+.hira-cfg__field textarea {
+  width: 100%;
+  min-height: 4.8rem;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid rgba(var(--color-foreground), 0.25);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgb(var(--color-foreground));
+  font: inherit;
+  font-size: 1.6rem; /* 16px+ stops iOS from zooming on focus */
+  letter-spacing: 0;
+  transition: border-color 0.25s ease;
+}
+
+.hira-cfg__field textarea {
+  resize: vertical;
+}
+
+.hira-cfg__field input:focus,
+.hira-cfg__field textarea:focus {
+  outline: none;
+  border-color: var(--hira-accent-light);
+}
+
+.hira-cfg__note {
+  font-size: 1.2rem;
+  color: rgba(var(--color-foreground), 0.55);
+}
+
+.hira-cfg__error {
+  display: none;
+  font-size: 1.25rem;
+  color: #ff8fa3;
+}
+
+.hira-cfg__field.has-error input {
+  border-color: #ff8fa3;
+}
+
+.hira-cfg__field.has-error .hira-cfg__error {
+  display: block;
+}
+
+.hira-cfg__send {
+  width: 100%;
+  margin-top: 3.2rem;
+}
+
+.hira-cfg__send + .hira-cfg__hint {
+  margin: 1.2rem 0 0;
+}
+
+/* Nav */
+
+.hira-cfg__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  margin-top: 3.2rem;
+  padding-top: 2.4rem;
+  border-top: 1px solid rgba(var(--color-foreground), 0.12);
+}
+
+.hira-cfg__nav [data-cfg-next] {
+  margin-left: auto;
+}
+
+.hira-cfg__nav [hidden] {
+  display: none;
+}
+
+.hira-cfg__cal {
+  margin: 2.4rem 0 0;
+  font-size: 1.4rem;
+  color: rgba(var(--color-foreground), 0.65);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hira-cfg *,
+  .hira-cfg__svg * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

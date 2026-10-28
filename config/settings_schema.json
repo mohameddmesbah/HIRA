@@ -1438,7 +1438,31 @@
     "settings": [
       {
         "type": "header",
+        "content": "Design your own"
+      },
+      {
+        "type": "url",
+        "id": "hira_design_page",
+        "label": "Design Your Own page",
+        "info": "The page using the \"page.design-your-own\" template. Custom-made buttons link here. Leave empty to use /pages/design-your-own."
+      },
+      {
+        "type": "text",
+        "id": "hira_whatsapp_order",
+        "label": "WhatsApp number for orders",
+        "default": "201033189288",
+        "info": "Country code and number, digits only (no + or spaces). Orders from Design Your Own open a chat with this number."
+      },
+      {
+        "type": "header",
         "content": "Booking (Cal.com)"
+      },
+      {
+        "type": "checkbox",
+        "id": "hira_show_cal_link",
+        "label": "Show the Cal.com link",
+        "default": true,
+        "info": "A small optional \"Book a design session call\" text link next to the Design Your Own buttons."
       },
       {
         "type": "text",

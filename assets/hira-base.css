@@ -695,6 +695,12 @@ div.hira-booking__loader {
   margin-top: 3.6rem;
 }
 
+.hira-custom__cal {
+  margin: 1.6rem 0 0;
+  font-size: 1.4rem;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
 .hira-custom__more {
   margin-top: 4rem;
 }

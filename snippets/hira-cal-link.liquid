@@ -1,0 +1,33 @@
+{% comment %}
+  Small optional text link to the Cal.com design session (popup when enabled).
+  Shown only when Theme settings > HIRA > "Show the Cal.com link" is on.
+
+  Accepts:
+  - label: {String} link text (optional)
+
+  Usage:
+  {% render 'hira-cal-link' %}
+{% endcomment %}
+
+{%- liquid
+  assign cal_link = settings.hira_cal_link | strip
+  assign link_label = label | default: 'Book a design session call'
+  assign href = cal_link
+  assign popup = true
+  if settings.hira_booking_mode == 'page' and settings.hira_booking_page != blank
+    assign href = settings.hira_booking_page
+    assign popup = false
+  endif
+-%}
+
+{%- if settings.hira_show_cal_link and cal_link != blank -%}
+  <a
+    class="hira-link hira-cal-link"
+    href="{{ href }}"
+    {% if popup %}
+      data-hira-book target="_blank" rel="noopener" aria-haspopup="dialog"
+    {% endif %}
+  >
+    {{- link_label | escape -}}
+  </a>
+{%- endif -%}

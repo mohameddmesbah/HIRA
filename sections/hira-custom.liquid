@@ -11,6 +11,7 @@
 
   assign overlay_alpha = section.settings.overlay_opacity | divided_by: 100.0
   assign secondary_link = section.settings.secondary_link | default: '#faq'
+  assign design_link = section.settings.button_link | default: settings.hira_design_page | default: '/pages/design-your-own'
 -%}
 
 <section
@@ -53,7 +54,7 @@
       <div class="hira-actions" data-hira-reveal="fade" style="--d: 3;">
         {% render 'hira-button',
           label: section.settings.button_label,
-          booking: true,
+          link: design_link,
           style: 'primary'
         %}
         {%- if compact -%}
@@ -64,6 +65,11 @@
           %}
         {%- endif -%}
       </div>
+      {%- if settings.hira_show_cal_link -%}
+        <p class="hira-custom__cal" data-hira-reveal="fade" style="--d: 4;">
+          {% render 'hira-cal-link', label: section.settings.cal_label %}
+        </p>
+      {%- endif -%}
     </div>
 
     {%- if section.blocks.size > 0 and compact == false -%}
@@ -140,9 +146,22 @@
     {
       "type": "text",
       "id": "button_label",
-      "label": "Booking button label",
-      "default": "Book a Design Session",
-      "info": "Sits right after the text. Opens the Cal.com booking set in Theme settings > HIRA."
+      "label": "Button label",
+      "default": "Design Your Own",
+      "info": "Sits right after the text."
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Leave empty to use the Design Your Own page from Theme settings > HIRA."
+    },
+    {
+      "type": "text",
+      "id": "cal_label",
+      "label": "Cal.com text link",
+      "default": "Or book a design session call",
+      "info": "Small optional link under the button. Hide it in Theme settings > HIRA."
     },
     {
       "type": "text",
