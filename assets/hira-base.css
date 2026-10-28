@@ -1219,6 +1219,55 @@ div.hira-booking__loader {
 }
 
 /* ==========================================================================
+   Product card second image (all product cards: homepage, collection, search)
+   Dawn only swaps images on hover above 990px and only transitions transform.
+   HIRA crossfades with a slight zoom at every width: on hover for mouse users,
+   and via .hira-alt-shown (set by hira-motion.js) on press / swipe for touch.
+   `body` + extra class keep these above Dawn's specificity.
+   ========================================================================== */
+
+body .card-wrapper .card__media .media.media--hover-effect > img {
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+body .card-wrapper .card__media .media.media--hover-effect > img + img {
+  z-index: 1;
+  opacity: 0;
+  transform: scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body .card-wrapper:hover .card__media .media.media--hover-effect > img:first-child:not(:only-child) {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+
+  body .card-wrapper:hover .card__media .media.media--hover-effect > img + img {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+body .card-wrapper.hira-alt-shown .card__media .media.media--hover-effect > img:first-child:not(:only-child) {
+  opacity: 0;
+  transform: scale(1.04);
+}
+
+body .card-wrapper.hira-alt-shown .card__media .media.media--hover-effect > img + img {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body .card-wrapper .card__media .media.media--hover-effect > img {
+    transition: opacity 0.2s linear;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
    Footer contact block + Dawn integration touches
    ========================================================================== */
 

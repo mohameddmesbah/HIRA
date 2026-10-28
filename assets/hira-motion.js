@@ -21,21 +21,56 @@
   // Two triggers, so a reveal can never be missed: an IntersectionObserver
   // plus a rAF-throttled position check on scroll/resize/load. The check also
   // reveals anything already scrolled past (fast flicks on phones).
-  var revealObserver = null;
+  var observers = {};
   var pending = new Set();
   var checkQueued = false;
   var listening = false;
 
+  // How far down the viewport (0-1) an element's top must come before it
+  // reveals. Story chapters use a later point (data-hira-reveal-at) so their
+  // slide is seen, not finished before the reader gets there.
+  function revealAt(el) {
+    var at = parseFloat(el.getAttribute('data-hira-reveal-at'));
+    return at > 0 && at <= 1 ? at : 0.94;
+  }
+
   function reveal(el) {
-    el.classList.add('is-revealed');
+    if (!pending.has(el) && el.classList.contains('is-revealed')) return;
     pending.delete(el);
-    if (revealObserver) revealObserver.unobserve(el);
+    Object.keys(observers).forEach(function (key) {
+      observers[key].unobserve(el);
+    });
+    // Add the class on the next frame so the hidden start state has been
+    // painted and the transition always runs (never a jump to the end state).
+    window.requestAnimationFrame(function () {
+      el.classList.add('is-revealed');
+    });
+  }
+
+  function revealNow(el) {
+    pending.delete(el);
+    el.classList.add('is-revealed');
+  }
+
+  function observerFor(at) {
+    var key = String(at);
+    if (!observers[key]) {
+      observers[key] = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) reveal(entry.target);
+          });
+        },
+        { rootMargin: '0px 0px -' + Math.round((1 - at) * 100) + '% 0px', threshold: 0 }
+      );
+    }
+    return observers[key];
   }
 
   function shouldReveal(el) {
     var rect = el.getBoundingClientRect();
     var vh = window.innerHeight || document.documentElement.clientHeight;
-    return rect.top < vh * 0.92 || rect.bottom <= 0;
+    return rect.top < vh * revealAt(el) || rect.bottom <= 0;
   }
 
   function checkPending() {
@@ -58,19 +93,8 @@
     if (!els.length) return;
 
     if (!motionOn()) {
-      els.forEach(reveal);
+      els.forEach(revealNow);
       return;
-    }
-
-    if (!revealObserver && 'IntersectionObserver' in window) {
-      revealObserver = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) reveal(entry.target);
-          });
-        },
-        { rootMargin: '0px 0px -6% 0px', threshold: 0 }
-      );
     }
 
     if (!listening) {
@@ -83,12 +107,130 @@
 
     els.forEach(function (el) {
       pending.add(el);
-      if (revealObserver) revealObserver.observe(el);
+      if ('IntersectionObserver' in window) observerFor(revealAt(el)).observe(el);
     });
 
     // Measuring first makes the browser commit the hidden state, so elements
     // already in view still animate in on load instead of popping in.
     checkPending();
+  }
+
+  /* ---------------------------------------------------------------------
+   * Product cards: second image on touch devices
+   * Press on the card image shows image 2 (a tap still opens the product);
+   * a horizontal swipe on the image toggles image 1 / 2 without opening it.
+   * Swipes inside a scrolling rail are left to the rail.
+   * ------------------------------------------------------------------- */
+
+  function initCardTouch() {
+    var card = null;
+    var startX = 0;
+    var startY = 0;
+    var swiped = false;
+    var suppressClick = null;
+
+    function hasSecondImage(el) {
+      return !!el.querySelector('.card__media .media--hover-effect > img + img');
+    }
+
+    function inMedia(el, x, y) {
+      var media = el.querySelector('.card__media');
+      if (!media) return false;
+      var r = media.getBoundingClientRect();
+      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+    }
+
+    function setShown(el, shown) {
+      el.classList.toggle('hira-alt-shown', shown);
+    }
+
+    function release(el) {
+      if (el && el.dataset.hiraAltSticky !== 'true') setShown(el, false);
+    }
+
+    document.addEventListener(
+      'touchstart',
+      function (event) {
+        if (event.touches.length !== 1) return;
+        var el = event.target.closest && event.target.closest('.card-wrapper');
+        if (!el || !hasSecondImage(el)) return;
+        var t = event.touches[0];
+        if (!inMedia(el, t.clientX, t.clientY)) return;
+        card = el;
+        startX = t.clientX;
+        startY = t.clientY;
+        swiped = false;
+        setShown(card, true);
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      'touchmove',
+      function (event) {
+        if (!card || swiped) return;
+        var t = event.touches[0];
+        var dx = t.clientX - startX;
+        var dy = t.clientY - startY;
+        var horizontal = Math.abs(dx) > Math.abs(dy) * 1.5;
+        var inRail = !!card.closest('[data-hira-rail]');
+
+        if (Math.abs(dx) > 30 && horizontal && !inRail) {
+          swiped = true;
+          var showSecond = dx < 0;
+          card.dataset.hiraAltSticky = String(showSecond);
+          setShown(card, showSecond);
+          suppressClick = card;
+          setTimeout(function () {
+            suppressClick = null;
+          }, 600);
+        } else if ((Math.abs(dy) > 10 && !horizontal) || (inRail && Math.abs(dx) > 10)) {
+          // Scrolling the page or a rail: not a press on the image.
+          release(card);
+          card = null;
+        }
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      'touchend',
+      function () {
+        if (!card) return;
+        var el = card;
+        card = null;
+        // A tap opens the product with image 2 showing; if the page does not
+        // navigate (e.g. long press), return to image 1 shortly after.
+        if (!swiped) setTimeout(function () { release(el); }, 1200);
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      'touchcancel',
+      function () {
+        release(card);
+        card = null;
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      'click',
+      function (event) {
+        if (suppressClick && suppressClick.contains(event.target)) {
+          event.preventDefault();
+          event.stopPropagation();
+          suppressClick = null;
+        }
+      },
+      true
+    );
+
+    // Coming back with the back button: show image 1 again (unless swiped).
+    window.addEventListener('pageshow', function () {
+      document.querySelectorAll('.card-wrapper.hira-alt-shown').forEach(release);
+    });
   }
 
   /* ---------------------------------------------------------------------
@@ -272,6 +414,7 @@
     init(document);
     pauseVideos(document);
     initMagnetic();
+    initCardTouch();
   }
 
   if (document.readyState === 'loading') {
@@ -284,12 +427,12 @@
   document.addEventListener('shopify:section:load', function (event) {
     init(event.target);
     pauseVideos(event.target);
-    event.target.querySelectorAll('[data-hira-reveal]').forEach(reveal);
+    event.target.querySelectorAll('[data-hira-reveal]').forEach(revealNow);
   });
 
   document.addEventListener('shopify:block:select', function (event) {
     var host = event.target.closest('.shopify-section') || event.target;
-    host.querySelectorAll('[data-hira-reveal]').forEach(reveal);
+    host.querySelectorAll('[data-hira-reveal]').forEach(revealNow);
   });
 
   window.HIRA = window.HIRA || {};
