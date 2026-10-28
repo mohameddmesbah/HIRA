@@ -3,7 +3,7 @@
 
 {%- liquid
   assign sid = section.id
-  assign layer_keys = 'mannequin,mask_eyes,mask_wide,mouth_simple,mouth_teeth,bunny_outer,bunny_inner,bear_outer,bear_inner,cat_outer,cat_inner,horns,stripe' | split: ','
+  assign layer_keys = 'mannequin,mask_eyes,mask_wide,mouth_simple,mouth_teeth,face_skull,bunny_outer,bunny_inner,bear_outer,bear_inner,cat_outer,cat_inner,horns,stripe' | split: ','
   assign wa_number = settings.hira_whatsapp_order | default: '201033189288' | remove: '+' | remove: ' ' | remove: '-'
 -%}
 
@@ -63,7 +63,7 @@
       {%- comment -%} Steps {%- endcomment -%}
       <div class="hira-cfg__panel">
         <ol class="hira-cfg__progress" role="list" data-cfg-progress>
-          <li>Color</li><li>Openings</li><li>Ears</li><li>Extras</li><li>Stripes</li><li>Details</li>
+          <li>Color</li><li>Openings</li><li>Face</li><li>Ears</li><li>Extras</li><li>Stripes</li><li>Details</li>
         </ol>
 
         <form class="hira-cfg__form" data-cfg-form novalidate>
@@ -81,6 +81,7 @@
             </div>
             <div class="hira-cfg__sub">
               <p class="hira-cfg__sublabel">Mouth</p>
+              <p class="hira-cfg__hint" data-mouth-note hidden>Teeth included in the skull face piece.</p>
               <div class="hira-cfg__options">
                 <label class="hira-cfg__option"><input type="radio" name="mouth" value="none" checked><span>None</span></label>
                 <label class="hira-cfg__option"><input type="radio" name="mouth" value="simple"><span>Simple opening <small data-price-tag="mouth_simple"></small></span></label>
@@ -94,7 +95,19 @@
           </fieldset>
 
           <fieldset class="hira-cfg__step" data-step="3" hidden>
-            <legend class="hira-cfg__legend"><span>03</span> Ears</legend>
+            <legend class="hira-cfg__legend"><span>03</span> Face piece</legend>
+            <div class="hira-cfg__options">
+              <label class="hira-cfg__option"><input type="radio" name="face" value="none" checked><span>None</span></label>
+              <label class="hira-cfg__option"><input type="radio" name="face" value="skull"><span>Skull <small data-price-tag="face_skull"></small></span></label>
+            </div>
+            <div data-face-color hidden>
+              <p class="hira-cfg__sublabel" style="margin-top: 2rem;">Face piece color</p>
+              <div class="hira-cfg__swatches" data-swatches="face"></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="hira-cfg__step" data-step="4" hidden>
+            <legend class="hira-cfg__legend"><span>04</span> Ears</legend>
             <div class="hira-cfg__options">
               <label class="hira-cfg__option"><input type="radio" name="ears" value="none" checked><span>None</span></label>
               <label class="hira-cfg__option"><input type="radio" name="ears" value="bear"><span>Bear ears <small data-price-tag="bear"></small></span></label>
@@ -112,8 +125,8 @@
             </div>
           </fieldset>
 
-          <fieldset class="hira-cfg__step" data-step="4" hidden>
-            <legend class="hira-cfg__legend"><span>04</span> Accessories <small>Choose any</small></legend>
+          <fieldset class="hira-cfg__step" data-step="5" hidden>
+            <legend class="hira-cfg__legend"><span>05</span> Accessories <small>Choose any</small></legend>
             <p class="hira-cfg__hint">Each one appears on your mask: drag it anywhere on the mask or ears. Tap a piece to remove it.</p>
             <div class="hira-cfg__acc-list">
               <div class="hira-cfg__acc" data-acc-row="chain">
@@ -173,8 +186,8 @@
             </div>
           </fieldset>
 
-          <fieldset class="hira-cfg__step" data-step="5" hidden>
-            <legend class="hira-cfg__legend"><span>05</span> Stripes &amp; accent</legend>
+          <fieldset class="hira-cfg__step" data-step="6" hidden>
+            <legend class="hira-cfg__legend"><span>06</span> Stripes &amp; accent</legend>
             <p class="hira-cfg__sublabel">Side stripes <small data-price-tag="stripe" data-price-suffix=" per stripe"></small></p>
             <div class="hira-cfg__stepper" data-cfg-stepper>
               <button type="button" class="hira-cfg__stepper-btn" data-stripes-minus aria-label="Fewer stripes">&minus;</button>
@@ -193,8 +206,8 @@
             </div>
           </fieldset>
 
-          <fieldset class="hira-cfg__step" data-step="6" hidden>
-            <legend class="hira-cfg__legend"><span>06</span> Your details</legend>
+          <fieldset class="hira-cfg__step" data-step="7" hidden>
+            <legend class="hira-cfg__legend"><span>07</span> Your details</legend>
             <div class="hira-cfg__fields">
               <label class="hira-cfg__field">
                 <span>Full name *</span>
@@ -334,6 +347,7 @@
         "horns": {{ settings.hira_price_horns | default: 0 | json }},
         "mouth_simple": {{ settings.hira_price_mouth_simple | default: 0 | json }},
         "mouth_teeth": {{ settings.hira_price_mouth_teeth | default: 0 | json }},
+        "face_skull": {{ settings.hira_price_face_skull | default: 0 | json }},
         "stripe": {{ settings.hira_price_stripe | default: 0 | json }},
         "chain": {{ settings.hira_price_chain | default: 0 | json }},
         "accessory": {{ settings.hira_price_accessory | default: 0 | json }},

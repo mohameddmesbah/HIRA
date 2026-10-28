@@ -128,7 +128,7 @@
   function Scene(svg) {
     this.svg = svg;
     this.uid = 'hc' + Math.random().toString(36).slice(2, 8);
-    this.paint = { base: [], baseDark: [], earOuter: [], earInner: [], earInnerDark: [], trim: [], mouth: [], mouthRim: [] };
+    this.paint = { base: [], baseDark: [], earOuter: [], earInner: [], earInnerDark: [], trim: [], mouth: [], mouthRim: [], face: [], faceStroke: [] };
     this.earShapes = { bear: [], cat: [], horns: [], bunny: [] };
     this.earGroups = {};
     this.build();
@@ -211,6 +211,8 @@
     this.img.mask = this.imageSlot(svg);
     this.img.mouth = this.imageSlot(svg);
     this.buildMouthOverlay(svg);
+    this.img.face = this.imageSlot(svg);
+    this.buildFaceOverlay(svg);
     this.img.stripes = this.imageSlot(svg);
     this.img.earInner = this.splitSlot(svg);
     this.img.earOuter = this.splitSlot(svg);
@@ -260,6 +262,34 @@
     });
     this.paint.mouthRim.push(el('rect', { x: 160, y: 284, width: 80, height: 36, rx: 12, fill: 'none', 'stroke-width': '7' }, teeth));
     el('rect', { x: 160, y: 284, width: 80, height: 36, rx: 12, fill: 'none', stroke: this.url('rimStitch'), 'stroke-width': '7' }, teeth);
+  };
+
+  // Drawn skull face piece (used until the "Face piece: skull" image is uploaded):
+  // eye-socket rings, nose cavity, cheekbones and a jaw with its own teeth.
+  Scene.prototype.buildFaceOverlay = function (parent) {
+    var self = this;
+    var g = el('g', { style: 'display:none' }, parent);
+    this.faceOverlay = g;
+    [[166, 203], [234, 203]].forEach(function (c) {
+      self.paint.faceStroke.push(el('circle', { cx: c[0], cy: c[1], r: 27, fill: 'none', 'stroke-width': '9' }, g));
+      el('circle', { cx: c[0], cy: c[1], r: 27, fill: 'none', stroke: self.url('rimStitch'), 'stroke-width': '9' }, g);
+    });
+    ['M136 236 Q156 262 182 252', 'M264 236 Q244 262 218 252'].forEach(function (d) {
+      self.paint.faceStroke.push(el('path', { d: d, fill: 'none', 'stroke-width': '7', 'stroke-linecap': 'round' }, g));
+    });
+    var nose = 'M200 246 C191 260 186 272 193 277 L200 270 L207 277 C214 272 209 260 200 246 Z';
+    el('path', { d: nose, fill: '#151518' }, g);
+    self.paint.faceStroke.push(el('path', { d: nose, fill: 'none', 'stroke-width': '4', 'stroke-linejoin': 'round' }, g));
+    self.paint.face.push(el('rect', { x: 148, y: 284, width: 104, height: 36, rx: 10 }, g));
+    el('rect', { x: 148, y: 284, width: 104, height: 36, rx: 10, fill: self.url('stitch') }, g);
+    el('path', { d: 'M150 302 L250 302', stroke: '#151518', 'stroke-width': '2.4' }, g);
+    for (var x = 161; x < 250; x += 11) {
+      el('path', { d: 'M' + x + ' 288 L' + x + ' 316', stroke: '#151518', 'stroke-width': '2', 'stroke-linecap': 'round' }, g);
+    }
+  };
+
+  Scene.prototype.setFaceOverlay = function (show) {
+    this.faceOverlay.style.display = show ? '' : 'none';
   };
 
   Scene.prototype.setMouthOverlay = function (mouth) {
@@ -408,6 +438,8 @@
     p.trim.forEach(function (n) { n.style.stroke = c.trim; });
     p.mouth.forEach(function (n) { paint(n, c.mouth); });
     p.mouthRim.forEach(function (n) { n.style.stroke = c.mouth; });
+    p.face.forEach(function (n) { paint(n, c.face); });
+    p.faceStroke.forEach(function (n) { n.style.stroke = c.face; });
   };
 
   Scene.prototype.setOpenings = function (opening, mouth) {
@@ -828,6 +860,8 @@
       opening: 'eyes',
       mouth: 'none',
       mouthColor: null, // follows the base colour until chosen
+      face: 'none',
+      faceColor: find('grey') ? find('grey').id : 0,
       ears: 'none',
       earOuter: null, // follows the base colour until chosen
       earInner: null, // null = automatic: darker outer for bear ears, White otherwise
@@ -901,6 +935,7 @@
       'cfg-earInner': s.earInner === null ? (s.ears === 'bear' ? '' : this.defaultInnerId()) : s.earInner,
       'cfg-stripe': s.stripeColor,
       'cfg-mouth': s.mouthColor === null ? s.base : s.mouthColor,
+      'cfg-face': s.faceColor,
       'cfg-accent': s.accent === null ? '' : s.accent
     };
     Object.keys(values).forEach(function (name) {
@@ -937,6 +972,11 @@
         case 'cfg-accent': s.accent = t.value === '' ? null : +t.value; break;
         case 'opening': s.opening = t.value; break;
         case 'mouth': s.mouth = t.value; break;
+        case 'cfg-face': s.faceColor = +t.value; break;
+        case 'face':
+          s.face = t.value;
+          if (s.face === 'skull') s.mouth = 'none'; // the skull has its own teeth
+          break;
         case 'ears':
           s.ears = t.value;
           self.scene.setEars(s.ears);
@@ -1041,7 +1081,8 @@
       earOuter: this.color(s.earOuter === null ? s.base : s.earOuter),
       earInner: this.innerColor(),
       stripe: this.color(s.stripeColor),
-      mouth: this.color(s.mouthColor === null ? s.base : s.mouthColor)
+      mouth: this.color(s.mouthColor === null ? s.base : s.mouthColor),
+      face: this.color(s.faceColor)
     };
   };
 
@@ -1069,6 +1110,7 @@
       earOuter: c.earOuter.hex,
       earInner: c.earInner.hex,
       mouth: c.mouth.hex,
+      face: c.face.hex,
       trim: c.accent ? c.accent.hex : shade(c.base.hex, 0.22)
     });
     var mode = this.layerMode();
@@ -1077,6 +1119,7 @@
     this.scene.rims.style.display = mode.mask ? 'none' : '';
     this.scene.setOpenings(s.opening, 'none');
     this.scene.setMouthOverlay(mode.mouth ? 'none' : s.mouth);
+    this.scene.setFaceOverlay(s.face === 'skull' && !mode.face);
     this.scene.setEars(mode.ears ? 'none' : s.ears);
     this.scene.earType = s.ears;
     this.scene.setStripes(mode.stripesCanvas ? 0 : s.stripes, c.stripe.hex);
@@ -1098,6 +1141,15 @@
     this.root.querySelector('[data-stripes-plus]').disabled = s.stripes >= MAX_STRIPES;
     this.root.querySelector('[data-stripe-color]').hidden = s.stripes === 0;
     this.root.querySelector('[data-mouth-color]').hidden = s.mouth === 'none';
+    // Skull face piece: its own colour, and it replaces the mouth (teeth included).
+    var skull = s.face === 'skull';
+    this.root.querySelector('[data-face-color]').hidden = !skull;
+    this.root.querySelector('[data-mouth-note]').hidden = !skull;
+    this.root.querySelectorAll('input[name="mouth"]').forEach(function (input) {
+      input.disabled = skull;
+      input.checked = input.value === s.mouth;
+      input.closest('label').classList.toggle('is-disabled', skull);
+    });
 
     // Accessory rows: count + "Add another" when active.
     ACC_ORDER.forEach(function (type) {
@@ -1131,6 +1183,7 @@
       mannequin: L.has('mannequin'),
       mask: mask, maskKey: maskKey,
       mouth: !!mouthKey && L.has(mouthKey), mouthKey: mouthKey,
+      face: s.face === 'skull' && L.has('face_skull'),
       ears: ears, outerKey: outerKey, innerKey: innerKey,
       stripePng: L.has('stripe'),
       stripesCanvas: s.stripes > 0 && (L.has('stripe') || mask)
@@ -1151,6 +1204,7 @@
       ['mannequin', mode.mannequin ? L.tinted('mannequin', null) : null],
       ['mask', mode.mask ? L.tinted(mode.maskKey, tint(c.base.hex)) : null],
       ['mouth', mode.mouth ? L.tinted(mode.mouthKey, tint(c.mouth.hex)) : null],
+      ['face', mode.face ? L.tinted('face_skull', tint(c.face.hex)) : null],
       ['stripes', mode.stripesCanvas ? L.stripes({
         usePng: mode.stripePng, color: mode.stripePng ? tint(c.stripe.hex) : c.stripe.hex, count: s.stripes,
         maskKey: mode.mask ? mode.maskKey : null
@@ -1158,7 +1212,7 @@
       ['earInner', mode.innerKey ? L.tinted(mode.innerKey, tint(c.earInner.hex)) : null],
       ['earOuter', mode.ears ? L.tinted(mode.outerKey, tint(c.earOuter.hex)) : null]
     ];
-    var keyFor = { mannequin: 'mannequin', mask: mode.maskKey, mouth: mode.mouthKey, earInner: mode.innerKey, earOuter: mode.outerKey, stripes: 'stripe' };
+    var keyFor = { mannequin: 'mannequin', mask: mode.maskKey, mouth: mode.mouthKey, face: 'face_skull', earInner: mode.innerKey, earOuter: mode.outerKey, stripes: 'stripe' };
 
     jobs.forEach(function (job) {
       var slot = job[0];
@@ -1540,6 +1594,7 @@
     if (s.mouth !== 'none') {
       items.push(item('Mouth (' + MOUTHS[s.mouth] + ', mouth color: ' + c.mouth.name + ')', price(s.mouth === 'teeth' ? 'mouth_teeth' : 'mouth_simple')));
     }
+    if (s.face === 'skull') items.push(item('Face piece (Skull, color: ' + c.face.name + ')', price('face_skull')));
     if (s.ears !== 'none') items.push(item(EARS[s.ears], price(EAR_PRICE[s.ears])));
     if (s.stripes > 0) items.push(item('Side stripes (' + c.stripe.name + ')', price('stripe'), s.stripes));
     ACC_ORDER.forEach(function (k) {
@@ -1619,7 +1674,8 @@
     return {
       base: c.base.name,
       openings: OPENINGS[s.opening],
-      mouth: MOUTHS[s.mouth] + (s.mouth === 'none' ? '' : ' (mouth color: ' + c.mouth.name + ')'),
+      mouth: s.face === 'skull' ? 'Teeth included in the skull' : MOUTHS[s.mouth] + (s.mouth === 'none' ? '' : ' (mouth color: ' + c.mouth.name + ')'),
+      face: s.face === 'skull' ? 'Skull (color: ' + c.face.name + ')' : 'None',
       stripes: s.stripes ? s.stripes + ' (' + c.stripe.name + ')' : 'None',
       ears: ears,
       accessories: short.length ? short.join(', ') : 'None',
@@ -1653,6 +1709,7 @@
       'Base color: ' + sm.base,
       'Eye openings: ' + sm.openings,
       'Mouth: ' + sm.mouth,
+      'Face piece: ' + sm.face,
       'Ears: ' + sm.ears,
       'Side stripes: ' + sm.stripes,
       'Accessories' + (acc.length ? ' (placement as seen from the front):' : ': None')
@@ -1829,7 +1886,7 @@
         ctx.fillStyle = '#ece8f2';
         ctx.font = '21px sans-serif';
         [
-          sm.base + ' · ' + sm.openings + ' · Mouth: ' + sm.mouth + ' · Ears: ' + sm.ears,
+          sm.base + ' · ' + sm.openings + ' · Mouth: ' + sm.mouth + ' · Face: ' + sm.face + ' · Ears: ' + sm.ears,
           'Stripes: ' + sm.stripes + ' · Accessories: ' + sm.accessories + ' · Accent: ' + sm.accent,
           'Est. ' + formatNumber(price.egp) + ' EGP (~$' + formatNumber(price.usd) + ')'
         ].forEach(function (line, i) {

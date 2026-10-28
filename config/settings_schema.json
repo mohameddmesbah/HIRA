@@ -1567,6 +1567,12 @@
       },
       {
         "type": "number",
+        "id": "hira_price_face_skull",
+        "label": "Face piece: skull",
+        "default": 600
+      },
+      {
+        "type": "number",
         "id": "hira_price_stripe",
         "label": "Side stripe (per stripe, up to 8)",
         "default": 350
@@ -1990,6 +1996,46 @@
       {
         "type": "range",
         "id": "hira_layer_mouth_teeth_scale",
+        "min": 20,
+        "max": 250,
+        "step": 5,
+        "unit": "%",
+        "label": "Scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Face piece: skull"
+      },
+      {
+        "type": "image_picker",
+        "id": "hira_layer_face_skull",
+        "label": "Image",
+        "info": "White yarn on a transparent background, including its teeth. Tinted with the face piece color; drawn above the mask and mouth."
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_face_skull_x",
+        "min": -500,
+        "max": 500,
+        "step": 10,
+        "unit": "px",
+        "label": "X offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_face_skull_y",
+        "min": -500,
+        "max": 500,
+        "step": 10,
+        "unit": "px",
+        "label": "Y offset",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_face_skull_scale",
         "min": 20,
         "max": 250,
         "step": 5,
