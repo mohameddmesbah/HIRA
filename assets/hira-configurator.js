@@ -1023,6 +1023,25 @@
       btn.addEventListener('click', function () { self.save(); });
     });
     this.root.querySelector('[data-cfg-send]').addEventListener('click', function () { self.send(); });
+    // "How to measure" guide: thumbnail opens a larger copy in a dialog.
+    var guide = this.root.querySelector('[data-measure-dialog]');
+    var guideOpen = this.root.querySelector('[data-measure-open]');
+    if (guide && guideOpen) {
+      guideOpen.addEventListener('click', function () {
+        if (guide.showModal) guide.showModal();
+        else guide.setAttribute('open', '');
+      });
+      var closeGuide = function () {
+        if (guide.close) guide.close();
+        else guide.removeAttribute('open');
+        guideOpen.focus();
+      };
+      guide.querySelector('[data-measure-close]').addEventListener('click', closeGuide);
+      // Tap outside the image (on the backdrop) closes it too.
+      guide.addEventListener('click', function (event) {
+        if (event.target === guide) closeGuide();
+      });
+    }
     var remind = this.root.querySelector('[data-cfg-remind]');
     if (remind) {
       this.root.querySelector('[data-cfg-remind-save]').addEventListener('click', function () {

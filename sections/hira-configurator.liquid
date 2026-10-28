@@ -221,12 +221,29 @@
                 <input type="text" name="city" autocomplete="address-level2" required>
                 <small class="hira-cfg__error" data-error-for="city">Please enter your city.</small>
               </label>
-              <label class="hira-cfg__field">
-                <span>Head circumference (cm) *</span>
-                <input type="number" name="head" inputmode="decimal" min="35" max="75" step="0.5" placeholder="e.g. 56" required>
-                <small class="hira-cfg__note">{{ section.settings.measure_note | escape }}</small>
+              <div class="hira-cfg__field">
+                <label for="HiraCfgHead-{{ sid }}">Head circumference (cm) *</label>
+                <input type="number" id="HiraCfgHead-{{ sid }}" name="head" inputmode="decimal" min="35" max="75" step="0.5" placeholder="e.g. 56" required>
                 <small class="hira-cfg__error" data-error-for="head">Enter a measurement between 35 and 75 cm.</small>
-              </label>
+                <div class="hira-cfg__measure">
+                  {%- if section.settings.measure_image != blank -%}
+                    <button type="button" class="hira-cfg__measure-thumb" data-measure-open aria-haspopup="dialog" aria-label="How to measure: view larger">
+                      {{
+                        section.settings.measure_image
+                        | image_url: width: 480
+                        | image_tag: loading: 'lazy', width: 120, alt: section.settings.measure_image.alt | default: 'How to measure your head'
+                      }}
+                      <span class="hira-cfg__measure-zoom">How to measure</span>
+                    </button>
+                  {%- endif -%}
+                  <div class="hira-cfg__measure-text">
+                    <small class="hira-cfg__note">{{ section.settings.measure_note | escape }}</small>
+                    {%- if section.settings.measure_range != blank -%}
+                      <small class="hira-cfg__note hira-cfg__note--strong">{{ section.settings.measure_range | escape }}</small>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
               <label class="hira-cfg__field">
                 <span>Email <em>(optional, for a copy of your order)</em></span>
                 <input type="email" name="email" autocomplete="email">
@@ -295,6 +312,21 @@
             <button type="button" class="hira-btn hira-btn--primary" data-cfg-next>Next</button>
           </div>
         </form>
+
+        {%- if section.settings.measure_image != blank -%}
+          <dialog class="hira-cfg__lightbox" data-measure-dialog aria-label="How to measure your head">
+            <button type="button" class="hira-cfg__lightbox-close" data-measure-close aria-label="Close">&times;</button>
+            {{
+              section.settings.measure_image
+              | image_url: width: 1600
+              | image_tag:
+                widths: '600, 900, 1200, 1600',
+                sizes: '(min-width: 750px) 80vw, 100vw',
+                loading: 'lazy',
+                alt: section.settings.measure_image.alt | default: 'How to measure your head'
+            }}
+          </dialog>
+        {%- endif -%}
 
         {%- if settings.hira_show_cal_link and settings.hira_cal_link != blank -%}
           <p class="hira-cfg__cal">
@@ -456,6 +488,18 @@
       "id": "measure_note",
       "label": "How to measure note",
       "default": "Wrap a soft tape around your head just above the eyebrows and ears, at the widest point."
+    },
+    {
+      "type": "text",
+      "id": "measure_range",
+      "label": "Typical size note",
+      "default": "Most adults measure 54–60 cm."
+    },
+    {
+      "type": "image_picker",
+      "id": "measure_image",
+      "label": "How to measure guide image",
+      "info": "Shown as a small thumbnail next to the head circumference note. Tapping it opens it larger."
     },
     {
       "type": "header",
