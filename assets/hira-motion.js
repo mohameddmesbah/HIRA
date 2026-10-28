@@ -29,7 +29,8 @@
     var els = (scope || document).querySelectorAll('[data-hira-reveal]:not(.is-revealed)');
     if (!els.length) return;
 
-    if (!motionOn() || !('IntersectionObserver' in window)) {
+    var designMode = window.Shopify && window.Shopify.designMode;
+    if (!motionOn() || designMode || !('IntersectionObserver' in window)) {
       els.forEach(reveal);
       return;
     }

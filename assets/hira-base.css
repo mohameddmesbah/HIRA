@@ -465,6 +465,8 @@ body {
 }
 
 .hira-chapter__media {
+  width: 100%;
+  min-width: 0;
   aspect-ratio: var(--hira-ratio, 4 / 5);
 }
 
@@ -648,7 +650,25 @@ body {
 
 .hira-custom__collage {
   position: relative;
+  /* Explicit width: every child is absolutely positioned, so without it a
+     grid item with aspect-ratio can collapse to 0x0 (seen on iPad Safari). */
+  width: 100%;
+  min-width: 0;
   aspect-ratio: 5 / 6;
+}
+
+@supports not (aspect-ratio: 1) {
+  .hira-custom__collage {
+    height: 0;
+    padding-bottom: 120%;
+  }
+}
+
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .hira-custom__collage {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
 }
 
 .hira-custom__img--a {

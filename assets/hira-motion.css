@@ -56,9 +56,12 @@
   opacity: 1;
 }
 
-/* --- Image unmask ------------------------------------------------------- */
+/* --- Image unmask -------------------------------------------------------
+   The clip sits on the children, never on the observed element itself:
+   an element clipped to nothing has an empty intersection rect, so the
+   IntersectionObserver would never report it and it would stay hidden. */
 
-.hira-motion [data-hira-reveal='mask'] {
+.hira-motion [data-hira-reveal='mask'] > * {
   clip-path: inset(100% 0 0 0);
   transition: clip-path calc(var(--hira-dur) * 1.3) var(--hira-ease-in-out);
   transition-delay: calc(var(--d, 0) * var(--hira-stagger) * 1.5);
@@ -69,7 +72,7 @@
   transition: transform calc(var(--hira-dur) * 1.8) var(--hira-ease);
 }
 
-.hira-motion [data-hira-reveal='mask'].is-revealed {
+.hira-motion [data-hira-reveal='mask'].is-revealed > * {
   clip-path: inset(0 0 0 0);
 }
 
@@ -77,13 +80,13 @@
   transform: none;
 }
 
-.hira-motion--subtle [data-hira-reveal='mask'] {
+.hira-motion--subtle [data-hira-reveal='mask'] > * {
   clip-path: none;
   opacity: 0;
   transition: opacity var(--hira-dur) var(--hira-ease);
 }
 
-.hira-motion--subtle [data-hira-reveal='mask'].is-revealed {
+.hira-motion--subtle [data-hira-reveal='mask'].is-revealed > * {
   opacity: 1;
 }
 
@@ -190,10 +193,21 @@
   from { opacity: 0; }
 }
 
-/* Safety net: never keep content hidden in the theme editor. */
-.shopify-design-mode .hira-motion [data-hira-reveal],
-.shopify-design-mode.hira-motion [data-hira-reveal] {
-  transition-delay: 0s;
+/* Theme editor: always show content in its final state, so merchants can see
+   what they edit (sections re-render often and must never stay hidden). */
+html.shopify-design-mode [data-hira-reveal],
+html.shopify-design-mode [data-hira-reveal] > *,
+html.shopify-design-mode [data-hira-reveal] img,
+html.shopify-design-mode [data-hira-reveal] .hira-line__inner {
+  opacity: 1 !important;
+  clip-path: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html.shopify-design-mode [data-hira-reveal='thread'] path {
+  stroke-dashoffset: 0 !important;
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
