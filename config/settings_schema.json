@@ -1455,6 +1455,68 @@
       },
       {
         "type": "header",
+        "content": "Design your own colors"
+      },
+      {
+        "type": "paragraph",
+        "content": "Swatches offered for the base, ears, stripes and accent on the Design Your Own page."
+      },
+      {
+        "type": "color",
+        "id": "hira_color_black",
+        "label": "Black",
+        "default": "#1A1A1C"
+      },
+      {
+        "type": "color",
+        "id": "hira_color_grey",
+        "label": "Grey",
+        "default": "#8C8B91"
+      },
+      {
+        "type": "color",
+        "id": "hira_color_white",
+        "label": "White",
+        "default": "#F2EFEA"
+      },
+      {
+        "type": "color",
+        "id": "hira_color_beige",
+        "label": "Beige",
+        "default": "#D9C3A5"
+      },
+      {
+        "type": "color",
+        "id": "hira_color_brown",
+        "label": "Brown",
+        "default": "#5A3524"
+      },
+      {
+        "type": "color",
+        "id": "hira_color_red",
+        "label": "Red",
+        "default": "#D2161E"
+      },
+      {
+        "type": "color",
+        "id": "hira_color_pink",
+        "label": "Pink",
+        "default": "#F08CB4"
+      },
+      {
+        "type": "color",
+        "id": "hira_color_orange",
+        "label": "Orange",
+        "default": "#E07A2E"
+      },
+      {
+        "type": "color",
+        "id": "hira_color_blue",
+        "label": "Blue",
+        "default": "#2F4F8F"
+      },
+      {
+        "type": "header",
         "content": "Design your own prices (EGP)"
       },
       {

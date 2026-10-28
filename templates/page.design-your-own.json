@@ -2,66 +2,6 @@
   "sections": {
     "main": {
       "type": "hira-configurator",
-      "blocks": {
-        "color-1": {
-          "type": "color",
-          "settings": {
-            "name": "Brown",
-            "color": "#6B4632"
-          }
-        },
-        "color-2": {
-          "type": "color",
-          "settings": {
-            "name": "Beige",
-            "color": "#D9C3A5"
-          }
-        },
-        "color-3": {
-          "type": "color",
-          "settings": {
-            "name": "Black",
-            "color": "#1A1A1C"
-          }
-        },
-        "color-4": {
-          "type": "color",
-          "settings": {
-            "name": "Blue",
-            "color": "#2F4F8F"
-          }
-        },
-        "color-5": {
-          "type": "color",
-          "settings": {
-            "name": "Pink",
-            "color": "#E8A3B8"
-          }
-        },
-        "color-6": {
-          "type": "color",
-          "settings": {
-            "name": "White",
-            "color": "#F2EFEA"
-          }
-        },
-        "color-7": {
-          "type": "color",
-          "settings": {
-            "name": "Orange",
-            "color": "#E07A2E"
-          }
-        }
-      },
-      "block_order": [
-        "color-1",
-        "color-2",
-        "color-3",
-        "color-4",
-        "color-5",
-        "color-6",
-        "color-7"
-      ],
       "settings": {
         "eyebrow": "Design your own",
         "heading": "Your Idea.\nHer Hands.\nYour Mask.",
