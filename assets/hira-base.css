@@ -1222,6 +1222,13 @@ div.hira-booking__loader {
    Footer contact block + Dawn integration touches
    ========================================================================== */
 
+/* The copyright line was removed from the footer bottom bar, so the first
+   policy link no longer needs Dawn's leading "·" separator. */
+.footer__copyright .policies li:first-child::before {
+  content: none;
+  padding: 0;
+}
+
 .footer-block .hira-contact-list {
   gap: 1.6rem;
 }
