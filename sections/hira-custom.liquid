@@ -3,105 +3,96 @@
   if section.settings.layout == 'compact'
     assign compact = true
   endif
+
+  assign has_bg = false
+  if compact == false and section.settings.image_1 != blank
+    assign has_bg = true
+  endif
+
+  assign overlay_alpha = section.settings.overlay_opacity | divided_by: 100.0
+  assign secondary_link = section.settings.secondary_link | default: '#faq'
 -%}
 
 <section
   id="custom-made"
-  class="hira-section hira-custom hira-custom--{{ section.settings.layout }} color-{{ section.settings.color_scheme }} gradient"
-  style="--hira-pt: {{ section.settings.padding_top }}px; --hira-pb: {{ section.settings.padding_bottom }}px;"
+  class="hira-section hira-custom hira-custom--{{ section.settings.layout }}{% if has_bg %} hira-custom--has-bg{% endif %} color-{{ section.settings.color_scheme }} gradient"
+  style="--hira-pt: {{ section.settings.padding_top }}px; --hira-pb: {{ section.settings.padding_bottom }}px; --hira-overlay-color: {{ section.settings.overlay_color }}; --hira-overlay-alpha: {{ overlay_alpha }}; --hira-bg-focus: {{ section.settings.image_focus }};"
 >
-  <div class="hira-wrap">
-    <div class="hira-custom__grid">
-      <div class="hira-custom__copy">
-        {%- if section.settings.eyebrow != blank -%}
-          <p class="hira-eyebrow" data-hira-reveal="fade">{{ section.settings.eyebrow | escape }}</p>
-        {%- endif -%}
+  {%- if has_bg -%}
+    <div class="hira-custom__bg" aria-hidden="true">
+      <div class="hira-custom__bg-inner" data-hira-parallax="0.1">
+        {{
+          section.settings.image_1
+          | image_url: width: 2400
+          | image_tag:
+            widths: '600, 900, 1200, 1600, 2000, 2400',
+            sizes: '100vw',
+            loading: 'lazy',
+            alt: ''
+        }}
+      </div>
+    </div>
+    <div class="hira-custom__overlay" aria-hidden="true"></div>
+  {%- endif -%}
 
-        {% render 'hira-heading-reveal',
-          text: section.settings.heading,
-          accent_last: section.settings.accent_last_line
+  <div class="hira-wrap hira-custom__inner">
+    <div class="hira-custom__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hira-eyebrow" data-hira-reveal="fade">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      {% render 'hira-heading-reveal',
+        text: section.settings.heading,
+        accent_last: section.settings.accent_last_line
+      %}
+
+      {%- if section.settings.text != blank -%}
+        <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2;">{{ section.settings.text }}</div>
+      {%- endif -%}
+
+      <div class="hira-actions" data-hira-reveal="fade" style="--d: 3;">
+        {% render 'hira-button',
+          label: section.settings.button_label,
+          booking: true,
+          style: 'primary'
         %}
-
-        {%- if section.settings.text != blank -%}
-          <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2;">{{ section.settings.text }}</div>
-        {%- endif -%}
-
-        {%- if section.blocks.size > 0 and compact == false -%}
-          <ol class="hira-steps" role="list">
-            {%- for block in section.blocks -%}
-              <li class="hira-step" {{ block.shopify_attributes }} data-hira-reveal="fade" style="--d: {{ forloop.index | plus: 2 }};">
-                <span class="hira-step__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
-                <div>
-                  <h3 class="hira-step__title">{{ block.settings.title | escape }}</h3>
-                  {%- if block.settings.text != blank -%}
-                    <p class="hira-step__text">{{ block.settings.text | escape }}</p>
-                  {%- endif -%}
-                </div>
-              </li>
-            {%- endfor -%}
-          </ol>
-        {%- endif -%}
-
-        <div class="hira-actions" data-hira-reveal="fade" style="--d: 4;">
+        {%- if compact -%}
           {% render 'hira-button',
-            label: section.settings.button_label,
-            booking: true,
-            style: 'primary'
+            label: section.settings.secondary_label,
+            link: section.settings.secondary_link,
+            style: 'ghost'
           %}
-          {%- assign secondary_link = section.settings.secondary_link | default: '#faq' -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.blocks.size > 0 and compact == false -%}
+      <ol class="hira-steps" role="list">
+        {%- for block in section.blocks -%}
+          <li class="hira-step" {{ block.shopify_attributes }} data-hira-reveal="fade" style="--d: {{ forloop.index | plus: 3 }};">
+            <span class="hira-step__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            <div>
+              <h3 class="hira-step__title">{{ block.settings.title | escape }}</h3>
+              {%- if block.settings.text != blank -%}
+                <p class="hira-step__text">{{ block.settings.text | escape }}</p>
+              {%- endif -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ol>
+    {%- endif -%}
+
+    {%- unless compact -%}
+      {%- if section.settings.secondary_label != blank -%}
+        <div class="hira-custom__more" data-hira-reveal="fade">
           {% render 'hira-button',
             label: section.settings.secondary_label,
             link: secondary_link,
             style: 'ghost'
           %}
         </div>
-      </div>
-
-      {%- unless compact -%}
-        <div class="hira-custom__collage" aria-hidden="true">
-          <div class="hira-custom__img--a hira-media" data-hira-reveal="mask">
-            <div data-hira-parallax="0.12" style="position:absolute;inset:-8% 0;">
-              {%- if section.settings.image_1 != blank -%}
-                {{
-                  section.settings.image_1
-                  | image_url: width: 1400
-                  | image_tag: widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 36vw, 72vw', loading: 'lazy', alt: ''
-                }}
-              {%- else -%}
-                {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
-              {%- endif -%}
-            </div>
-          </div>
-          <div class="hira-custom__img--b hira-media" data-hira-reveal="mask" style="--d: 2;">
-            {%- if section.settings.image_2 != blank -%}
-              {{
-                section.settings.image_2
-                | image_url: width: 1000
-                | image_tag: widths: '400, 700, 1000', sizes: '(min-width: 990px) 25vw, 50vw', loading: 'lazy', alt: ''
-              }}
-            {%- else -%}
-              {{ 'product-3' | placeholder_svg_tag: 'placeholder-svg' }}
-            {%- endif -%}
-          </div>
-
-          <svg class="hira-thread" viewBox="0 0 500 600" preserveAspectRatio="none" focusable="false" data-hira-reveal="thread">
-            <path pathLength="1" d="M20 560 C 120 420, 40 300, 200 260 S 420 160, 480 30"/>
-          </svg>
-
-          {%- if section.settings.stamp_text != blank -%}
-            <div class="hira-custom__stamp">
-              <svg viewBox="0 0 100 100" width="100%" height="100%" focusable="false">
-                <defs>
-                  <path id="HiraStamp-{{ section.id }}" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/>
-                </defs>
-                <circle cx="50" cy="50" r="3" fill="var(--hira-accent)"/>
-                <text><textPath href="#HiraStamp-{{ section.id }}">{{ section.settings.stamp_text | escape }}</textPath></text>
-              </svg>
-            </div>
-          {%- endif -%}
-        </div>
-      {%- endunless -%}
-    </div>
+      {%- endif -%}
+    {%- endunless -%}
   </div>
 </section>
 
@@ -117,11 +108,10 @@
       "id": "layout",
       "label": "Layout",
       "options": [
-        { "value": "media-right", "label": "Images on the right" },
-        { "value": "media-left", "label": "Images on the left" },
+        { "value": "background", "label": "Full section with background image" },
         { "value": "compact", "label": "Compact (text only)" }
       ],
-      "default": "media-right"
+      "default": "background"
     },
     {
       "type": "text",
@@ -152,7 +142,7 @@
       "id": "button_label",
       "label": "Booking button label",
       "default": "Book a Design Session",
-      "info": "Opens the Cal.com booking set in Theme settings > HIRA."
+      "info": "Sits right after the text. Opens the Cal.com booking set in Theme settings > HIRA."
     },
     {
       "type": "text",
@@ -168,29 +158,47 @@
     },
     {
       "type": "header",
-      "content": "Images"
+      "content": "Background"
     },
     {
       "type": "image_picker",
       "id": "image_1",
-      "label": "Main image"
+      "label": "Main image",
+      "info": "Covers the whole section, behind a dark overlay. Vertical handcraft images work well."
     },
     {
-      "type": "image_picker",
-      "id": "image_2",
-      "label": "Detail image"
+      "type": "select",
+      "id": "image_focus",
+      "label": "Image focus",
+      "options": [
+        { "value": "center top", "label": "Top" },
+        { "value": "center center", "label": "Center" },
+        { "value": "center bottom", "label": "Bottom" }
+      ],
+      "default": "center center"
     },
     {
-      "type": "text",
-      "id": "stamp_text",
-      "label": "Rotating stamp text",
-      "default": "Made to measure • Made by hand • "
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#1C1822"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 40,
+      "max": 95,
+      "step": 1,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "info": "Higher keeps the text easier to read.",
+      "default": 82
     },
     {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "Color scheme",
-      "default": "scheme-3"
+      "default": "scheme-1"
     },
     {
       "type": "header",

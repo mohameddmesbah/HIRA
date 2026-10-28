@@ -103,6 +103,8 @@
 {%- style -%}
   .header {
     padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
+    --hira-header-pt: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px;
+    --hira-header-pb: {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px;
   }
 
   .section-header {
@@ -120,6 +122,8 @@
     .header {
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
+      --hira-header-pt: {{ section.settings.padding_top }}px;
+      --hira-header-pb: {{ section.settings.padding_bottom }}px;
     }
   }
 {%- endstyle -%}
@@ -176,7 +180,7 @@
       assign language_selector = true
     endif
   -%}
-  <header class="header header--{{ logo_position }} header--mobile-{{ mobile_logo_position }} page-width{% if hira_hanging %} hira-rope-header{% endif %}{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if country_selector or language_selector %} header--has-localizations{% endif %}">
+  <header class="header header--{{ logo_position }} header--mobile-{{ mobile_logo_position }} page-width{% if hira_hanging %} hira-rope-header{% if settings.hira_logo_drop and request.page_type == 'index' %} hira-rope-drop{% endif %}{% endif %}{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if country_selector or language_selector %} header--has-localizations{% endif %}">
     {%- liquid
       assign render_search_left = false
       if logo_position == 'top-center' or section.settings.menu == blank or shop.customer_accounts_enabled

@@ -22,6 +22,7 @@
       --hira-logo-h: calc(var(--hira-logo-w) / var(--hira-logo-ratio));
       --hira-rope-share: {{ settings.hira_rope_share | divided_by: 100.0 }};
       --hira-logo-bottom-share: {{ settings.hira_logo_bottom_share | default: 0 | divided_by: 100.0 }};
+      --hira-rope-x: {{ settings.hira_rope_position | default: 37 }}%;
     }
     @media screen and (min-width: 750px) {
       :root { --hira-logo-w: {{ settings.hira_logo_width_tablet }}px; }

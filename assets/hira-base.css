@@ -266,6 +266,17 @@ body {
   margin-top: 4rem;
 }
 
+/* Dawn hides every empty <div> (base.css: div:empty { display: none }).
+   These are intentionally empty (overlays, the Cal.com mount point, a
+   spinner), so they need an explicit, more specific display. */
+div.hira-hero__overlay,
+div.hira-hero__empty,
+div.hira-custom__overlay,
+div.hira-booking__embed,
+div.hira-booking__loader {
+  display: block;
+}
+
 /* --- Media helpers ------------------------------------------------------ */
 
 .hira-media {
@@ -625,102 +636,84 @@ body {
 
 /* ==========================================================================
    Custom made
+   The main image fills the whole section behind a tinted overlay; the copy,
+   booking button and process steps sit on top.
    ========================================================================== */
 
-.hira-custom__grid {
-  display: grid;
-  gap: clamp(4.8rem, 6vw, 8rem);
-  align-items: center;
+.hira-custom {
+  isolation: isolate;
 }
 
-@media screen and (min-width: 990px) {
-  .hira-custom__grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .hira-custom--media-left .hira-custom__collage {
-    order: -1;
-  }
+.hira-custom__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
 }
 
-.hira-custom__copy .hira-text {
+.hira-custom__bg-inner {
+  position: absolute;
+  inset: -8% 0;
+}
+
+.hira-custom__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--hira-bg-focus, center);
+}
+
+.hira-custom__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(90% 70% at 85% 10%, rgba(var(--hira-accent-rgb), 0.16), transparent 65%),
+    var(--hira-overlay-color, #1c1822);
+  opacity: var(--hira-overlay-alpha, 0.82);
+}
+
+.hira-custom--has-bg {
+  --color-foreground: 244, 240, 248;
+  color: rgb(var(--color-foreground));
+}
+
+.hira-custom--has-bg .hira-text {
+  color: rgba(var(--color-foreground), 0.88);
+}
+
+.hira-custom__intro {
+  max-width: 76rem;
+}
+
+.hira-custom__intro .hira-text {
   margin-top: 3.2rem;
   font-size: 1.8rem;
 }
 
-.hira-custom__collage {
-  position: relative;
-  /* Explicit width: every child is absolutely positioned, so without it a
-     grid item with aspect-ratio can collapse to 0x0 (seen on iPad Safari). */
-  width: 100%;
-  min-width: 0;
-  aspect-ratio: 5 / 6;
+.hira-custom__intro .hira-actions {
+  margin-top: 3.6rem;
 }
 
-@supports not (aspect-ratio: 1) {
-  .hira-custom__collage {
-    height: 0;
-    padding-bottom: 120%;
-  }
-}
-
-@media screen and (min-width: 750px) and (max-width: 989px) {
-  .hira-custom__collage {
-    max-width: 64rem;
-    margin: 0 auto;
-  }
-}
-
-.hira-custom__img--a {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 72%;
-  height: 78%;
-}
-
-.hira-custom__img--b {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 50%;
-  height: 52%;
-  box-shadow: 0 0 0 1rem rgb(var(--color-background));
-}
-
-.hira-custom__collage .hira-thread {
-  inset: -5%;
-  width: 110%;
-  height: 110%;
-  z-index: 1;
-}
-
-.hira-custom__stamp {
-  position: absolute;
-  top: 6%;
-  left: 4%;
-  z-index: 2;
-  width: clamp(9rem, 11vw, 13rem);
-  height: clamp(9rem, 11vw, 13rem);
-  color: rgb(var(--color-foreground));
-}
-
-.hira-custom__stamp text {
-  font-family: var(--font-body-family);
-  font-size: 8.4px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  fill: currentColor;
+.hira-custom__more {
+  margin-top: 4rem;
 }
 
 .hira-steps {
   display: grid;
   gap: 0;
-  margin: 4.8rem 0 0;
+  margin: clamp(5.6rem, 8vw, 9.6rem) 0 0;
   padding: 0;
   list-style: none;
-  counter-reset: hira-step;
-  border-top: 1px solid rgba(var(--color-foreground), 0.18);
+  border-top: 1px solid rgba(var(--color-foreground), 0.22);
+}
+
+@media screen and (min-width: 750px) {
+  .hira-steps {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: clamp(2.4rem, 4vw, 5.6rem);
+  }
 }
 
 .hira-step {
@@ -728,7 +721,16 @@ body {
   grid-template-columns: 6rem 1fr;
   gap: 1.6rem;
   padding: 2.4rem 0;
-  border-bottom: 1px solid rgba(var(--color-foreground), 0.18);
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.22);
+}
+
+@media screen and (min-width: 750px) {
+  .hira-step {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding-top: 3.2rem;
+    border-bottom: 0;
+  }
 }
 
 .hira-step__num {
@@ -755,13 +757,12 @@ body {
   margin: 0;
   font-size: 1.5rem;
   line-height: 1.6;
-  color: rgba(var(--color-foreground), 0.72);
+  color: rgba(var(--color-foreground), 0.78);
 }
 
 /* Compact variant (used on product pages) */
 
-.hira-custom--compact .hira-custom__grid {
-  grid-template-columns: 1fr;
+.hira-custom--compact .hira-custom__intro {
   max-width: 88rem;
   margin: 0 auto;
   text-align: center;
@@ -1106,12 +1107,12 @@ body {
 
 /* ==========================================================================
    Rope logo (Theme settings > Logo > Rope logo)
-   The logo box is only as tall as the letters band of the image, so H/R/A sit
-   centred in the dark header row. The image is pulled up by the rope's length;
-   the announcement bar is layered above the header, so the part of the rope
-   above the header's top edge disappears behind the bar and the rope looks
-   tied to the bar's bottom edge, dangling into the header. The rope can never
-   cover the announcement text.
+   The logo item spans the full height of the dark header row (it cancels the
+   header's padding) and the image's top edge is pinned to the header's top
+   edge, i.e. the bottom of the announcement bar, tucked 2px underneath it so
+   there is never a gap. The row is at least (1 + rope - bottom) x logo height
+   tall, which centres the letters (H/R/A) in it. The announcement bar is
+   layered above the header, so nothing of the logo can cover its text.
    ========================================================================== */
 
 .announcement-bar-section:has(~ .section-header .hira-rope-header) {
@@ -1124,13 +1125,20 @@ body {
   z-index: 0;
 }
 
-.hira-rope-header .header__heading,
-.hira-rope-header .header__heading-link {
-  align-self: center;
+.hira-rope-header {
+  --hira-rope-tuck: 2px;
+}
+
+.hira-rope-header > .header__heading,
+.hira-rope-header > .header__heading-link {
+  display: flex;
+  align-self: stretch;
+  margin-top: calc(-1 * var(--hira-header-pt, 0px));
+  margin-bottom: calc(-1 * var(--hira-header-pb, 0px));
 }
 
 .hira-rope-header .header__heading-link {
-  display: block;
+  display: flex;
   padding-top: 0;
   padding-bottom: 0;
   line-height: 0;
@@ -1139,22 +1147,24 @@ body {
 .hira-rope-logo {
   position: relative;
   display: block;
+  align-self: stretch;
   width: var(--hira-logo-w);
-  height: calc(var(--hira-logo-h) * (1 - var(--hira-rope-share, 0.45) - var(--hira-logo-bottom-share, 0)));
+  min-height: calc(var(--hira-logo-h) * (1 + var(--hira-rope-share, 0.45) - var(--hira-logo-bottom-share, 0)) - 2 * var(--hira-rope-tuck));
 }
 
 .hira-rope-logo__img.header__heading-logo {
   position: absolute;
-  top: calc(-1 * var(--hira-logo-h) * var(--hira-rope-share, 0.45));
+  top: calc(-1 * var(--hira-rope-tuck));
   left: 0;
   width: 100%;
   height: auto;
   max-width: none;
   pointer-events: none;
+  transform-origin: var(--hira-rope-x, 37%) 0;
 }
 
 .hira-rope-header .header__heading-link:focus-visible {
-  outline-offset: 0.4rem;
+  outline-offset: -0.2rem;
 }
 
 /* Logo sits right after the menu icon on tablet and mobile. */
@@ -1162,6 +1172,49 @@ body {
   .hira-rope-header.header--mobile-left .header__heading,
   .hira-rope-header.header--mobile-left .header__heading-link {
     justify-self: start;
+  }
+}
+
+/* Drop-in: falls from above the screen along the rope (behind the bar), then
+   settles with a small swing around the rope's knot point. Transform only, so
+   there is no layout shift. Homepage only, toggled in Theme settings > Logo. */
+@media (prefers-reduced-motion: no-preference) {
+  .hira-rope-drop .hira-rope-logo__img.header__heading-logo {
+    animation: hira-rope-drop 1.6s both;
+  }
+}
+
+@keyframes hira-rope-drop {
+  0% {
+    transform: translate3d(0, calc(-1 * (var(--hira-logo-h) + 16rem)), 0) rotate(0deg);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.4);
+  }
+  38% {
+    transform: translate3d(0, 0.5rem, 0) rotate(0deg);
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1);
+  }
+  48% {
+    transform: translate3d(0, -0.15rem, 0) rotate(3.2deg);
+    animation-timing-function: ease-in-out;
+  }
+  60% {
+    transform: translate3d(0, 0, 0) rotate(-2.4deg);
+    animation-timing-function: ease-in-out;
+  }
+  72% {
+    transform: translate3d(0, 0, 0) rotate(1.5deg);
+    animation-timing-function: ease-in-out;
+  }
+  84% {
+    transform: translate3d(0, 0, 0) rotate(-0.7deg);
+    animation-timing-function: ease-in-out;
+  }
+  93% {
+    transform: translate3d(0, 0, 0) rotate(0.25deg);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
   }
 }
 

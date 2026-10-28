@@ -9,12 +9,16 @@
   --hira-dur: 1.1s;
   --hira-shift: 4rem;
   --hira-stagger: 0.09s;
+  --hira-slide: min(16vw, 18rem);
+  --hira-zoom-from: 0.86;
 }
 
 .hira-motion--subtle {
   --hira-dur: 0.8s;
   --hira-shift: 1.6rem;
   --hira-stagger: 0.05s;
+  --hira-slide: min(6vw, 6rem);
+  --hira-zoom-from: 0.95;
 }
 
 /* --- Fade up ------------------------------------------------------------ */
@@ -54,6 +58,51 @@
 
 .hira-motion--subtle [data-hira-reveal='lines'].is-revealed .hira-line__inner {
   opacity: 1;
+}
+
+/* --- Directional entrances (story chapters) ---------------------------- */
+
+.hira-motion [data-hira-reveal='from-left'],
+.hira-motion [data-hira-reveal='from-right'],
+.hira-motion [data-hira-reveal='zoom'] {
+  opacity: 0;
+  transition:
+    opacity calc(var(--hira-dur) * 1.1) var(--hira-ease),
+    transform calc(var(--hira-dur) * 1.3) var(--hira-ease);
+  will-change: transform, opacity;
+}
+
+.hira-motion [data-hira-reveal='from-left'] {
+  transform: translate3d(calc(-1 * var(--hira-slide)), 0, 0);
+}
+
+.hira-motion [data-hira-reveal='from-right'] {
+  transform: translate3d(var(--hira-slide), 0, 0);
+}
+
+.hira-motion [data-hira-reveal='zoom'] {
+  transform: scale(var(--hira-zoom-from));
+  transform-origin: center 40%;
+}
+
+.hira-motion [data-hira-reveal='from-left'].is-revealed,
+.hira-motion [data-hira-reveal='from-right'].is-revealed,
+.hira-motion [data-hira-reveal='zoom'].is-revealed {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* --- Quote: lines rise from behind a mask, one after the other ---------- */
+
+.hira-motion .hira-quote__lines .hira-line__inner {
+  transform: translate3d(0, 115%, 0);
+  transition-duration: calc(var(--hira-dur) * 1.25);
+  transition-delay: calc(var(--i, 0) * 0.32s);
+}
+
+.hira-motion .hira-quote__lines.is-revealed .hira-line__inner {
+  transform: none;
 }
 
 /* --- Image unmask -------------------------------------------------------
@@ -160,12 +209,6 @@
   animation-duration: calc(var(--hira-marquee-speed, 38s) * 1.6);
 }
 
-/* --- Stamp rotation ----------------------------------------------------- */
-
-.hira-motion--full .hira-custom__stamp svg {
-  animation: hira-spin 22s linear infinite;
-}
-
 /* --- Magnetic buttons --------------------------------------------------- */
 
 .hira-motion--full [data-hira-magnetic] {
@@ -191,23 +234,6 @@
 
 @keyframes hira-vt-in {
   from { opacity: 0; }
-}
-
-/* Theme editor: always show content in its final state, so merchants can see
-   what they edit (sections re-render often and must never stay hidden). */
-html.shopify-design-mode [data-hira-reveal],
-html.shopify-design-mode [data-hira-reveal] > *,
-html.shopify-design-mode [data-hira-reveal] img,
-html.shopify-design-mode [data-hira-reveal] .hira-line__inner {
-  opacity: 1 !important;
-  clip-path: none !important;
-  transform: none !important;
-  transition: none !important;
-}
-
-html.shopify-design-mode [data-hira-reveal='thread'] path {
-  stroke-dashoffset: 0 !important;
-  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

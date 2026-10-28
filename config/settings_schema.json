@@ -38,6 +38,13 @@
         "info": "Places the logo on the left of the header with its letters centred, and lets the rope at the top of the image run up behind the announcement bar so it looks tied to it. Use a transparent PNG with the rope at the top edge."
       },
       {
+        "type": "checkbox",
+        "id": "hira_logo_drop",
+        "label": "Drop-in animation on the homepage",
+        "default": true,
+        "info": "On each fresh load of the homepage the logo drops from above the screen along the rope and settles with a small swing. Skipped for visitors who prefer reduced motion."
+      },
+      {
         "type": "range",
         "id": "hira_logo_width_tablet",
         "min": 60,
@@ -61,13 +68,24 @@
       },
       {
         "type": "range",
+        "id": "hira_rope_position",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Rope position across the logo",
+        "info": "Where the rope sits, from the logo's left edge. The logo swings around this point.",
+        "default": 37
+      },
+      {
+        "type": "range",
         "id": "hira_rope_share",
         "min": 10,
         "max": 90,
         "step": 5,
         "unit": "%",
         "label": "Rope length above the letters",
-        "info": "Share of the logo's height that is rope only, from the top edge of the image down to the top of the letters. Adjust until the letters sit centred in the header.",
+        "info": "Share of the logo's height that is rope only, from the top edge of the image down to the top of the letters. The rope always starts at the bottom of the announcement bar; this keeps the letters centred in the header.",
         "default": 45
       },
       {

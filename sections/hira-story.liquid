@@ -31,12 +31,29 @@
             if section.settings.alternate and remainder == 0
               assign reverse = true
             endif
+
+            # Entrance: 1st chapter from the left, 2nd from the right, 3rd zooms in, then repeat.
+            assign entrance = block.settings.entrance | default: 'auto'
+            if entrance == 'auto'
+              assign cycle = chapter_index | modulo: 3
+              case cycle
+                when 1
+                  assign entrance = 'from-left'
+                when 2
+                  assign entrance = 'from-right'
+                else
+                  assign entrance = 'zoom'
+              endcase
+            endif
           -%}
-          <article class="hira-chapter{% if reverse %} hira-chapter--reverse{% endif %}" {{ block.shopify_attributes }}>
+          <article
+            class="hira-chapter{% if reverse %} hira-chapter--reverse{% endif %}"
+            data-hira-reveal="{{ entrance }}"
+            {{ block.shopify_attributes }}
+          >
             <div
               class="hira-chapter__media hira-media"
               style="--hira-ratio: {{ block.settings.image_ratio }};"
-              data-hira-reveal="mask"
             >
               {%- if block.settings.image != blank -%}
                 {{
@@ -54,16 +71,16 @@
             </div>
             <div class="hira-chapter__copy">
               {%- if block.settings.number != blank -%}
-                <span class="hira-chapter__num" aria-hidden="true" data-hira-reveal="fade">{{ block.settings.number | escape }}</span>
+                <span class="hira-chapter__num" aria-hidden="true">{{ block.settings.number | escape }}</span>
               {%- endif -%}
               {%- if block.settings.title != blank -%}
-                <h3 class="hira-chapter__title" data-hira-reveal="fade" style="--d: 1;">{{ block.settings.title | escape }}</h3>
+                <h3 class="hira-chapter__title">{{ block.settings.title | escape }}</h3>
               {%- endif -%}
               {%- if block.settings.text != blank -%}
-                <div class="hira-text rte" data-hira-reveal="fade" style="--d: 2;">{{ block.settings.text }}</div>
+                <div class="hira-text rte">{{ block.settings.text }}</div>
               {%- endif -%}
               {%- if block.settings.link_label != blank -%}
-                <div class="hira-actions" data-hira-reveal="fade" style="--d: 3;">
+                <div class="hira-actions">
                   {% render 'hira-button',
                     label: block.settings.link_label,
                     link: block.settings.link,
@@ -75,10 +92,22 @@
             </div>
           </article>
         {%- when 'quote' -%}
-          <figure class="hira-quote" {{ block.shopify_attributes }} data-hira-reveal="fade">
-            <blockquote>{{ block.settings.quote | escape }}</blockquote>
+          {%- liquid
+            # One line per row of the setting; sentences on one row are split after each sentence.
+            assign quote_lines = block.settings.quote | strip | newline_to_br | replace: '. ', '.<br />' | replace: '? ', '?<br />' | replace: '! ', '!<br />' | split: '<br />'
+          -%}
+          <figure class="hira-quote" {{ block.shopify_attributes }}>
+            <blockquote data-hira-reveal="lines" class="hira-quote__lines">
+              {%- for line in quote_lines -%}
+                {%- assign line_text = line | strip -%}
+                {%- if line_text != blank -%}
+                  <span class="hira-line"><span class="hira-line__inner" style="--i: {{ forloop.index0 }};">{{ line_text | escape }}</span></span>
+                  {%- unless forloop.last %} {% endunless -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </blockquote>
             {%- if block.settings.author != blank -%}
-              <figcaption>{{ block.settings.author | escape }}</figcaption>
+              <figcaption data-hira-reveal="fade" style="--d: {{ quote_lines.size | plus: 1 }};">{{ block.settings.author | escape }}</figcaption>
             {%- endif -%}
           </figure>
       {%- endcase -%}
@@ -194,6 +223,19 @@
           "default": "<p>Tell the story behind this chapter: where the craft comes from, who taught it, and why it still matters.</p>"
         },
         {
+          "type": "select",
+          "id": "entrance",
+          "label": "Entrance animation",
+          "options": [
+            { "value": "auto", "label": "Automatic (1st left, 2nd right, 3rd zoom)" },
+            { "value": "from-left", "label": "Slide in from the left" },
+            { "value": "from-right", "label": "Slide in from the right" },
+            { "value": "zoom", "label": "Zoom in" },
+            { "value": "fade", "label": "Fade up" }
+          ],
+          "default": "auto"
+        },
+        {
           "type": "text",
           "id": "link_label",
           "label": "Link label"
@@ -219,7 +261,8 @@
           "type": "textarea",
           "id": "quote",
           "label": "Quote",
-          "default": "A mask is not a disguise. It is the face you choose to show."
+          "info": "Each line rises into view in turn. Put each line on its own row, or write sentences on one row to split after each sentence.",
+          "default": "A mask is not a disguise.\nIt is the face you choose to show."
         },
         {
           "type": "text",

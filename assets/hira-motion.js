@@ -18,37 +18,77 @@
    * Reveals
    * ------------------------------------------------------------------- */
 
+  // Two triggers, so a reveal can never be missed: an IntersectionObserver
+  // plus a rAF-throttled position check on scroll/resize/load. The check also
+  // reveals anything already scrolled past (fast flicks on phones).
   var revealObserver = null;
+  var pending = new Set();
+  var checkQueued = false;
+  var listening = false;
 
   function reveal(el) {
     el.classList.add('is-revealed');
+    pending.delete(el);
     if (revealObserver) revealObserver.unobserve(el);
+  }
+
+  function shouldReveal(el) {
+    var rect = el.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    return rect.top < vh * 0.92 || rect.bottom <= 0;
+  }
+
+  function checkPending() {
+    checkQueued = false;
+    pending.forEach(function (el) {
+      if (!el.isConnected) pending.delete(el);
+      else if (shouldReveal(el)) reveal(el);
+    });
+  }
+
+  function queueCheck() {
+    if (!checkQueued && pending.size) {
+      checkQueued = true;
+      window.requestAnimationFrame(checkPending);
+    }
   }
 
   function initReveals(scope) {
     var els = (scope || document).querySelectorAll('[data-hira-reveal]:not(.is-revealed)');
     if (!els.length) return;
 
-    var designMode = window.Shopify && window.Shopify.designMode;
-    if (!motionOn() || designMode || !('IntersectionObserver' in window)) {
+    if (!motionOn()) {
       els.forEach(reveal);
       return;
     }
 
-    if (!revealObserver) {
+    if (!revealObserver && 'IntersectionObserver' in window) {
       revealObserver = new IntersectionObserver(
         function (entries) {
           entries.forEach(function (entry) {
             if (entry.isIntersecting) reveal(entry.target);
           });
         },
-        { rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+        { rootMargin: '0px 0px -6% 0px', threshold: 0 }
       );
     }
 
+    if (!listening) {
+      listening = true;
+      ['scroll', 'resize', 'orientationchange', 'load', 'pageshow'].forEach(function (type) {
+        window.addEventListener(type, queueCheck, { passive: true });
+      });
+      document.addEventListener('scroll', queueCheck, { passive: true, capture: true });
+    }
+
     els.forEach(function (el) {
-      revealObserver.observe(el);
+      pending.add(el);
+      if (revealObserver) revealObserver.observe(el);
     });
+
+    // Measuring first makes the browser commit the hidden state, so elements
+    // already in view still animate in on load instead of popping in.
+    checkPending();
   }
 
   /* ---------------------------------------------------------------------
