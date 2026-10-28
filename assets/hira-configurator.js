@@ -12,7 +12,10 @@
   'use strict';
 
   var NS = 'http://www.w3.org/2000/svg';
-  var W = 400; // viewBox: 0 -40 400 540
+  var W = 400; // drawing width: the mask is drawn between x 0 and 400, mirrored around x 200
+  // Square preview frame (viewBox -70 -40 540 540), centred on the drawing, so
+  // square layer PNGs line up at offset 0 / 0 and scale 100%.
+  var VB = { x: -70, y: -40, size: 540 };
 
   var OPENINGS = { wide: 'One wide', eyes: 'Two eyes' };
   var MOUTHS = { none: 'None', simple: 'Simple opening', teeth: 'Teeth' };
@@ -182,8 +185,8 @@
     var band = el('rect', { x: 0, y: 436, width: W, height: 30 }, clip);
     this.paint.baseDark.push(band);
     el('rect', { x: 0, y: 436, width: W, height: 30, fill: this.url('rib') }, clip);
-    el('rect', { x: 0, y: -40, width: W, height: 540, fill: this.url('stitch') }, clip);
-    el('rect', { x: 0, y: -40, width: W, height: 540, fill: this.url('vol') }, clip);
+    el('rect', { x: VB.x, y: VB.y, width: VB.size, height: VB.size, fill: this.url('stitch') }, clip);
+    el('rect', { x: VB.x, y: VB.y, width: VB.size, height: VB.size, fill: this.url('vol') }, clip);
     el('path', { d: HEAD, fill: 'none', stroke: '#fff', 'stroke-opacity': '.12', 'stroke-width': '1.6' }, body);
 
     // Trimmed rims around the openings.
@@ -223,7 +226,7 @@
 
   Scene.prototype.imageSlot = function (parent) {
     return el('image', {
-      class: 'cfg-png', x: 0, y: -40, width: W, height: 540,
+      class: 'cfg-png', x: VB.x, y: VB.y, width: VB.size, height: VB.size,
       preserveAspectRatio: 'xMidYMid meet', style: 'display:none'
     }, parent);
   };
@@ -288,8 +291,8 @@
     var headClip = el('clipPath', { id: this.id('head') }, defs);
     el('path', { d: HEAD }, headClip);
 
-    var mask = el('mask', { id: this.id('open'), maskUnits: 'userSpaceOnUse', x: 0, y: -40, width: W, height: 540 }, defs);
-    el('rect', { x: 0, y: -40, width: W, height: 540, fill: '#fff' }, mask);
+    var mask = el('mask', { id: this.id('open'), maskUnits: 'userSpaceOnUse', x: VB.x, y: VB.y, width: VB.size, height: VB.size }, defs);
+    el('rect', { x: VB.x, y: VB.y, width: VB.size, height: VB.size, fill: '#fff' }, mask);
     this.holes = {
       wide: el('rect', { x: 126, y: 181, width: 148, height: 42, rx: 21, fill: '#000', style: 'display:none' }, mask),
       eyes: el('path', { d: EYE_L + ' ' + mirrorPath(EYE_L), fill: '#000', style: 'display:none' }, mask),
@@ -438,11 +441,11 @@
     }
   };
 
-  // Alpha maps (400 x 540, one cell per viewBox unit) built from PNG layers.
+  // Alpha maps (540 x 540, one cell per viewBox unit) built from PNG layers.
   Scene.prototype.alphaAt = function (map, x, y) {
-    var ix = Math.round(x), iy = Math.round(y + 40);
-    if (ix < 0 || iy < 0 || ix >= W || iy >= 540) return false;
-    return map[(iy * W + ix) * 4 + 3] > 40;
+    var ix = Math.round(x - VB.x), iy = Math.round(y - VB.y);
+    if (ix < 0 || iy < 0 || ix >= VB.size || iy >= VB.size) return false;
+    return map[(iy * VB.size + ix) * 4 + 3] > 40;
   };
 
   Scene.prototype.onEar = function (x, y) {
@@ -556,7 +559,7 @@
    * =================================================================== */
 
   var XLINK = 'http://www.w3.org/1999/xlink';
-  var CANVAS_SCALE = 2; // composites are 800 x 1080 (viewBox x 2)
+  var CANVAS_SCALE = 2; // composites are 1080 x 1080 (viewBox x 2)
 
   function Layers(config) {
     this.cfg = config || {};
@@ -631,7 +634,7 @@
     URL.revokeObjectURL(url);
   };
 
-  // Where a layer image sits in the viewBox: fitted (meet) into 0,-40,400,540,
+  // Where a layer image sits in the viewBox: fitted (meet) into the square frame,
   // then the theme-editor offset and scale around the centre.
   Layers.prototype.transform = function (key) {
     var l = this.cfg[key] || {};
@@ -643,7 +646,7 @@
     var l = this.cfg[key] || {};
     var w = source.naturalWidth || source.width;
     var h = source.naturalHeight || source.height;
-    var f = Math.min(W / w, 540 / h);
+    var f = Math.min(VB.size / w, VB.size / h);
     var dw = w * f, dh = h * f;
     ctx.save();
     if (extra) extra(ctx);
@@ -652,7 +655,7 @@
     var sc = (+l.scale || 100) / 100;
     ctx.scale(sc, sc);
     ctx.translate(-200, -230);
-    ctx.drawImage(source, (W - dw) / 2, -40 + (540 - dh) / 2, dw, dh);
+    ctx.drawImage(source, VB.x + (VB.size - dw) / 2, VB.y + (VB.size - dh) / 2, dw, dh);
     ctx.restore();
   };
 
@@ -660,7 +663,7 @@
   // mirrored for the right side, then clipped to the mask's shape.
   Layers.prototype.stripes = function (opts) {
     var self = this;
-    var cw = W * CANVAS_SCALE, ch = 540 * CANVAS_SCALE;
+    var cw = VB.size * CANVAS_SCALE, ch = VB.size * CANVAS_SCALE;
     var stripe = opts.usePng ? this.tinted('stripe', opts.color) : Promise.resolve(null);
     var mask = opts.maskKey ? this.load(opts.maskKey) : Promise.resolve(null);
     return Promise.all([stripe, mask]).then(function (res) {
@@ -668,7 +671,7 @@
       canvas.width = cw;
       canvas.height = ch;
       var ctx = canvas.getContext('2d');
-      ctx.setTransform(CANVAS_SCALE, 0, 0, CANVAS_SCALE, 0, 40 * CANVAS_SCALE);
+      ctx.setTransform(CANVAS_SCALE, 0, 0, CANVAS_SCALE, -VB.x * CANVAS_SCALE, -VB.y * CANVAS_SCALE);
       var left = Math.ceil(opts.count / 2), right = Math.floor(opts.count / 2);
       var spacing = +self.cfg.stripeSpacing || 14;
       var one = function (k, mirror) {
@@ -698,19 +701,19 @@
     });
   };
 
-  // 400 x 540 alpha map of the given layers (for "stay on the mask" and naming spots).
+  // 540 x 540 alpha map of the given layers (for "stay on the mask" and naming spots).
   Layers.prototype.alphaMap = function (keys) {
     var self = this;
     keys = keys.filter(function (k) { return self.has(k); });
     if (!keys.length) return Promise.resolve(null);
     return Promise.all(keys.map(function (k) { return self.load(k); })).then(function (imgs) {
       var canvas = document.createElement('canvas');
-      canvas.width = W;
-      canvas.height = 540;
+      canvas.width = VB.size;
+      canvas.height = VB.size;
       var ctx = canvas.getContext('2d');
-      ctx.setTransform(1, 0, 0, 1, 0, 40);
+      ctx.setTransform(1, 0, 0, 1, -VB.x, -VB.y);
       imgs.forEach(function (img, i) { self.draw(ctx, keys[i], img); });
-      return ctx.getImageData(0, 0, W, 540).data;
+      return ctx.getImageData(0, 0, VB.size, VB.size).data;
     });
   };
 
@@ -1676,7 +1679,7 @@
       node.setAttribute('href', data);
       node.setAttributeNS(XLINK, 'xlink:href', data);
     });
-    clone.setAttribute('width', '800');
+    clone.setAttribute('width', '1080');
     clone.setAttribute('height', '1080');
     return new XMLSerializer().serializeToString(clone);
   };
@@ -1684,7 +1687,7 @@
   Configurator.prototype.renderPng = function () {
     var self = this;
     return new Promise(function (resolve, reject) {
-      var CW = 1080, CH = 1350;
+      var CW = 1080, CH = 1080; // square, like the preview and the layer PNGs
       var canvas = document.createElement('canvas');
       canvas.width = CW;
       canvas.height = CH;
@@ -1698,25 +1701,29 @@
         bg.addColorStop(1, '#0e0d10');
         ctx.fillStyle = bg;
         ctx.fillRect(0, 0, CW, CH);
-        ctx.drawImage(img, (CW - 740) / 2, 40, 740, 999);
+        ctx.drawImage(img, 0, 0, CW, CH);
         URL.revokeObjectURL(url);
 
+        // Summary on a soft band across the bottom (over the shoulders).
         var sm = self.summary();
         var price = self.price();
-        ctx.fillStyle = 'rgba(255,255,255,0.12)';
-        ctx.fillRect(80, 1070, CW - 160, 1);
+        var band = ctx.createLinearGradient(0, CH - 250, 0, CH);
+        band.addColorStop(0, 'rgba(10,9,12,0)');
+        band.addColorStop(0.35, 'rgba(10,9,12,0.72)');
+        band.addColorStop(1, 'rgba(10,9,12,0.9)');
+        ctx.fillStyle = band;
+        ctx.fillRect(0, CH - 250, CW, 250);
         ctx.fillStyle = '#b08ae0';
-        ctx.font = '600 26px sans-serif';
-        ctx.fillText('HIRA — DESIGN YOUR OWN', 80, 1118);
+        ctx.font = '600 24px sans-serif';
+        ctx.fillText('HIRA — DESIGN YOUR OWN', 60, CH - 150);
         ctx.fillStyle = '#ece8f2';
-        ctx.font = '23px sans-serif';
+        ctx.font = '21px sans-serif';
         [
-          'Base: ' + sm.base + '   ·   Eyes: ' + sm.openings + '   ·   Mouth: ' + sm.mouth,
-          'Ears: ' + sm.ears + '   ·   Stripes: ' + sm.stripes,
-          'Accessories: ' + sm.accessories,
-          'Accent: ' + sm.accent + '   ·   Est. ' + formatNumber(price.egp) + ' EGP (~$' + formatNumber(price.usd) + ')'
+          sm.base + ' · ' + sm.openings + ' · Mouth: ' + sm.mouth + ' · Ears: ' + sm.ears,
+          'Stripes: ' + sm.stripes + ' · Accessories: ' + sm.accessories + ' · Accent: ' + sm.accent,
+          'Est. ' + formatNumber(price.egp) + ' EGP (~$' + formatNumber(price.usd) + ')'
         ].forEach(function (line, i) {
-          ctx.fillText(line, 80, 1162 + i * 38, CW - 160);
+          ctx.fillText(line, 60, CH - 112 + i * 32, CW - 120);
         });
         canvas.toBlob(function (blob) {
           if (blob) resolve(blob);
