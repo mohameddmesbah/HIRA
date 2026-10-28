@@ -278,13 +278,15 @@
             assign kx = k | append: '_x'
             assign ky = k | append: '_y'
             assign ks = k | append: '_scale'
+            assign ksp = k | append: '_spread'
             assign layer_image = settings[k]
           -%}
           {{ key | json }}: {
             "url": {% if layer_image != blank %}{{ layer_image | image_url: width: 1000 | json }}{% else %}null{% endif %},
             "x": {{ settings[kx] | default: 0 | json }},
             "y": {{ settings[ky] | default: 0 | json }},
-            "scale": {{ settings[ks] | default: 100 | json }}
+            "scale": {{ settings[ks] | default: 100 | json }},
+            "spread": {{ settings[ksp] | default: 0 | json }}
           }{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       },

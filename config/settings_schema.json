@@ -1733,7 +1733,7 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "Layered PNG images for the Design Your Own preview. Export every layer from the same canvas size, in white yarn on a transparent background (except the mannequin), and they line up automatically. Layers are tinted with the customer's colors. Any layer left empty keeps the drawn version. Use the sliders to fine-tune alignment."
+        "content": "Layered PNG images for the Design Your Own preview. Export every layer from the same square canvas as the mannequin, in white yarn on a transparent background (except the mannequin), and they line up at 0 / 0 / 100%. Layers are tinted with the customer's colors; any layer left empty keeps the drawn version. Inner ear layers follow their outer ears, and their own sliders adjust on top."
       },
       {
         "type": "header",
@@ -1748,9 +1748,9 @@
       {
         "type": "range",
         "id": "hira_layer_mannequin_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -1758,9 +1758,9 @@
       {
         "type": "range",
         "id": "hira_layer_mannequin_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -1768,9 +1768,9 @@
       {
         "type": "range",
         "id": "hira_layer_mannequin_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
@@ -1787,9 +1787,9 @@
       {
         "type": "range",
         "id": "hira_layer_mask_eyes_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -1797,9 +1797,9 @@
       {
         "type": "range",
         "id": "hira_layer_mask_eyes_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -1807,9 +1807,9 @@
       {
         "type": "range",
         "id": "hira_layer_mask_eyes_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
@@ -1826,9 +1826,9 @@
       {
         "type": "range",
         "id": "hira_layer_mask_wide_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -1836,9 +1836,9 @@
       {
         "type": "range",
         "id": "hira_layer_mask_wide_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -1846,9 +1846,9 @@
       {
         "type": "range",
         "id": "hira_layer_mask_wide_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
@@ -1865,9 +1865,9 @@
       {
         "type": "range",
         "id": "hira_layer_mouth_simple_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -1875,9 +1875,9 @@
       {
         "type": "range",
         "id": "hira_layer_mouth_simple_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -1885,9 +1885,9 @@
       {
         "type": "range",
         "id": "hira_layer_mouth_simple_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
@@ -1904,9 +1904,9 @@
       {
         "type": "range",
         "id": "hira_layer_mouth_teeth_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -1914,9 +1914,9 @@
       {
         "type": "range",
         "id": "hira_layer_mouth_teeth_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -1924,9 +1924,9 @@
       {
         "type": "range",
         "id": "hira_layer_mouth_teeth_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
@@ -1943,9 +1943,9 @@
       {
         "type": "range",
         "id": "hira_layer_bunny_outer_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -1953,9 +1953,9 @@
       {
         "type": "range",
         "id": "hira_layer_bunny_outer_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -1963,12 +1963,23 @@
       {
         "type": "range",
         "id": "hira_layer_bunny_outer_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bunny_outer_spread",
+        "min": -300,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Spread",
+        "info": "Splits the image down the middle and moves the left and right halves apart (+) or together (-) to set the distance between the two ears.",
+        "default": 0
       },
       {
         "type": "header",
@@ -1977,14 +1988,15 @@
       {
         "type": "image_picker",
         "id": "hira_layer_bunny_inner",
-        "label": "Image"
+        "label": "Image",
+        "info": "Follows the outer ears (position, scale and spread); the sliders below fine-tune on top."
       },
       {
         "type": "range",
         "id": "hira_layer_bunny_inner_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -1992,9 +2004,9 @@
       {
         "type": "range",
         "id": "hira_layer_bunny_inner_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -2002,12 +2014,23 @@
       {
         "type": "range",
         "id": "hira_layer_bunny_inner_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bunny_inner_spread",
+        "min": -300,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Spread",
+        "info": "Splits the image down the middle and moves the left and right halves apart (+) or together (-) to set the distance between the two ears.",
+        "default": 0
       },
       {
         "type": "header",
@@ -2021,9 +2044,9 @@
       {
         "type": "range",
         "id": "hira_layer_bear_outer_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -2031,9 +2054,9 @@
       {
         "type": "range",
         "id": "hira_layer_bear_outer_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -2041,12 +2064,23 @@
       {
         "type": "range",
         "id": "hira_layer_bear_outer_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bear_outer_spread",
+        "min": -300,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Spread",
+        "info": "Splits the image down the middle and moves the left and right halves apart (+) or together (-) to set the distance between the two ears.",
+        "default": 0
       },
       {
         "type": "header",
@@ -2055,14 +2089,15 @@
       {
         "type": "image_picker",
         "id": "hira_layer_bear_inner",
-        "label": "Image"
+        "label": "Image",
+        "info": "Follows the outer ears (position, scale and spread); the sliders below fine-tune on top."
       },
       {
         "type": "range",
         "id": "hira_layer_bear_inner_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -2070,9 +2105,9 @@
       {
         "type": "range",
         "id": "hira_layer_bear_inner_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -2080,12 +2115,23 @@
       {
         "type": "range",
         "id": "hira_layer_bear_inner_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_bear_inner_spread",
+        "min": -300,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Spread",
+        "info": "Splits the image down the middle and moves the left and right halves apart (+) or together (-) to set the distance between the two ears.",
+        "default": 0
       },
       {
         "type": "header",
@@ -2099,9 +2145,9 @@
       {
         "type": "range",
         "id": "hira_layer_cat_outer_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -2109,9 +2155,9 @@
       {
         "type": "range",
         "id": "hira_layer_cat_outer_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -2119,12 +2165,23 @@
       {
         "type": "range",
         "id": "hira_layer_cat_outer_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_cat_outer_spread",
+        "min": -300,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Spread",
+        "info": "Splits the image down the middle and moves the left and right halves apart (+) or together (-) to set the distance between the two ears.",
+        "default": 0
       },
       {
         "type": "header",
@@ -2133,14 +2190,15 @@
       {
         "type": "image_picker",
         "id": "hira_layer_cat_inner",
-        "label": "Image"
+        "label": "Image",
+        "info": "Follows the outer ears (position, scale and spread); the sliders below fine-tune on top."
       },
       {
         "type": "range",
         "id": "hira_layer_cat_inner_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -2148,9 +2206,9 @@
       {
         "type": "range",
         "id": "hira_layer_cat_inner_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -2158,12 +2216,23 @@
       {
         "type": "range",
         "id": "hira_layer_cat_inner_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_cat_inner_spread",
+        "min": -300,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Spread",
+        "info": "Splits the image down the middle and moves the left and right halves apart (+) or together (-) to set the distance between the two ears.",
+        "default": 0
       },
       {
         "type": "header",
@@ -2177,9 +2246,9 @@
       {
         "type": "range",
         "id": "hira_layer_horns_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -2187,9 +2256,9 @@
       {
         "type": "range",
         "id": "hira_layer_horns_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -2197,12 +2266,23 @@
       {
         "type": "range",
         "id": "hira_layer_horns_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100
+      },
+      {
+        "type": "range",
+        "id": "hira_layer_horns_spread",
+        "min": -300,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Spread",
+        "info": "Splits the image down the middle and moves the left and right halves apart (+) or together (-) to set the distance between the two ears.",
+        "default": 0
       },
       {
         "type": "header",
@@ -2217,9 +2297,9 @@
       {
         "type": "range",
         "id": "hira_layer_stripe_x",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "X offset",
         "default": 0
@@ -2227,9 +2307,9 @@
       {
         "type": "range",
         "id": "hira_layer_stripe_y",
-        "min": -100,
-        "max": 100,
-        "step": 2,
+        "min": -500,
+        "max": 500,
+        "step": 10,
         "unit": "px",
         "label": "Y offset",
         "default": 0
@@ -2237,9 +2317,9 @@
       {
         "type": "range",
         "id": "hira_layer_stripe_scale",
-        "min": 50,
-        "max": 150,
-        "step": 1,
+        "min": 20,
+        "max": 250,
+        "step": 5,
         "unit": "%",
         "label": "Scale",
         "default": 100

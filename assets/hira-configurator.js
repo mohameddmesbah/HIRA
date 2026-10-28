@@ -212,8 +212,8 @@
     this.img.mouth = this.imageSlot(svg);
     this.buildMouthOverlay(svg);
     this.img.stripes = this.imageSlot(svg);
-    this.img.earInner = this.imageSlot(svg);
-    this.img.earOuter = this.imageSlot(svg);
+    this.img.earInner = this.splitSlot(svg);
+    this.img.earOuter = this.splitSlot(svg);
 
     // Bunny ears hang in front of the face and onto the shoulders.
     var front = el('g', null, svg);
@@ -222,6 +222,17 @@
     this.pieces = el('g', { class: 'cfg-pieces' }, svg);
     this.ui = el('g', { class: 'cfg-ui', 'data-ui': '' }, svg);
     this.selectRing = el('circle', { r: 15, fill: 'none', stroke: '#b08ae0', 'stroke-width': '2', 'stroke-dasharray': '4 3', style: 'display:none' }, this.ui);
+  };
+
+  // Two copies of one image, clipped to its left and right half, so the halves
+  // can be spread apart (the "Spread" slider on ear / horn layers).
+  Scene.prototype.splitSlot = function (parent) {
+    var g = el('g', null, parent);
+    var left = this.imageSlot(g);
+    var right = this.imageSlot(g);
+    left.setAttribute('clip-path', this.url('halfL'));
+    right.setAttribute('clip-path', this.url('halfR'));
+    return { split: true, nodes: [left, right] };
   };
 
   Scene.prototype.imageSlot = function (parent) {
@@ -287,6 +298,12 @@
     grad('radialGradient', 'matte', { cx: '.5', cy: '.35', r: '.75' }, [[0, '#3a3a40'], [1, '#18181b']]);
     grad('linearGradient', 'silver', { x1: 0, y1: 0, x2: 1, y2: 1 }, [[0, '#f6f7fa'], [0.45, '#9ea3ad'], [0.7, '#e3e5ea'], [1, '#7d828c']]);
     grad('radialGradient', 'pearl', { cx: '.35', cy: '.3', r: '.75' }, [[0, '#ffffff'], [0.6, '#efe9df'], [1, '#c9bfae']]);
+
+    // Halves of a layer image, in the image's own coordinates (its centre line is x 200).
+    var halfL = el('clipPath', { id: this.id('halfL') }, defs);
+    el('rect', { x: -5000, y: -5000, width: 5200, height: 10000 }, halfL);
+    var halfR = el('clipPath', { id: this.id('halfR') }, defs);
+    el('rect', { x: 200, y: -5000, width: 5200, height: 10000 }, halfR);
 
     var headClip = el('clipPath', { id: this.id('head') }, defs);
     el('path', { d: HEAD }, headClip);
@@ -634,29 +651,66 @@
     URL.revokeObjectURL(url);
   };
 
-  // Where a layer image sits in the viewBox: fitted (meet) into the square frame,
-  // then the theme-editor offset and scale around the centre.
+  var INNER_OF = { bunny_inner: 'bunny_outer', bear_inner: 'bear_outer', cat_inner: 'cat_outer' };
+  var SPLIT = { bunny_outer: 1, bunny_inner: 1, bear_outer: 1, bear_inner: 1, cat_outer: 1, cat_inner: 1, horns: 1 };
+
+  Layers.prototype.isSplit = function (key) {
+    return !!SPLIT[key];
+  };
+
+  // Inner ears inherit their outer layer's placement, then apply their own on top.
+  Layers.prototype.chain = function (key) {
+    return INNER_OF[key] ? [INNER_OF[key], key] : [key];
+  };
+
+  Layers.prototype.spread = function (key) {
+    var cfg = this.cfg;
+    return this.chain(key).reduce(function (sum, k) { return sum + (+(cfg[k] || {}).spread || 0); }, 0);
+  };
+
+  // One layer's offset and scale (around the frame centre) as an SVG transform.
   Layers.prototype.transform = function (key) {
     var l = this.cfg[key] || {};
     var s = (+l.scale || 100) / 100;
     return 'translate(' + (+l.x || 0) + ' ' + (+l.y || 0) + ') translate(200 230) scale(' + s + ') translate(-200 -230)';
   };
 
+  // Full placement of a layer image (half: -1 left, 1 right, 0 whole): each half
+  // moves out by half the spread, then the inherited and own offsets / scale.
+  Layers.prototype.transformFor = function (key, half) {
+    var shift = half ? 'translate(' + (half * this.spread(key) / 2) + ' 0) ' : '';
+    return shift + this.chain(key).map(this.transform, this).join(' ');
+  };
+
+  // The same placement on a canvas (export composites and drag hit maps).
   Layers.prototype.draw = function (ctx, key, source, extra) {
-    var l = this.cfg[key] || {};
+    var self = this;
     var w = source.naturalWidth || source.width;
     var h = source.naturalHeight || source.height;
     var f = Math.min(VB.size / w, VB.size / h);
     var dw = w * f, dh = h * f;
-    ctx.save();
-    if (extra) extra(ctx);
-    ctx.translate(+l.x || 0, +l.y || 0);
-    ctx.translate(200, 230);
-    var sc = (+l.scale || 100) / 100;
-    ctx.scale(sc, sc);
-    ctx.translate(-200, -230);
-    ctx.drawImage(source, VB.x + (VB.size - dw) / 2, VB.y + (VB.size - dh) / 2, dw, dh);
-    ctx.restore();
+    var halves = this.isSplit(key) ? [-1, 1] : [0];
+    halves.forEach(function (half) {
+      ctx.save();
+      if (extra) extra(ctx);
+      if (half) ctx.translate(half * self.spread(key) / 2, 0);
+      self.chain(key).forEach(function (k) {
+        var l = self.cfg[k] || {};
+        var sc = (+l.scale || 100) / 100;
+        ctx.translate(+l.x || 0, +l.y || 0);
+        ctx.translate(200, 230);
+        ctx.scale(sc, sc);
+        ctx.translate(-200, -230);
+      });
+      if (half) {
+        ctx.beginPath();
+        if (half < 0) ctx.rect(-5000, -5000, 5200, 10000);
+        else ctx.rect(200, -5000, 5200, 10000);
+        ctx.clip();
+      }
+      ctx.drawImage(source, VB.x + (VB.size - dw) / 2, VB.y + (VB.size - dh) / 2, dw, dh);
+      ctx.restore();
+    });
   };
 
   // Stripes: the stripe PNG (left side) tinted, repeated inward with spacing,
@@ -717,14 +771,20 @@
     });
   };
 
-  function setHref(node, url) {
-    if (url) {
-      node.setAttribute('href', url);
-      node.setAttributeNS(XLINK, 'xlink:href', url);
-      node.style.display = '';
-    } else {
-      node.style.display = 'none';
-    }
+  function slotNodes(slot) {
+    return slot.split ? slot.nodes : [slot];
+  }
+
+  function setHref(slot, url) {
+    slotNodes(slot).forEach(function (node) {
+      if (url) {
+        node.setAttribute('href', url);
+        node.setAttributeNS(XLINK, 'xlink:href', url);
+        node.style.display = '';
+      } else {
+        node.style.display = 'none';
+      }
+    });
   }
 
   /* =====================================================================
@@ -1082,11 +1142,17 @@
           if (res.own) L.release(res.url);
           return;
         }
-        if (slot !== 'stripes') img[slot].setAttribute('transform', L.transform(keyFor[slot]));
-        var previous = img[slot].getAttribute('data-own-url');
+        var nodes = slotNodes(img[slot]);
+        if (slot !== 'stripes') {
+          nodes.forEach(function (node, i) {
+            var half = nodes.length > 1 ? (i === 0 ? -1 : 1) : 0;
+            node.setAttribute('transform', L.transformFor(keyFor[slot], half));
+          });
+        }
+        var previous = nodes[0].getAttribute('data-own-url');
         if (previous && previous !== res.url) L.release(previous);
-        if (res.own) img[slot].setAttribute('data-own-url', res.url);
-        else img[slot].removeAttribute('data-own-url');
+        if (res.own) nodes[0].setAttribute('data-own-url', res.url);
+        else nodes[0].removeAttribute('data-own-url');
         setHref(img[slot], res.url);
         self.queuePng();
       }).catch(function () {
