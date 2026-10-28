@@ -24,18 +24,18 @@
         "default": 100,
         "unit": "px",
         "label": "t:settings_schema.logo.settings.logo_width.label",
-        "info": "Desktop logo width. With the hanging logo, this is the width on screens 990px and wider."
+        "info": "Desktop logo width. With the rope logo, this is the width on screens 990px and wider."
       },
       {
         "type": "header",
-        "content": "Hanging logo (HIRA)"
+        "content": "Rope logo (HIRA)"
       },
       {
         "type": "checkbox",
         "id": "hira_logo_hanging",
-        "label": "Hang the logo from the top of the page",
+        "label": "Hang the rope from the announcement bar",
         "default": true,
-        "info": "Centers the logo and lets the top of the image overlap the announcement bar, so a rope at the top edge of the logo hangs from the top of the site. Use a transparent PNG whose rope touches the top edge."
+        "info": "Places the logo on the left of the header with its letters centred, and lets the rope at the top of the image run up behind the announcement bar so it looks tied to it. Use a transparent PNG with the rope at the top edge."
       },
       {
         "type": "range",
@@ -61,36 +61,25 @@
       },
       {
         "type": "range",
-        "id": "hira_rope_position",
-        "min": 0,
-        "max": 100,
-        "step": 1,
-        "unit": "%",
-        "label": "Rope position across the logo",
-        "info": "Where the rope sits, from the logo's left edge. The announcement text splits around this point.",
-        "default": 37
-      },
-      {
-        "type": "range",
         "id": "hira_rope_share",
         "min": 10,
         "max": 90,
         "step": 5,
         "unit": "%",
         "label": "Rope length above the letters",
-        "info": "How much of the logo's height is rope only, from the top edge down to where the letters start. If the announcement bar is taller than that (for example when its text wraps on phones), the text moves clear of the whole logo.",
+        "info": "Share of the logo's height that is rope only, from the top edge of the image down to the top of the letters. Adjust until the letters sit centred in the header.",
         "default": 45
       },
       {
         "type": "range",
-        "id": "hira_rope_clearance",
+        "id": "hira_logo_bottom_share",
         "min": 0,
-        "max": 120,
-        "step": 4,
-        "unit": "px",
-        "label": "Space kept clear around the rope",
-        "info": "Gap left in the announcement text so the rope never covers it.",
-        "default": 40
+        "max": 60,
+        "step": 5,
+        "unit": "%",
+        "label": "Space below the letters",
+        "info": "Share of the logo's height below the letters (for example a tassel hanging lower). Leave at 0% if the letters reach the bottom of the image.",
+        "default": 0
       },
       {
         "type": "image_picker",

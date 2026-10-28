@@ -1,0 +1,32 @@
+{% comment %}
+  Rope logo for the header (Theme settings > Logo > Rope logo).
+  The box only takes up the letters band of the image, so the letters centre
+  in the header row. The image is pulled up by the rope's length: the rope
+  runs up behind the announcement bar (which is layered above the header),
+  so it looks tied to the bar's bottom edge and hangs down into the header.
+
+  Usage (inside the header's logo link):
+  {% render 'hira-rope-logo' %}
+{% endcomment %}
+
+{%- liquid
+  assign logo_alt = settings.logo.alt | default: shop.name | escape
+  assign logo_max = settings.logo_width | at_least: settings.hira_logo_width_tablet | at_least: settings.hira_logo_width_mobile
+  assign logo_height = logo_max | divided_by: settings.logo.aspect_ratio | round
+-%}
+{% capture sizes %}(min-width: 990px) {{ settings.logo_width }}px, (min-width: 750px) {{ settings.hira_logo_width_tablet }}px, {{ settings.hira_logo_width_mobile }}px{% endcapture %}
+{% capture widths %}{{ settings.hira_logo_width_mobile }}, {{ settings.hira_logo_width_tablet }}, {{ settings.logo_width }}, {{ settings.hira_logo_width_mobile | times: 2 }}, {{ settings.hira_logo_width_tablet | times: 2 }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+<span class="hira-rope-logo">
+  {{
+    settings.logo
+    | image_url: width: 1200
+    | image_tag:
+      class: 'header__heading-logo hira-rope-logo__img',
+      widths: widths,
+      height: logo_height,
+      width: logo_max,
+      alt: logo_alt,
+      sizes: sizes,
+      preload: true
+  }}
+</span>

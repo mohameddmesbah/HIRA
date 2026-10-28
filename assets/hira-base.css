@@ -1105,45 +1105,47 @@ body {
 }
 
 /* ==========================================================================
-   Hanging logo (Theme settings > Logo > Hanging logo)
-   The logo box in the header is only as tall as the part of the logo below the
-   announcement bar; the image is pulled up by the bar's height, so it overlaps
-   the announcement bar and starts at the very top of the page.
-   --hira-ann-h is measured by snippets/hira-hanging-logo-script.liquid.
+   Rope logo (Theme settings > Logo > Rope logo)
+   The logo box is only as tall as the letters band of the image, so H/R/A sit
+   centred in the dark header row. The image is pulled up by the rope's length;
+   the announcement bar is layered above the header, so the part of the rope
+   above the header's top edge disappears behind the bar and the rope looks
+   tied to the bar's bottom edge, dangling into the header. The rope can never
+   cover the announcement text.
    ========================================================================== */
 
-.section-header:has(.hira-hanging) {
-  z-index: 5;
+.announcement-bar-section:has(~ .section-header .hira-rope-header) {
+  position: relative;
+  z-index: 4;
 }
 
-.hira-hanging .hira-hanging-logo {
-  grid-area: heading;
-  justify-self: center;
-  align-self: start;
-  margin: calc(-1 * var(--hira-header-pt, 0px)) 0 0;
-  padding: 0;
-  line-height: 0;
-  text-align: center;
+/* The full-screen search modal opens from the header and must still cover the bar. */
+.announcement-bar-section:has(~ .section-header details-modal > details[open]) {
+  z-index: 0;
 }
 
-.hira-hanging .hira-hanging-logo .header__heading-link,
-.hira-hanging a.hira-hanging-logo {
+.hira-rope-header .header__heading,
+.hira-rope-header .header__heading-link {
+  align-self: center;
+}
+
+.hira-rope-header .header__heading-link {
   display: block;
-  padding: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 0;
 }
 
-.hira-hanging-logo__box {
+.hira-rope-logo {
   position: relative;
   display: block;
   width: var(--hira-logo-w);
-  height: max(0px, calc(var(--hira-logo-h) - var(--hira-ann-h, 0px)));
+  height: calc(var(--hira-logo-h) * (1 - var(--hira-rope-share, 0.45) - var(--hira-logo-bottom-share, 0)));
 }
 
-.hira-hanging-logo__img.header__heading-logo {
+.hira-rope-logo__img.header__heading-logo {
   position: absolute;
-  /* Anchored by its top edge, so it touches the top of the page even when the
-     whole logo is shorter than the announcement bar. */
-  top: calc(-1 * var(--hira-ann-h, 0px));
+  top: calc(-1 * var(--hira-logo-h) * var(--hira-rope-share, 0.45));
   left: 0;
   width: 100%;
   height: auto;
@@ -1151,76 +1153,16 @@ body {
   pointer-events: none;
 }
 
-.hira-hanging .hira-hanging-logo .header__heading-link:focus-visible {
+.hira-rope-header .header__heading-link:focus-visible {
   outline-offset: 0.4rem;
 }
 
-/* Below 990px Dawn's header grid centres the logo between the icon groups,
-   which drifts off-centre when they differ in width. Centre it on the header
-   instead and reserve its height, so the rope always lines up with the gap in
-   the announcement text. */
+/* Logo sits right after the menu icon on tablet and mobile. */
 @media screen and (max-width: 989px) {
-  .header.hira-hanging {
-    position: relative;
-    min-height: calc(max(0px, var(--hira-logo-h) - var(--hira-ann-h, 0px)) + var(--hira-header-pb, 0px));
+  .hira-rope-header.header--mobile-left .header__heading,
+  .hira-rope-header.header--mobile-left .header__heading-link {
+    justify-self: start;
   }
-
-  .hira-hanging .hira-hanging-logo {
-    /* grid-area: auto, otherwise the grid area (not the header) becomes the
-       containing block of this absolutely positioned grid item. */
-    grid-area: auto;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    margin: 0;
-    transform: translateX(-50%);
-  }
-}
-
-/* Keep the icons and menu vertically centred on the visible header band. */
-.hira-hanging > .header__icons,
-.hira-hanging > header-drawer,
-.hira-hanging > .header__inline-menu,
-.hira-hanging > details-modal.header__search {
-  align-self: center;
-}
-
-/* Announcement text split around the rope */
-.announcement-bar:has(.hira-ann-split),
-.announcement-bar__link:has(.hira-ann-split) {
-  width: 100%;
-}
-
-.announcement-bar__message.hira-ann-split {
-  display: grid;
-  grid-template-columns:
-    minmax(0, calc(50% + var(--hira-rope-x, 0px) - var(--hira-rope-gap, 40px) / 2))
-    var(--hira-rope-gap, 40px)
-    minmax(0, 1fr);
-  align-items: center;
-  flex: 1 1 100%;
-  width: 100%;
-  padding-left: 0;
-  padding-right: 0;
-  text-align: left;
-}
-
-/* The bar is taller than the rope (the letters reach into it): clear the whole logo. */
-.hira-ann-clear-logo .announcement-bar__message.hira-ann-split {
-  grid-template-columns:
-    minmax(0, calc(50% - var(--hira-logo-w) / 2 - 0.8rem))
-    calc(var(--hira-logo-w) + 1.6rem)
-    minmax(0, 1fr);
-}
-
-.hira-ann-split__a {
-  justify-self: end;
-  text-align: right;
-}
-
-.hira-ann-split__b {
-  justify-self: start;
-  text-align: left;
 }
 
 /* ==========================================================================
