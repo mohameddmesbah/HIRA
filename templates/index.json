@@ -40,11 +40,12 @@
         "chapter-1": {
           "type": "chapter",
           "settings": {
-            "image": "shopify://shop_images/A8311FF5-9B93-444E-9717-72B59D8A0BB3.png",
+            "image": "shopify://shop_images/874C0EAC-D83C-4B0B-AEAE-0FB8496DB293.png",
             "image_ratio": "4 / 5",
             "number": "01",
             "title": "The origin",
             "text": "<p>Crochet and knitting are among the oldest textile arts: loops of yarn shaped by hand, stitch by stitch. HIRA starts there, with yarn, patience and fingers that remember.</p>",
+            "entrance": "auto",
             "link_label": "",
             "link": "",
             "link_booking": false
@@ -58,6 +59,7 @@
             "number": "02",
             "title": "The craft",
             "text": "<p>Every mask is crocheted or knitted by hand in small batches. Natural fibres, hand-dyed yarns, hours of slow work. No two are identical, and that is the point.</p>",
+            "entrance": "auto",
             "link_label": "",
             "link": "",
             "link_booking": false
@@ -71,6 +73,7 @@
             "number": "03",
             "title": "The wearer",
             "text": "<p>A HIRA mask is made to be worn: on stage, on the street, in front of a camera. Alternative fashion with roots, for people who see the face as a canvas.</p>",
+            "entrance": "auto",
             "link_label": "",
             "link": "",
             "link_booking": false
@@ -159,16 +162,17 @@
         "accent_last_line": true,
         "text": "<p>Your vision, your references, your measurements. Crafted around you, from the first sketch to the final stitch.</p>",
         "button_label": "Design Your Own",
+        "button_link": "",
+        "cal_label": "Or book a design session call",
         "secondary_label": "Read the FAQ",
         "secondary_link": "",
         "image_1": "shopify://shop_images/787BE80A-7879-457D-AA6B-F3AD954B7F43.png",
+        "image_focus": "center center",
+        "overlay_color": "#1c1822",
+        "overlay_opacity": 82,
         "color_scheme": "scheme-1",
         "padding_top": 16,
-        "padding_bottom": 64,
-        "image_focus": "center center",
-        "overlay_color": "#1C1822",
-        "overlay_opacity": 82,
-        "cal_label": "Or book a design session call"
+        "padding_bottom": 64
       }
     },
     "closing": {
@@ -203,6 +207,13 @@
             "answer": "<p>Book a design session, share your idea, references and measurements, and we'll design the piece together. You'll receive a quote and timeline after the session.</p>"
           }
         },
+        "q-price": {
+          "type": "question",
+          "settings": {
+            "question": "How much does a custom mask cost?",
+            "answer": "<p>Custom pieces start from 2,500 EGP (~$45). Use Design Your Own to see an estimated price as you build; the final price is confirmed on WhatsApp.</p>"
+          }
+        },
         "q3": {
           "type": "question",
           "settings": {
@@ -229,13 +240,6 @@
           "settings": {
             "question": "Can I return or exchange a piece?",
             "answer": "<p>Ready-made pieces follow our refund policy. Custom pieces are made for you and can't be returned. Add your exact terms here.</p>"
-          }
-        },
-        "q-price": {
-          "type": "question",
-          "settings": {
-            "question": "How much does a custom mask cost?",
-            "answer": "<p>Custom pieces start from 2,500 EGP (~$45). Use Design Your Own to see an estimated price as you build; the final price is confirmed on WhatsApp.</p>"
           }
         }
       },
