@@ -1373,17 +1373,39 @@ cal-modal-box {
   }
 }
 
-.hira-currency-note {
-  margin: 0.8rem 0 0;
+.hira-estimate {
+  margin: 1rem 0 0;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid rgba(var(--hira-accent-rgb), 0.55);
+  border-radius: 0.8rem;
+  background: rgba(var(--hira-accent-rgb), 0.12);
+  text-align: left;
+}
+
+.hira-estimate[hidden] {
+  display: none;
+}
+
+.hira-estimate__total {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.4;
+  color: rgb(var(--color-foreground));
+}
+
+.hira-estimate__total strong {
+  font-size: 1.9rem;
+  white-space: nowrap;
+}
+
+.hira-estimate__note {
+  margin: 0.4rem 0 0;
   font-size: 1.3rem;
   line-height: 1.5;
   color: rgba(var(--color-foreground), 0.75);
 }
 
-.cart__footer .hira-currency-note {
-  text-align: right;
-}
-
-.hira-currency-note[hidden] {
-  display: none;
+.cart__footer .hira-estimate {
+  margin-left: auto;
+  max-width: 40rem;
 }

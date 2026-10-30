@@ -1861,14 +1861,23 @@
       },
       {
         "type": "header",
-        "content": "Cart note"
+        "content": "Cart estimate"
+      },
+      {
+        "type": "paragraph",
+        "content": "Shown under the EGP total in the cart drawer and on the cart page. Hidden for visitors seeing EGP. [CUR] is replaced with the visitor's currency code."
       },
       {
         "type": "text",
-        "id": "hira_currency_note",
-        "label": "Note under cart prices",
-        "info": "[CUR] is replaced with the currency shown. Hidden for visitors seeing EGP.",
-        "default": "Prices shown in [CUR] are approximate. You will be charged in EGP at checkout; your bank converts it automatically."
+        "id": "hira_estimate_label",
+        "label": "Estimated total line",
+        "default": "Estimated total in [CUR]:"
+      },
+      {
+        "type": "text",
+        "id": "hira_estimate_note",
+        "label": "Note under the estimate",
+        "default": "You'll see EGP at checkout. Your bank converts it automatically."
       }
     ]
   },

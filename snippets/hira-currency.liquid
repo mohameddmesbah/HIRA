@@ -8,7 +8,8 @@
       "country": {{ localization.country.iso_code | json }},
       "shopCountry": {{ shop.address.country_code | json }},
       "root": {{ routes.root_url | append: '/' | replace: '//', '/' | json }},
-      "note": {{ settings.hira_currency_note | json }},
+      "estimateLabel": {{ settings.hira_estimate_label | json }},
+      "estimateNote": {{ settings.hira_estimate_note | json }},
       "rates": {
         "SAR": {{ settings.hira_rate_sar | json }},
         "AED": {{ settings.hira_rate_aed | json }},

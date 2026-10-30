@@ -107,16 +107,22 @@
     node.setAttribute('data-hira-shown', current);
   }
 
-  function fillNotes(scope) {
-    (scope || document).querySelectorAll('[data-hira-currency-note]').forEach(function (note) {
-      note.hidden = current === BASE;
-      if (current !== BASE) note.textContent = String(cfg.note || '').replace(/\[CUR\]/g, current);
+  // Cart drawer / cart page: "Estimated total in SAR: 1,148 SAR" under the EGP total.
+  function fillEstimates(scope) {
+    (scope || document).querySelectorAll('[data-hira-estimate]').forEach(function (box) {
+      box.hidden = current === BASE;
+      if (current === BASE) return;
+      var egp = (parseFloat(box.getAttribute('data-hira-estimate-cents')) || 0) / 100;
+      var amount = Math.round(egp * rates[current]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      box.querySelector('[data-hira-estimate-label]').textContent = String(cfg.estimateLabel || '').replace(/\[CUR\]/g, current);
+      box.querySelector('[data-hira-estimate-value]').textContent = amount + ' ' + current;
+      box.querySelector('[data-hira-estimate-note]').textContent = String(cfg.estimateNote || '').replace(/\[CUR\]/g, current);
     });
   }
 
   function apply(scope) {
     (scope || document).querySelectorAll('[data-hira-money]').forEach(convertNode);
-    fillNotes(scope);
+    fillEstimates(scope);
     document.querySelectorAll('[data-hira-region]').forEach(function (picker) {
       var select = picker.querySelector('[data-hira-region-select]');
       select.value = region;

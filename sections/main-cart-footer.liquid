@@ -60,9 +60,12 @@
 
                 <div class="totals">
                   <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
-                  <p class="totals__total-value"><span data-hira-money="{{ cart.total_price }}">{{ cart.total_price | money_with_currency }}</span></p>
+                  <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
                 </div>
-                <p class="hira-currency-note" data-hira-currency-note hidden></p>
+                <div class="hira-estimate" data-hira-estimate data-hira-estimate-cents="{{ cart.total_price }}" hidden>
+                  <p class="hira-estimate__total"><span data-hira-estimate-label></span> <strong data-hira-estimate-value></strong></p>
+                  <p class="hira-estimate__note" data-hira-estimate-note></p>
+                </div>
 
                 <small class="tax-note caption-large rte">
                   {%- if cart.duties_included and cart.taxes_included -%}
