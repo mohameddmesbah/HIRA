@@ -1,13 +1,25 @@
 {% comment %}
-  Small display-currency picker for the header. The choice is remembered in the browser.
+  One country + display-currency picker for the header (replaces Shopify's country selector).
+  The face shows "🇸🇦 Saudi Arabia · SAR" (just "🇸🇦 SAR" on mobile); a transparent native
+  <select> on top opens the system list. The choice is remembered in the browser.
 {% endcomment %}
 {%- if settings.hira_currency_enabled -%}
-  <div class="hira-currency">
-    <label class="visually-hidden" for="HiraCurrency-{{ id | default: 'header' }}">Display currency</label>
-    <select id="HiraCurrency-{{ id | default: 'header' }}" class="hira-currency__select" data-hira-currency-select>
-      {%- assign codes = 'EGP,USD,EUR,GBP,SAR,AED,KWD,QAR' | split: ',' -%}
-      {%- for code in codes -%}
-        <option value="{{ code }}">{{ code }}</option>
+  {%- liquid
+    assign regions = 'EG|🇪🇬|Egypt|EGP,SA|🇸🇦|Saudi Arabia|SAR,AE|🇦🇪|UAE|AED,KW|🇰🇼|Kuwait|KWD,QA|🇶🇦|Qatar|QAR,US|🇺🇸|United States|USD,EU|🇪🇺|Europe|EUR,GB|🇬🇧|United Kingdom|GBP,OTHER|🌍|Other countries|USD' | split: ','
+    assign uid = id | default: 'header'
+  -%}
+  <div class="hira-region" data-hira-region>
+    <span class="hira-region__face" aria-hidden="true">
+      <span class="hira-region__flag" data-hira-region-flag>🇪🇬</span>
+      <span class="hira-region__name" data-hira-region-name>Egypt</span>
+      <span class="hira-region__dot">·</span>
+      <span class="hira-region__code" data-hira-region-code>EGP</span>
+    </span>
+    <label class="visually-hidden" for="HiraRegion-{{ uid }}">Country and display currency</label>
+    <select id="HiraRegion-{{ uid }}" class="hira-region__select" data-hira-region-select>
+      {%- for row in regions -%}
+        {%- assign r = row | split: '|' -%}
+        <option value="{{ r[0] }}" data-flag="{{ r[1] }}" data-name="{{ r[2] }}" data-currency="{{ r[3] }}">{{ r[1] }} {{ r[2] }} · {{ r[3] }}</option>
       {%- endfor -%}
     </select>
   </div>

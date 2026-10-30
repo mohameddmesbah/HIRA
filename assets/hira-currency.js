@@ -4,7 +4,9 @@
  * Display only: the cart, checkout and real prices stay in EGP.
  *
  * Prices are marked in Liquid as <span data-hira-money="CENTS">formatted EGP</span>.
- * Choice order: the visitor's saved pick > Shopify's country > the browser's timezone/locale.
+ * The header picker chooses a country/region, which sets the currency (EU = euro countries,
+ * OTHER = everywhere else in USD). Choice order: the visitor's saved pick > Shopify's country >
+ * the browser's timezone/locale.
  */
 (function () {
   'use strict';
@@ -15,8 +17,9 @@
   try { cfg = JSON.parse(cfgNode.textContent); } catch (e) { return; }
 
   var BASE = 'EGP';
-  var STORE_KEY = 'hira-currency';
-  var DETECT_KEY = 'hira-currency-detected';
+  var STORE_KEY = 'hira-region';
+  var OLD_KEY = 'hira-currency'; // earlier currency-only picker
+  var DETECT_KEY = 'hira-region-detected';
   var rates = { EGP: 1 };
   Object.keys(cfg.rates || {}).forEach(function (code) {
     var r = parseFloat(String(cfg.rates[code]).replace(',', '.'));
@@ -24,8 +27,8 @@
   });
 
   var EURO = 'AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV MT NL PT SI SK MC SM VA AD ME XK'.split(' ');
-  var BY_COUNTRY = { EG: 'EGP', SA: 'SAR', AE: 'AED', KW: 'KWD', QA: 'QAR', US: 'USD', GB: 'GBP' };
-  EURO.forEach(function (c) { BY_COUNTRY[c] = 'EUR'; });
+  var REGION_CURRENCY = { EG: 'EGP', SA: 'SAR', AE: 'AED', KW: 'KWD', QA: 'QAR', US: 'USD', EU: 'EUR', GB: 'GBP', OTHER: 'USD' };
+  var CURRENCY_REGION = { EGP: 'EG', SAR: 'SA', AED: 'AE', KWD: 'KW', QAR: 'QA', USD: 'US', EUR: 'EU', GBP: 'GB' };
 
   var BY_ZONE = {
     'Africa/Cairo': 'EG', 'Asia/Riyadh': 'SA', 'Asia/Dubai': 'AE', 'Asia/Kuwait': 'KW', 'Asia/Qatar': 'QA',
@@ -47,10 +50,15 @@
     try { return (session ? sessionStorage : localStorage).getItem(key); } catch (e) { return null; }
   }
 
-  // Any country without its own currency here shows USD.
-  function currencyFor(country) {
-    var code = BY_COUNTRY[String(country || '').toUpperCase()] || 'USD';
-    return rates[code] ? code : (rates.USD ? 'USD' : BASE);
+  // A country's picker entry: its own, the euro zone, or "Other countries" (USD).
+  function regionFor(country) {
+    var c = String(country || '').toUpperCase();
+    if (EURO.indexOf(c) !== -1) return 'EU';
+    return REGION_CURRENCY[c] && c !== 'EU' && c !== 'OTHER' ? c : 'OTHER';
+  }
+
+  function validRegion(region) {
+    return !!(region && REGION_CURRENCY[region]);
   }
 
   function browserCountry() {
@@ -83,6 +91,7 @@
   /* ---------- applying ---------- */
 
   var current = BASE;
+  var region = 'EG';
 
   function convertNode(node) {
     if (node.getAttribute('data-hira-shown') === current) return;
@@ -108,20 +117,30 @@
   function apply(scope) {
     (scope || document).querySelectorAll('[data-hira-money]').forEach(convertNode);
     fillNotes(scope);
-    document.querySelectorAll('[data-hira-currency-select]').forEach(function (select) {
-      select.value = current;
+    document.querySelectorAll('[data-hira-region]').forEach(function (picker) {
+      var select = picker.querySelector('[data-hira-region-select]');
+      select.value = region;
+      var opt = select.options[select.selectedIndex];
+      if (!opt) return;
+      picker.querySelector('[data-hira-region-flag]').textContent = opt.getAttribute('data-flag');
+      picker.querySelector('[data-hira-region-name]').textContent = opt.getAttribute('data-name');
+      picker.querySelector('[data-hira-region-code]').textContent = current;
     });
   }
 
-  function set(code, opts) {
-    if (!rates[code]) code = BASE;
+  function set(next, opts) {
+    if (!validRegion(next)) next = 'OTHER';
+    var code = REGION_CURRENCY[next];
+    if (!rates[code]) code = rates.USD ? 'USD' : BASE;
     var changed = code !== current;
+    region = next;
     current = code;
     document.documentElement.setAttribute('data-hira-currency', code);
-    if (opts && opts.save) store(STORE_KEY, code);
+    document.documentElement.setAttribute('data-hira-region', next);
+    if (opts && opts.save) store(STORE_KEY, next);
     apply();
     if (changed || (opts && opts.force)) {
-      document.dispatchEvent(new CustomEvent('hira:currency', { detail: { code: code } }));
+      document.dispatchEvent(new CustomEvent('hira:currency', { detail: { code: code, region: next } }));
     }
   }
 
@@ -131,43 +150,47 @@
   window.HIRA.currency = {
     base: BASE,
     get code() { return current; },
+    get region() { return region; },
     format: function (egp) { return format(egp, current); },
-    set: function (code) { set(code, { save: true }); }
+    set: function (code) { set(CURRENCY_REGION[code] || 'OTHER', { save: true }); },
+    setRegion: function (next) { set(next, { save: true }); }
   };
 
   /* ---------- detection ---------- */
 
   function detect() {
     var saved = read(STORE_KEY);
-    if (saved && rates[saved]) return set(saved);
+    if (validRegion(saved)) return set(saved);
+    var old = read(OLD_KEY);
+    if (old && CURRENCY_REGION[old]) return set(CURRENCY_REGION[old], { save: true });
 
     // Shopify's country. When it is just the store's own default (a visitor outside
     // every market falls back to it), confirm with Shopify's IP suggestion and the browser.
     var shopify = String(cfg.country || '').toUpperCase();
-    if (shopify && shopify !== String(cfg.shopCountry || '').toUpperCase()) return set(currencyFor(shopify));
+    if (shopify && shopify !== String(cfg.shopCountry || '').toUpperCase()) return set(regionFor(shopify));
 
     var cached = read(DETECT_KEY, true);
-    if (cached && rates[cached]) return set(cached);
+    if (validRegion(cached)) return set(cached);
 
     var browser = browserCountry();
-    set(currencyFor(browser || shopify));
+    set(regionFor(browser || shopify));
 
     if (!window.fetch) return;
     fetch((cfg.root || '/') + 'browsing_context_suggestions.json', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         var ip = data && data.detected_values && data.detected_values.country && data.detected_values.country.handle;
-        var code = currencyFor(ip || browser || shopify);
-        store(DETECT_KEY, code, true);
-        if (!read(STORE_KEY)) set(code);
+        var detected = regionFor(ip || browser || shopify);
+        store(DETECT_KEY, detected, true);
+        if (!read(STORE_KEY)) set(detected);
       })
-      .catch(function () { store(DETECT_KEY, current, true); });
+      .catch(function () { store(DETECT_KEY, region, true); });
   }
 
   /* ---------- switcher + re-rendered HTML ---------- */
 
   document.addEventListener('change', function (event) {
-    var select = event.target.closest && event.target.closest('[data-hira-currency-select]');
+    var select = event.target.closest && event.target.closest('[data-hira-region-select]');
     if (select) set(select.value, { save: true });
   });
 
