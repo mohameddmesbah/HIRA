@@ -48,8 +48,8 @@
 
         <div class="hira-cfg__price" aria-live="polite">
           <span class="hira-cfg__price-label">{{ section.settings.price_label | escape }}</span>
-          <strong class="hira-cfg__price-value"><span data-cfg-egp>—</span> EGP</strong>
-          <span class="hira-cfg__price-usd">(~$<span data-cfg-usd>—</span>)</span>
+          <strong class="hira-cfg__price-value" data-cfg-total>—</strong>
+          <span class="hira-cfg__price-usd" data-cfg-alt></span>
           <p class="hira-cfg__price-note">{{ section.settings.price_note | escape }}</p>
           <ul class="hira-cfg__breakdown" data-cfg-breakdown role="list"></ul>
         </div>

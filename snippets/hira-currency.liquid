@@ -1,0 +1,24 @@
+{% comment %}
+  Display currency config + script (Theme settings > Display currency).
+  Rendered once from snippets/hira-head.liquid. Display only: real prices and checkout stay in EGP.
+{% endcomment %}
+{%- if settings.hira_currency_enabled -%}
+  <script type="application/json" id="HiraCurrencyConfig">
+    {
+      "country": {{ localization.country.iso_code | json }},
+      "shopCountry": {{ shop.address.country_code | json }},
+      "root": {{ routes.root_url | append: '/' | replace: '//', '/' | json }},
+      "note": {{ settings.hira_currency_note | json }},
+      "rates": {
+        "SAR": {{ settings.hira_rate_sar | json }},
+        "AED": {{ settings.hira_rate_aed | json }},
+        "KWD": {{ settings.hira_rate_kwd | json }},
+        "QAR": {{ settings.hira_rate_qar | json }},
+        "USD": {{ settings.hira_rate_usd | json }},
+        "EUR": {{ settings.hira_rate_eur | json }},
+        "GBP": {{ settings.hira_rate_gbp | json }}
+      }
+    }
+  </script>
+  <script src="{{ 'hira-currency.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}

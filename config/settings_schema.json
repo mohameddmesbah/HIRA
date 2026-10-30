@@ -1801,6 +1801,78 @@
     ]
   },
   {
+    "name": "Display currency",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Shows storefront prices converted from EGP so visitors see an approximate price in their own currency. Display only: the cart is still charged in EGP and checkout is not changed. Visitors in other countries see USD."
+      },
+      {
+        "type": "checkbox",
+        "id": "hira_currency_enabled",
+        "label": "Show prices in the visitor's currency",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Fixed exchange rates"
+      },
+      {
+        "type": "text",
+        "id": "hira_rate_sar",
+        "label": "1 EGP in SAR (Saudi riyal)",
+        "default": "0.267"
+      },
+      {
+        "type": "text",
+        "id": "hira_rate_aed",
+        "label": "1 EGP in AED (UAE dirham)",
+        "default": "0.0654"
+      },
+      {
+        "type": "text",
+        "id": "hira_rate_kwd",
+        "label": "1 EGP in KWD (Kuwaiti dinar)",
+        "default": "0.00547"
+      },
+      {
+        "type": "text",
+        "id": "hira_rate_qar",
+        "label": "1 EGP in QAR (Qatari riyal)",
+        "default": "0.0648"
+      },
+      {
+        "type": "text",
+        "id": "hira_rate_usd",
+        "label": "1 EGP in USD (US dollar)",
+        "default": "0.0178"
+      },
+      {
+        "type": "text",
+        "id": "hira_rate_eur",
+        "label": "1 EGP in EUR (Euro)",
+        "default": "0.0165"
+      },
+      {
+        "type": "text",
+        "id": "hira_rate_gbp",
+        "label": "1 EGP in GBP (British pound)",
+        "default": "0.0141"
+      },
+      {
+        "type": "header",
+        "content": "Cart note"
+      },
+      {
+        "type": "text",
+        "id": "hira_currency_note",
+        "label": "Note under cart prices",
+        "info": "[CUR] is replaced with the currency shown. Hidden for visitors seeing EGP.",
+        "default": "Prices shown in [CUR] are approximate. You will be charged in EGP at checkout; your bank converts it automatically."
+      }
+    ]
+  },
+  {
     "name": "Configurator layers",
     "settings": [
       {

@@ -117,6 +117,18 @@
     return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
+  // On-screen prices follow the visitor's display currency (hira-currency.js);
+  // the WhatsApp order and the saved image stay in EGP.
+  function localCurrency() {
+    var cur = window.HIRA && window.HIRA.currency;
+    return cur && cur.code !== cur.base ? cur : null;
+  }
+
+  function displayMoney(egp) {
+    var cur = localCurrency();
+    return cur ? cur.format(egp) : formatNumber(egp) + ' EGP';
+  }
+
   function paint(node, color) {
     node.style.fill = color;
   }
@@ -885,6 +897,11 @@
     this.buildSwatches();
     this.fillPriceTags();
     this.bind();
+    var self = this;
+    document.addEventListener('hira:currency', function () {
+      self.fillPriceTags();
+      self.renderPrice();
+    });
     this.bindDrag();
     this.render();
     this.goTo(1, true);
@@ -952,7 +969,7 @@
     var prices = this.prices;
     this.root.querySelectorAll('[data-price-tag]').forEach(function (node) {
       var v = +prices[node.getAttribute('data-price-tag')] || 0;
-      node.textContent = '+' + formatNumber(v) + ' EGP' + (node.getAttribute('data-price-suffix') || '');
+      node.textContent = '+' + displayMoney(v) + (node.getAttribute('data-price-suffix') || '');
     });
   };
 
@@ -1651,13 +1668,15 @@
 
   Configurator.prototype.renderPrice = function () {
     var price = this.price();
-    this.root.querySelector('[data-cfg-egp]').textContent = formatNumber(price.egp);
-    this.root.querySelector('[data-cfg-usd]').textContent = formatNumber(price.usd);
+    this.root.querySelector('[data-cfg-total]').textContent = displayMoney(price.egp);
+    this.root.querySelector('[data-cfg-alt]').textContent = localCurrency()
+      ? '(' + formatNumber(price.egp) + ' EGP)'
+      : '(~$' + formatNumber(price.usd) + ')';
     var list = this.root.querySelector('[data-cfg-breakdown]');
     if (list) {
       list.innerHTML = this.lineItems().map(function (item) {
         var label = item.label + (item.qty > 1 ? ' × ' + item.qty : '');
-        return '<li><span>' + label.replace(/</g, '&lt;') + '</span><span>' + formatNumber(item.egp) + ' EGP</span></li>';
+        return '<li><span>' + label.replace(/</g, '&lt;') + '</span><span>' + displayMoney(item.egp) + '</span></li>';
       }).join('');
     }
   };

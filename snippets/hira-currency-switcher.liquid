@@ -1,0 +1,14 @@
+{% comment %}
+  Small display-currency picker for the header. The choice is remembered in the browser.
+{% endcomment %}
+{%- if settings.hira_currency_enabled -%}
+  <div class="hira-currency">
+    <label class="visually-hidden" for="HiraCurrency-{{ id | default: 'header' }}">Display currency</label>
+    <select id="HiraCurrency-{{ id | default: 'header' }}" class="hira-currency__select" data-hira-currency-select>
+      {%- assign codes = 'EGP,USD,EUR,GBP,SAR,AED,KWD,QAR' | split: ',' -%}
+      {%- for code in codes -%}
+        <option value="{{ code }}">{{ code }}</option>
+      {%- endfor -%}
+    </select>
+  </div>
+{%- endif -%}

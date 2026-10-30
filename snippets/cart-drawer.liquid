@@ -169,18 +169,18 @@
                                 {{ 'products.product.price.regular_price' | t }}
                               </span>
                               <s class="cart-item__old-price product-option">
-                                {{- item.original_price | money -}}
+                                <span data-hira-money="{{ item.original_price }}">{{- item.original_price | money -}}</span>
                               </s>
                               <span class="visually-hidden">
                                 {{ 'products.product.price.sale_price' | t }}
                               </span>
                               <strong class="cart-item__final-price product-option">
-                                {{ item.final_price | money }}
+                                <span data-hira-money="{{ item.final_price }}">{{ item.final_price | money }}</span>
                               </strong>
                             </div>
                           {%- else -%}
                             <div class="product-option">
-                              {{ item.original_price | money }}
+                              <span data-hira-money="{{ item.original_price }}">{{ item.original_price | money }}</span>
                             </div>
                           {%- endif -%}
 
@@ -251,18 +251,18 @@
                                   {{ 'products.product.price.regular_price' | t }}
                                 </span>
                                 <s class="cart-item__old-price price price--end">
-                                  {{ item.original_line_price | money }}
+                                  <span data-hira-money="{{ item.original_line_price }}">{{ item.original_line_price | money }}</span>
                                 </s>
                                 <span class="visually-hidden">
                                   {{ 'products.product.price.sale_price' | t }}
                                 </span>
                                 <span class="price price--end">
-                                  {{ item.final_line_price | money }}
+                                  <span data-hira-money="{{ item.final_line_price }}">{{ item.final_line_price | money }}</span>
                                 </span>
                               </div>
                             {%- else -%}
                               <span class="price price--end">
-                                {{ item.original_line_price | money }}
+                                <span data-hira-money="{{ item.original_line_price }}">{{ item.original_line_price | money }}</span>
                               </span>
                             {%- endif -%}
 
@@ -445,7 +445,7 @@
                                     <ul class="list-unstyled">
                                       <li>
                                         <span>{{ item.variant.quantity_rule.min }}+</span>
-                                        <span>{{ item.variant.price | money_with_currency }}/ea</span>
+                                        <span><span data-hira-money="{{ item.variant.price }}">{{ item.variant.price | money_with_currency }}</span>/ea</span>
                                       </li>
                                       {%- for price_break in item.variant.quantity_price_breaks -%}
                                         <li>
@@ -453,7 +453,7 @@
                                             {{- price_break.minimum_quantity -}}
                                             <span aria-hidden="true">+</span></span
                                           >
-                                          <span>{{ price_break.price | money_with_currency }}/ea</span>
+                                          <span><span data-hira-money="{{ price_break.price }}">{{ price_break.price | money_with_currency }}</span>/ea</span>
                                         </li>
                                       {%- endfor -%}
                                     </ul>
@@ -519,7 +519,7 @@
                   <li class="discounts__discount discounts__discount--end">
                     {{- 'icon-discount.svg' | inline_asset_content -}}
                     {{ discount.title | escape }}
-                    (-{{ discount.total_allocated_amount | money }})
+                    (-<span data-hira-money="{{ discount.total_allocated_amount }}">{{ discount.total_allocated_amount | money }}</span>)
                   </li>
                 {%- endfor -%}
               </ul>
@@ -528,8 +528,9 @@
 
           <div class="totals" role="status">
             <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
-            <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
+            <p class="totals__total-value"><span data-hira-money="{{ cart.total_price }}">{{ cart.total_price | money_with_currency }}</span></p>
           </div>
+          <p class="hira-currency-note" data-hira-currency-note hidden></p>
 
           <small class="tax-note caption-large rte">
             {%- if cart.duties_included and cart.taxes_included -%}

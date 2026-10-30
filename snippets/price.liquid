@@ -35,6 +35,11 @@
     assign money_price_max = price_max | money_with_currency
   endif
 
+  # HIRA display currency: mark amounts so hira-currency.js can convert them.
+  assign money_price = money_price | prepend: '">' | prepend: price | prepend: '<span data-hira-money="' | append: '</span>'
+  assign money_price_min = money_price_min | prepend: '">' | prepend: price_min | prepend: '<span data-hira-money="' | append: '</span>'
+  assign money_price_max = money_price_max | prepend: '">' | prepend: price_max | prepend: '<span data-hira-money="' | append: '</span>'
+
   if target == product and product.price_varies
     assign money_price = 'products.product.price.from_price_html' | t: price: money_price
   endif
@@ -68,9 +73,9 @@
               <span>
                 <s class="price-item price-item--regular variant-item__old-price">
                   {% if settings.currency_code_enabled %}
-                    {{ compare_at_price | money_with_currency }}
+                    <span data-hira-money="{{ compare_at_price }}">{{ compare_at_price | money_with_currency }}</span>
                   {% else %}
-                    {{ compare_at_price | money }}
+                    <span data-hira-money="{{ compare_at_price }}">{{ compare_at_price | money }}</span>
                   {% endif %}
                 </s>
               </span>
@@ -96,9 +101,9 @@
           <span>
             <s class="price-item price-item--regular">
               {% if settings.currency_code_enabled %}
-                {{ compare_at_price | money_with_currency }}
+                <span data-hira-money="{{ compare_at_price }}">{{ compare_at_price | money_with_currency }}</span>
               {% else %}
-                {{ compare_at_price | money }}
+                <span data-hira-money="{{ compare_at_price }}">{{ compare_at_price | money }}</span>
               {% endif %}
             </s>
           </span>

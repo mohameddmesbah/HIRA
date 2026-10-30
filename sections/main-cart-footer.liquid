@@ -51,7 +51,7 @@
                         <li class="discounts__discount discounts__discount--position">
                           {{- 'icon-discount.svg' | inline_asset_content -}}
                           {{ discount.title | escape }}
-                          (-{{ discount.total_allocated_amount | money }})
+                          (-<span data-hira-money="{{ discount.total_allocated_amount }}">{{ discount.total_allocated_amount | money }}</span>)
                         </li>
                       {%- endfor -%}
                     </ul>
@@ -60,8 +60,9 @@
 
                 <div class="totals">
                   <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
-                  <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
+                  <p class="totals__total-value"><span data-hira-money="{{ cart.total_price }}">{{ cart.total_price | money_with_currency }}</span></p>
                 </div>
+                <p class="hira-currency-note" data-hira-currency-note hidden></p>
 
                 <small class="tax-note caption-large rte">
                   {%- if cart.duties_included and cart.taxes_included -%}
